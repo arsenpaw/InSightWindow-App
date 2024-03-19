@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1706.9
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AXProductApp", "AXProductApp.csproj", "{9F643B91-FE9D-4AA4-99D1-EA0253A0F9AD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9F643B91-FE9D-4AA4-99D1-EA0253A0F9AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F643B91-FE9D-4AA4-99D1-EA0253A0F9AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F643B91-FE9D-4AA4-99D1-EA0253A0F9AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F643B91-FE9D-4AA4-99D1-EA0253A0F9AD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A3603050-D3F6-46A2-BB46-EC10865E2D17}
+	EndGlobalSection
+EndGlobal
