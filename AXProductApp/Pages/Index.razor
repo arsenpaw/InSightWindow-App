@@ -1,7 +1,46 @@
 ﻿@page "/"
+@using Microsoft.AspNetCore.SignalR.Client
+@using AXProductApp.Data;
+@inject NavigationManager NavigationManager
 
-<h1>Hello, world!</h1>
+<h1>SignalR Client</h1>
 
-Welcome to your new app.
+<div id="status" >@windowStatus</div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    HubConnection hubConnection;
+    string windowStatus;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await EstablishConnection();
+    }
+
+
+    private async Task EstablishConnection()
+    {
+        
+            hubConnection = new HubConnectionBuilder()
+                .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+                .Build();
+
+               hubConnection.On<WindowStatus>("ReceiveWindowStatus", OnReceiveWindowStatus);
+
+            try
+            {
+                await hubConnection.StartAsync();
+                Console.WriteLine("Connection to hub established.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error establishing connection to hub: {ex.Message}");
+            }
+        
+    }
+
+    private void OnReceiveWindowStatus(WindowStatus status)
+    {
+        windowStatus = $"Window Temp: {status.Temparature}, {status.WaterLevel}, {status.IsProtected}, {status.Humidity}";
+        Console.WriteLine(windowStatus);
+    }
+}

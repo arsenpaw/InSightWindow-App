@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using AXProductApp.Data;
+using Microsoft.AspNetCore.SignalR;
 
 namespace AXProductApp;
 
@@ -17,11 +18,9 @@ public static class MauiProgram
 
 		builder.Services.AddMauiBlazorWebView();
 
-#if DEBUG
+
 		builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
-#endif
-
 		builder.Services.AddSingleton<WeatherForecastService>();
 
 		return builder.Build();
