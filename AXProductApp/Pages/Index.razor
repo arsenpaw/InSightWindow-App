@@ -36,7 +36,7 @@
     {
          hubConnection = new HubConnectionBuilder()
         // .WithUrl(NavManager.ToAbsoluteUri("/client-hub"))
-        .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
+        .WithUrl(new Uri("https://localhost:7009/client-hub")) // This URL should match your SignalR hub endpoint
         .WithAutomaticReconnect()
             .Build();
 
