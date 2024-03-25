@@ -9,6 +9,17 @@
 <div id="status">@strStatus</div>
 
 
+
+
+
+
+
+
+
+
+
+
+
 @code {
     HubConnection? hubConnection;
     private WindowStatus windowStatus;
@@ -25,7 +36,7 @@
     {
          hubConnection = new HubConnectionBuilder()
         // .WithUrl(NavManager.ToAbsoluteUri("/client-hub"))
-        .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+        .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
         .WithAutomaticReconnect()
             .Build();
 
@@ -56,8 +67,8 @@
    
     private void OnReceiveWindowStatus(WindowStatus status)
     {
-        var windowStatus = $"Window Temp: {status.Temparature}, {status.WaterLevel}, {status.IsProtected}, {status.Humidity}";
-        Console.WriteLine(windowStatus);
+         strStatus = $"Window Temp: {status.Temparature}, {status.WaterLevel}, {status.IsProtected}, {status.Humidity}";
+        Console.WriteLine(strStatus);
     }
   
 
