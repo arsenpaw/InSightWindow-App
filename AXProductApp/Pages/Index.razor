@@ -5,14 +5,16 @@
 
 <h1>SignalR Client</h1>
 
-<div id="status">@strStatus</div>
+
+<div id="status">@status.WaterLevel</div>
+@strStatus
 
 
 
 
 @code {
     HubConnection hubConnection;
-    private WindowStatus windowStatus;
+    public WindowStatus status = new WindowStatus();
     string strStatus;
     bool IsConnected;
 
@@ -27,14 +29,14 @@
         try
         {
             hubConnection = new HubConnectionBuilder()
-          .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-                                                                //.WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+          //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
+              .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
            .WithAutomaticReconnect()
                .Build();
 
             hubConnection.On<WindowStatus>("ReceiveWindowStatus", (status) =>
             {
-                // то твій метод Ромцю
+                
                 strStatus = $"Window Temp: {status.Temparature}, {status.WaterLevel}, {status.IsProtected}, {status.Humidity}";
                 InvokeAsync(StateHasChanged);
             });
