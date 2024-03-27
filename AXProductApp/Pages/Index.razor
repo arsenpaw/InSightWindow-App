@@ -5,7 +5,7 @@
 
 <h1>SignalR Client</h1>
 
-<div id="status">@strStatus</div>
+<div id="status">@windowStatus.Temparature</div>
 
 
 
@@ -14,8 +14,8 @@
 
 
 @code {
-    HubConnection? hubConnection;
-    private WindowStatus windowStatus;
+    private HubConnection? hubConnection;
+    public WindowStatus windowStatus = new WindowStatus();
     string strStatus;
     int Temperature;
     bool IsConnected;
