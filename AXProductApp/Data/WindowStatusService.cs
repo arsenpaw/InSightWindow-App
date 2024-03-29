@@ -14,7 +14,7 @@ namespace AXProductApp.Data
         public WindowStatusService()
         {
             var hubConnection = new HubConnectionBuilder()
-           .WithUrl("wss://localhost:7009/client-hub")
+           .WithUrl("wss://localhost:44324/client-hub")
            .Build();
 
             // Define the method to be called from the server

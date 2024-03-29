@@ -2,7 +2,6 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @using AXProductApp.Data
 @inject NavigationManager NavManager
-@implements IAsyncDisposable
 
 <style class="body-style">
     body {
@@ -18,7 +17,13 @@
     }
 </style>
 
-<div id="status">@strStatus</div>
+<div id="status">@windowStatus.Temparature</div>
+@strStatus
+
+
+
+
+
 
 <div class="body">
 
@@ -72,40 +77,45 @@
 </div>
 
 @code {
-    HubConnection? hubConnection;
-    private WindowStatus windowStatus;
+    private HubConnection? hubConnection;
+    public WindowStatus windowStatus = new WindowStatus();
     string strStatus;
+    int Temperature;
     bool IsConnected;
+    string ProtectionStatus;
+    int Humidity;
 
     protected override async Task OnInitializedAsync()
     {
         await EstablishConnection();
     }
-   
+
 
     private async Task EstablishConnection()
     {
-         hubConnection = new HubConnectionBuilder()
-        // .WithUrl(NavManager.ToAbsoluteUri("/client-hub"))
-        .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
-        .WithAutomaticReconnect()
-            .Build();
+        hubConnection = new HubConnectionBuilder()
+     // .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
+     .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+       .WithAutomaticReconnect()
+           .Build();
 
-        // hubConnection.On<WindowStatus>("ReceiveWindowStatus", OnReceiveWindowStatus);
         hubConnection.On<WindowStatus>("ReceiveWindowStatus", (status) =>
         {
             strStatus = $"Window Temp: {status.Temparature}, {status.WaterLevel}, {status.IsProtected}, {status.Humidity}";
+            Temperature = status.Temparature;
+            Humidity = status.Humidity;
+            ProtectionStatus = status.IsProtected;
             InvokeAsync(StateHasChanged);
+
         });
         try
         {
             await hubConnection.StartAsync();
 
-            Console.WriteLine($"STATE: {hubConnection?.State}");
             if (hubConnection?.State == HubConnectionState.Connected)
             {
-             bool IsConnected = true;
-               }
+                bool IsConnected = true;
+            }
             Console.WriteLine($"REMOTE STATE {IsConnected}");
             Console.WriteLine("Connection to hub established.");
         }
@@ -113,21 +123,7 @@
         {
             Console.WriteLine($"Error establishing connection to hub: {ex.Message}");
         }
-       
-    }
-   
-    private void OnReceiveWindowStatus(WindowStatus status)
-    {
-        var windowStatus = $"Window Temp: {status.Temparature}, {status.WaterLevel}, {status.IsProtected}, {status.Humidity}";
-        Console.WriteLine(windowStatus);
-    }
-  
 
-    public async ValueTask DisposeAsync()
-    {
-        if (hubConnection is not null)
-        {
-            await hubConnection.DisposeAsync();
-        }
     }
+
 }
