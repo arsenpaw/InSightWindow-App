@@ -102,21 +102,32 @@
         background-color: transparent;
     }
 
-.dots-menu {
-    width: 30px;
-    height: 20px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.tree-dot-menu {
     position: relative;
-    margin-left: auto;
-    margin-right: -3%;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    left: -30px;
+    top: -15px;
 }
 
 .dot {
-    width: 4px;
-    height: 4px;
-    background-color: #000;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: #fff;
     border-radius: 50%;
 }
+
+    .dot:nth-child(1) {
+        top: 0;
+    }
+
+    .dot:nth-child(2) {
+        top: 12px;
+    }
+
+    .dot:nth-child(3) {
+        top: 24px;
+    }
