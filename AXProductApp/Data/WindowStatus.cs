@@ -8,7 +8,7 @@ namespace AXProductApp.Data
 
         public string IsOpen { get; set; }
 
-        public int WaterLevel { get; set; }
+        public int isRain { get; set; }
 
         public string IsProtected { get; set; }
 
