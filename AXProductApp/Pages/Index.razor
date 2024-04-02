@@ -102,21 +102,51 @@
         });
         try
         {
-            
+            await hubConnection.StartAsync();
             if (hubConnection?.State == HubConnectionState.Connected)
             {
-                await hubConnection.StartAsync();
+
                 bool IsConnected = true;
+                WindowStatus status = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
+                if (status != null)
+                {
+                    Temperature = $"{status.Temparature} °C";
+                    Humidity = $"{status.Humidity} %";
+                    ProtectionStatus = status.IsProtected;
+                    isRain = (status.isRain != 0);
+                    // тут ловить коли пропало зєднання  з сервером але в кеші є дані (тре буде виводити дані і шо конешн лост)(То Ромцю)
+                }
+                else
+                {
+                    throw new System.Net.Http.HttpRequestException();
+                }
+                Console.WriteLine($"REMOTE STATE {IsConnected}");
+                Console.WriteLine("Connection to hub established.");
+            }
+            
+
+        }
+        catch (System.Net.Http.HttpRequestException)
+        {
+            WindowStatus status = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
+            if (status != null && hubConnection?.State == HubConnectionState.Disconnected)
+            {
+                Temperature = $"{status.Temparature} °C";
+                Humidity = $"{status.Humidity} %";
+                ProtectionStatus = status.IsProtected;
+                isRain = (status.isRain != 0);
+                // тут ловить коли пропало зєднання  з сервером але в кеші є дані (тре буде виводити дані і шо конешн лост)(То Ромцю)
             }
             else
             {
-                WindowStatus statusFromCahce = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
+                Temperature = "KURWA";
+                // тут ловить коли пропало зєднання  з сервером і ше й даних нема (то Юри парафія)
             }
-            Console.WriteLine($"REMOTE STATE {IsConnected}");
-            Console.WriteLine("Connection to hub established.");
+
         }
         catch (Exception ex)
         {
+            
             Console.WriteLine($"Error establishing connection to hub: {ex.Message}");
         }
 
