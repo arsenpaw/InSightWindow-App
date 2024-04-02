@@ -102,21 +102,21 @@
         });
         try
         {
-            await hubConnection.StartAsync();
+            
             if (hubConnection?.State == HubConnectionState.Connected)
             {
+                await hubConnection.StartAsync();
                 bool IsConnected = true;
             }
             else
             {
-                
+                WindowStatus statusFromCahce = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
             }
             Console.WriteLine($"REMOTE STATE {IsConnected}");
             Console.WriteLine("Connection to hub established.");
         }
         catch (Exception ex)
         {
-            WindowStatus statusFromCahce = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
             Console.WriteLine($"Error establishing connection to hub: {ex.Message}");
         }
 
