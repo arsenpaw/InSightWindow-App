@@ -129,7 +129,7 @@
         catch (System.Net.Http.HttpRequestException)
         {
             WindowStatus status = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
-            if (status != null && hubConnection?.State == HubConnectionState.Disconnected)
+            if (status != null)
             {
                 Temperature = $"{status.Temparature} °C";
                 Humidity = $"{status.Humidity} %";
