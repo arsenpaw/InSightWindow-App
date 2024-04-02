@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
 @using AXProductApp.Data
+@inject Blazored.LocalStorage.ILocalStorageService _localstorage;
 @inject NavigationManager NavManager
 
 <style class="body-style">
@@ -84,18 +85,20 @@
     private async Task EstablishConnection()
     {
         hubConnection = new HubConnectionBuilder()
-      .WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-                                                            //.WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+      //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint                             
+      .WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
        .WithAutomaticReconnect()
            .Build();
 
-        hubConnection.On<WindowStatus>("ReceiveWindowStatus", (status) =>
+        hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
         {
+            await _localstorage.SetItemAsync<WindowStatus>(nameof(WindowStatus), status);
+
             Temperature = $"{status.Temparature} °C";
             Humidity = $"{status.Humidity} %";
             ProtectionStatus = status.IsProtected;
             isRain = (status.isRain != 0);
-            InvokeAsync(StateHasChanged);
+            await InvokeAsync(StateHasChanged);
         });
         try
         {
@@ -104,11 +107,16 @@
             {
                 bool IsConnected = true;
             }
+            else
+            {
+                
+            }
             Console.WriteLine($"REMOTE STATE {IsConnected}");
             Console.WriteLine("Connection to hub established.");
         }
         catch (Exception ex)
         {
+            WindowStatus statusFromCahce = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
             Console.WriteLine($"Error establishing connection to hub: {ex.Message}");
         }
 
