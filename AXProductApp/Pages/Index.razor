@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
 @using AXProductApp.Data
+@inject Blazored.LocalStorage.ILocalStorageService _localstorage;
 @inject NavigationManager NavManager
 
 <style class="body-style">
@@ -93,7 +94,8 @@
         hubConnection.On<WindowStatus>("ReceiveWindowStatus", (status) =>
         {
             // strStatus = $"Window Temp: {status.Temparature}, {status.WaterLevel}, {status.IsProtected}, {status.Humidity}";
-            Temperature = $"{status.Temparature} °C";
+            _localstorage.SetItemAsync("currentWindowStatus", windowStatus);
+            Temperature = $"{status.Temparature}°C";
             Humidity = $"{status.Humidity} %";
             ProtectionStatus = status.IsProtected;
             isRain = (status.isRain != 0);
@@ -117,5 +119,6 @@
         }
 
     }
+
 
 }
