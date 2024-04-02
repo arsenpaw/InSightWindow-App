@@ -81,7 +81,6 @@
         await EstablishConnection();
     }
 
-
     private async Task EstablishConnection()
     {
         hubConnection = new HubConnectionBuilder()
@@ -92,18 +91,15 @@
 
         hubConnection.On<WindowStatus>("ReceiveWindowStatus", (status) =>
         {
-            // strStatus = $"Window Temp: {status.Temparature}, {status.WaterLevel}, {status.IsProtected}, {status.Humidity}";
             Temperature = $"{status.Temparature} °C";
             Humidity = $"{status.Humidity} %";
             ProtectionStatus = status.IsProtected;
             isRain = (status.isRain != 0);
             InvokeAsync(StateHasChanged);
-
         });
         try
         {
             await hubConnection.StartAsync();
-
             if (hubConnection?.State == HubConnectionState.Connected)
             {
                 bool IsConnected = true;
