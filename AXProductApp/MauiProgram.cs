@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using AXProductApp.Data;
 using Microsoft.AspNetCore.SignalR;
+using Blazored.LocalStorage;
 
 namespace AXProductApp;
 
@@ -22,7 +23,9 @@ public static class MauiProgram
 		builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
 		builder.Services.AddSingleton<WeatherForecastService>();
+        builder.Services.AddBlazoredLocalStorage();
 
-		return builder.Build();
+
+        return builder.Build();
 	}
 }
