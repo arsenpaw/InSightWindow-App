@@ -22,7 +22,6 @@ public static class MauiProgram
 
 		builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
-		builder.Services.AddSingleton<WeatherForecastService>();
         builder.Services.AddBlazoredLocalStorage();
 
 
