@@ -80,7 +80,7 @@
     public WindowStatus windowStatus = new WindowStatus();
     string Temperature, ProtectionStatus, Humidity;
     bool isRain;
-    bool IsConnected;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -116,22 +116,13 @@
             await hubConnection.StartAsync();
             if (hubConnection?.State == HubConnectionState.Connected)
             {
-
+                Console.WriteLine("Connection to hub established.");
 
                 WindowStatus status = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
-                if (status != null)
-                {
-                    ShowDataFromWindowStatus(status);
-                    // тут ловить коли пропало зєднання  з сервером але в кеші є дані (тре буде виводити дані і шо конешн лост)(То Ромцю)
-                }
-                else
-                {
-                    throw new System.Net.Http.HttpRequestException();
-                }
-                Console.WriteLine($"REMOTE STATE {IsConnected}");
-                Console.WriteLine("Connection to hub established.");
+                if (status == null)
+                    throw new InvalidDataException();
+                ShowDataFromWindowStatus(status);
             }
-
 
         }
         catch (System.Net.Http.HttpRequestException)
@@ -139,6 +130,7 @@
             WindowStatus status = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
             if (status != null)
             {
+                Console.WriteLine("Connection with server lost");
                 ShowDataFromWindowStatus(status);
                 // тут ловить коли пропало зєднання  з сервером але в кеші є дані (тре буде виводити дані і шо конешн лост)(То Ромцю)
             }
@@ -150,7 +142,11 @@
                 connectionCheckTimer.Start();
                 // тут ловить коли пропало зєднання  з сервером і ше й даних нема (то Юри парафія)
             }
-
+        }
+        catch (InvalidDataException ex)
+        {
+            Console.WriteLine("Wrong data input");
+            Console.WriteLine($"Error data from cache to hub: {ex.Message}");
         }
         catch (Exception ex)
         {
