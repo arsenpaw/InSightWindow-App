@@ -4,7 +4,7 @@
 @inject Blazored.LocalStorage.ILocalStorageService _localstorage;
 @inject NavigationManager NavManager
 
-@if(IsConnected)
+
 {
     <style class="body-style">
         body {
@@ -73,10 +73,7 @@
         </div>
     </div>
 }
-else
-{
-    <div class="error-text">No conection to the server</div>
-}
+
 @code {
     private HubConnection? hubConnection;
     private System.Timers.Timer connectionCheckTimer;
@@ -88,31 +85,9 @@ else
     protected override async Task OnInitializedAsync()
     {
         await EstablishConnection();
-        connectionCheckTimer = new System.Timers.Timer();
-        connectionCheckTimer.Interval = 5000;
-        connectionCheckTimer.Elapsed += async (sender, e) => await CheckConnection();
-        connectionCheckTimer.Start();
+
     }
 
-    private async Task CheckConnection()
-    {
-        if (hubConnection?.State != HubConnectionState.Connected)
-        {
-            IsConnected = false;
-            InvokeAsync(StateHasChanged);
-            await EstablishConnection();
-        }
-        else if (hubConnection?.State == HubConnectionState.Connected && !IsConnected)
-        {
-            IsConnected = true;
-            InvokeAsync(StateHasChanged);
-            await EstablishConnection();
-        }
-        else if (hubConnection?.State == HubConnectionState.Connected && IsConnected)
-        {
-            await EstablishConnection();
-        }
-    }
 
     public void ShowDataFromWindowStatus(WindowStatus status)
     {
@@ -142,7 +117,7 @@ else
             if (hubConnection?.State == HubConnectionState.Connected)
             {
 
-                IsConnected = true;
+
                 WindowStatus status = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
                 if (status != null)
                 {
@@ -164,15 +139,15 @@ else
             WindowStatus status = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
             if (status != null)
             {
-                Temperature = $"{status.Temparature} °C";
-                Humidity = $"{status.Humidity} %";
-                ProtectionStatus = status.IsProtected;
-                isRain = (status.isRain != 0);
+                ShowDataFromWindowStatus(status);
                 // тут ловить коли пропало зєднання  з сервером але в кеші є дані (тре буде виводити дані і шо конешн лост)(То Ромцю)
             }
             else
             {
-                IsConnected = false;
+                connectionCheckTimer = new System.Timers.Timer();
+                connectionCheckTimer.Interval = 5000;
+                //connectionCheckTimer.Elapsed += async (sender, e) => await CheckConnection();
+                connectionCheckTimer.Start();
                 // тут ловить коли пропало зєднання  з сервером і ше й даних нема (то Юри парафія)
             }
 
