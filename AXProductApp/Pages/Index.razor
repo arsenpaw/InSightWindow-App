@@ -88,8 +88,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         await EstablishConnection();
-
-
         connectionCheckTimer = new System.Timers.Timer();
         connectionCheckTimer.Interval = 5000;
         connectionCheckTimer.Elapsed += async (sender, e) => await CheckConnection();
@@ -116,21 +114,26 @@ else
         }
     }
 
+    public void ShowDataFromWindowStatus(WindowStatus status)
+    {
+        Temperature = $"{status.Temparature} °C";
+        Humidity = $"{status.Humidity} %";
+        ProtectionStatus = status.IsProtected;
+        isRain = (status.isRain != 0);
+    }
+
     private async Task EstablishConnection()
     {
         hubConnection = new HubConnectionBuilder()
             //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-            .WithUrl(new Uri("https://localhost:7009/client-hub"))  //.WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
+            .WithUrl(new Uri("https://localhost:7009/client-hub")) 
+            //.WithUrl(new Uri("https://localhost:44324/client-hub")) // This URL should match your SignalR hub endpoint
             .WithAutomaticReconnect()
             .Build();
 
         hubConnection.On<WindowStatus>("ReceiveWindowStatus", (status) =>
         {
-            // strStatus = $"Window Temp: {status.Temparature}, {status.WaterLevel}, {status.IsProtected}, {status.Humidity}";
-            Temperature = $"{status.Temparature} °C";
-            Humidity = $"{status.Humidity} %";
-            ProtectionStatus = status.IsProtected;
-            isRain = (status.isRain != 0);
+            ShowDataFromWindowStatus(status);
             InvokeAsync(StateHasChanged);
         });
         try
@@ -143,10 +146,7 @@ else
                 WindowStatus status = await _localstorage.GetItemAsync<WindowStatus>(nameof(WindowStatus));
                 if (status != null)
                 {
-                    Temperature = $"{status.Temparature} °C";
-                    Humidity = $"{status.Humidity} %";
-                    ProtectionStatus = status.IsProtected;
-                    isRain = (status.isRain != 0);
+                    ShowDataFromWindowStatus(status);
                     // тут ловить коли пропало зєднання  з сервером але в кеші є дані (тре буде виводити дані і шо конешн лост)(То Ромцю)
                 }
                 else
