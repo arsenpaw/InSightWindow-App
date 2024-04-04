@@ -16,8 +16,10 @@ public static class MauiProgram
 			{
 				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 			});
+
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMauiBlazorWebView();
+
         builder.Services.AddSingleton<SignalRService>();
         builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();

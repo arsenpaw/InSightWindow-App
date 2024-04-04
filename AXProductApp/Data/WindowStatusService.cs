@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.SignalR.Client;
 using AXProductApp.Data;
 using Blazored.LocalStorage;
 using System.IO;
+using System.Text.Json;
+
 
 public class SignalRService
 {
@@ -13,7 +15,9 @@ public class SignalRService
 
     public event Action<WindowStatus> DataReceived;
 
+    
 
+   
     public async Task InitializeConnection()
     {
         _hubConnection = new HubConnectionBuilder()
@@ -25,11 +29,18 @@ public class SignalRService
         _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
         {
             DataReceived?.Invoke(status);
+            string jsonString = JsonSerializer.Serialize(status);
+            await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
+          
         });
 
         try
         {
             await _hubConnection.StartAsync();
+            string output = await SecureStorage.GetAsync(nameof(WindowStatus));
+            if (output == null) { throw new InvalidDataException(); }
+            WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
+            DataReceived?.Invoke(status);
             if (_hubConnection.State == HubConnectionState.Connected)
             {
                 Debug.WriteLine("Connection to hub established.");             
