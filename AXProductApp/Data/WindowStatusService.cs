@@ -49,13 +49,16 @@ public class SignalRService
         }
         catch (System.Net.Http.HttpRequestException)
         {
-            Console.WriteLine("No internet connectiom");
+            Debug.WriteLine("No internet connectiom");
             // тут юра
-           
+        }
+        catch (InvalidDataException ex)
+        {
+            Debug.WriteLine($"No data retrived from cahce {ex.Message}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error establishing connection to hub: {ex.Message}");
+            Debug.WriteLine($"Error ocuured: {ex.Message}");
         }
     }
 
