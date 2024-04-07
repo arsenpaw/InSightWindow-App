@@ -15,6 +15,8 @@ public class SignalRService
 
     public event Action<WindowStatus> DataReceived;
 
+    public bool NoDataAndConnection = false;
+
     
 
    
@@ -22,7 +24,8 @@ public class SignalRService
     {
         _hubConnection = new HubConnectionBuilder()
             //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-            .WithUrl(new Uri("https://localhost:44324/client-hub")) 
+            .WithUrl(new Uri("https://localhost:7009/client-hub"))
+            //.WithUrl(new Uri("https://localhost:44324/client-hub"))
             .WithAutomaticReconnect()
             .Build();
 
@@ -49,16 +52,13 @@ public class SignalRService
         }
         catch (System.Net.Http.HttpRequestException)
         {
-            Debug.WriteLine("No internet connectiom");
-            // тут юра
-        }
-        catch (InvalidDataException ex)
-        {
-            Debug.WriteLine($"No data retrived from cahce {ex.Message}");
+            Console.WriteLine("No internet connectiom");
+            NoDataAndConnection = true;
+           
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error ocuured: {ex.Message}");
+            Console.WriteLine($"Error establishing connection to hub: {ex.Message}");
         }
     }
 
