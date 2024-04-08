@@ -167,32 +167,32 @@ width: 60px;  /* Adjust width as needed */
 
 /* Button 1 */
 #button-1 .knobs:before {
-  content: "ON";
-  position: absolute;
-  top: -21px;
-  left: -4px;
-  width: 73px;
-  height: 73px;
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  line-height: 3.5;
-  /* padding: 30px 25px; */
-  background-color: rgba(148, 173, 126, 1);
-  border-radius: 50%;
-  transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
-  box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.30);
+    content: "Closed";
+    position: absolute;
+    top: -21px;
+    left: -4px;
+    width: 73px;
+    height: 73px;
+    color: #fcebeb;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 3.5;
+    /* padding: 30px 25px; */
+    background: linear-gradient(180deg, #f89797 0%, #eb4040 100%);
+    border-radius: 50%;
+    transition: 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15) all;
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.30);
 }
 
 #button-1 .checkbox:checked + .knobs:before {
-  content: "OFF";
+  content: "Opened";
   left: 172px;
-  background-color: #f44336;
+  background: linear-gradient(180deg, #a0d58e 0%, #73896c 100%);
 }
 
 #button-1 .checkbox:checked ~ .layer {
-  background-color: #fcebeb;
+  background-color: b5ffc3;
 }
 
 #button-1 .knobs,
@@ -236,7 +236,7 @@ width: 60px;  /* Adjust width as needed */
         left: 4px;
         bottom: 4px;
         border-radius: 75%;
-        background-color: #a0d58e;
+        background: linear-gradient(180deg, #f89797 0%, #eb4040 100%);
         transition: .4s;
         border-radius: 50%;
         box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
@@ -248,9 +248,14 @@ input:checked + .slider-2 {
 
     input:checked + .slider-2:before {
         transform: translateX(50px);
-        background-color: #eb4040;
+        background: linear-gradient(180deg, #a0d58e 0%, #73896c 100%);
     }
 
 .common-box-styles.box-2 {
     position: relative; 
+}
+
+p {
+    text-align: left;
+    margin-left: 37px;
 }
