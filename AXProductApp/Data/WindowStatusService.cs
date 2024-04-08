@@ -56,7 +56,6 @@ public class SignalRService
             if (output != null )
             {
                 WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-                //
                 DataReceived?.Invoke(status);
             }
             else 
