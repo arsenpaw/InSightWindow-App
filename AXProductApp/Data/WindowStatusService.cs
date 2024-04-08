@@ -58,13 +58,14 @@ public class SignalRService
             TimeSpan difference = status.TimeNow - DateTime.Now;
             if (output != null || difference.TotalHours > 2)
             {
-                
+
                 DataReceived?.Invoke(status);
-                Console.WriteLine($"Data writen in{status.TimeNow}");
+                Console.WriteLine($"The time for this data is{status.TimeNow}");
             }
             else
              NoDataAndConnection = true;
-           
+             Console.WriteLine("No data in cashe or no connection");
+
         }
         catch (Exception ex)
         {
