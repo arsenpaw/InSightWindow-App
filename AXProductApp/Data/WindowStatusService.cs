@@ -32,9 +32,7 @@ public class SignalRService
              DataReceived?.Invoke(status);
             string jsonString = JsonSerializer.Serialize(status);
             await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
-           // await SecureStorage.SetAsync("data", DateTime.Now);
-
-
+            DateTime DataWritenIntoCashe = status.TimeNow.Now
         });
 
         try
@@ -54,12 +52,10 @@ public class SignalRService
         {
             Console.WriteLine("No internet connectiom");
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
-            
             if (output != null)
             {
                 WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-                
-                Console.WriteLine(status.TimeNow.Date);
+                Console.WriteLine($"Data writen into cashe{status.TimeNow}");
                 DataReceived?.Invoke(status);
             }
             else
