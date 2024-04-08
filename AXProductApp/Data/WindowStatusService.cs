@@ -68,7 +68,7 @@ public class SignalRService
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error establishing connection to hub: {ex.Message}");
+            Console.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
         }
     }
 
