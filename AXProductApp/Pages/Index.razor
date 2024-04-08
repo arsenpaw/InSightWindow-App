@@ -2,8 +2,9 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @using AXProductApp.Data
 @using System.Diagnostics
-@inject NavigationManager NavManager
+@inject SendUserInputService SendUserInputService
 @inject SignalRService SignalRService
+
 
 <style class="body-style">
         body {
@@ -51,7 +52,7 @@
             <div class="common-box-styles box-2">
                 <p>Turn on alarm?
                     <label class="switch-box-2">
-                        <input type="checkbox">
+                    <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnProtectedInput(eventArgs.Value); }">
                         <span class="slider-2"></span>
                     </label>
                 </p>
@@ -73,7 +74,7 @@
             </div>
 
             <div class="button r" id="button-1">
-                <input type="checkbox" class="checkbox" />
+            <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnOpenInput(eventArgs.Value); }" />
                 <div class="knobs"></div>
                 <div class="layer"></div>
             </div>
@@ -91,12 +92,17 @@
     private bool isRain;
     bool NoDataAndConnection = false;
 
+
     protected override async Task OnInitializedAsync()
     {
         SignalRService.DataReceived += OnDataReceived;
         await SignalRService.InitializeConnection();
         NoDataAndConnection = SignalRService.NoDataAndConnection;
     }
+   
+    async private Task OnProtectedInput(object checkedValue) => await SendUserInputService.SendProtectedInfo((bool)checkedValue);
+
+    async private Task OnOpenInput(object checkedValue) => await SendUserInputService.SendOpenInfo((bool)checkedValue);
 
     private void OnDataReceived(WindowStatus status)
     {
