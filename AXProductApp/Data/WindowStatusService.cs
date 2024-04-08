@@ -53,7 +53,16 @@ public class SignalRService
         catch (System.Net.Http.HttpRequestException)
         {
             Console.WriteLine("No internet connectiom");
-            NoDataAndConnection = true;
+            string output = await SecureStorage.GetAsync(nameof(WindowStatus));
+            
+            if (output != null)
+            {
+                WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
+                //
+                DataReceived?.Invoke(status);
+            }
+            else
+             NoDataAndConnection = true;
            
         }
         catch (Exception ex)
