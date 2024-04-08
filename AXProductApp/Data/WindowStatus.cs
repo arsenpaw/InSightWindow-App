@@ -14,5 +14,5 @@ namespace AXProductApp.Data
 
         public DateTime TimeNow { get; set; }
 
-    }
+}
 }

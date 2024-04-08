@@ -23,7 +23,7 @@ public class SignalRService
     public async Task InitializeConnection()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(LinkToHub.RealeseUrl)
+            .WithUrl(LinkToHub.RomaTest)
             .WithAutomaticReconnect()
             .Build();
 
@@ -31,8 +31,10 @@ public class SignalRService
         {
              DataReceived?.Invoke(status);
             string jsonString = JsonSerializer.Serialize(status);
+            status.TimeNow = DateTime.Now;
             await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
-            DateTime DataWritenIntoCashe = status.TimeNow.Now
+           
+            
         });
 
         try
@@ -41,22 +43,24 @@ public class SignalRService
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             if (output == null) { throw new InvalidDataException(); }
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-             DataReceived?.Invoke(status);
+            DataReceived?.Invoke(status);
             if (_hubConnection.State == HubConnectionState.Connected)
             {
-                Debug.WriteLine("Connection to hub established.");             
+                Debug.WriteLine("Connection to hub established.");
             }
-            else throw new System.Net.Http.HttpRequestException();
+            else throw new HttpRequestException();
         }
-        catch (System.Net.Http.HttpRequestException)
+        catch (HttpRequestException)
         {
             Console.WriteLine("No internet connectiom");
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
-            if (output != null)
+            WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
+            TimeSpan difference = status.TimeNow - DateTime.Now;
+            if (output != null || difference.TotalHours > 2)
             {
-                WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-                Console.WriteLine($"Data writen into cashe{status.TimeNow}");
+                
                 DataReceived?.Invoke(status);
+                Console.WriteLine($"Data writen in{status.TimeNow}");
             }
             else
              NoDataAndConnection = true;
