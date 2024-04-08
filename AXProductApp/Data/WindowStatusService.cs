@@ -24,14 +24,14 @@ public class SignalRService
     {
         _hubConnection = new HubConnectionBuilder()
             //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-            .WithUrl(new Uri("https://localhost:7009/client-hub"))
-            //.WithUrl(new Uri("https://localhost:44324/client-hub"))
+            //.WithUrl(new Uri("https://localhost:7009/client-hub"))
+            .WithUrl(new Uri("https://localhost:44324/client-hub"))
             .WithAutomaticReconnect()
             .Build();
 
         _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
         {
-            DataReceived?.Invoke(status);
+             DataReceived?.Invoke(status);
             string jsonString = JsonSerializer.Serialize(status);
             await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
           
@@ -43,7 +43,7 @@ public class SignalRService
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             if (output == null) { throw new InvalidDataException(); }
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-            DataReceived?.Invoke(status);
+             DataReceived?.Invoke(status);
             if (_hubConnection.State == HubConnectionState.Connected)
             {
                 Debug.WriteLine("Connection to hub established.");             
@@ -53,7 +53,16 @@ public class SignalRService
         catch (System.Net.Http.HttpRequestException)
         {
             Console.WriteLine("No internet connectiom");
-            NoDataAndConnection = true;
+            string output = await SecureStorage.GetAsync(nameof(WindowStatus));
+            
+            if (output != null)
+            {
+                WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
+                //
+                DataReceived?.Invoke(status);
+            }
+            else
+             NoDataAndConnection = true;
            
         }
         catch (Exception ex)
