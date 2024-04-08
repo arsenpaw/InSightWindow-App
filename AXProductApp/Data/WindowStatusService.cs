@@ -23,9 +23,7 @@ public class SignalRService
     public async Task InitializeConnection()
     {
         _hubConnection = new HubConnectionBuilder()
-            //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-            .WithUrl(new Uri("https://localhost:7009/client-hub"))
-            //.WithUrl(new Uri("https://localhost:44324/client-hub"))
+            .WithUrl(LinkToHub.RealeseUrl)
             .WithAutomaticReconnect()
             .Build();
 
@@ -34,7 +32,7 @@ public class SignalRService
              DataReceived?.Invoke(status);
             string jsonString = JsonSerializer.Serialize(status);
             await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
-            await SecureStorage.SetAsync("data", DateTime.Now);
+           // await SecureStorage.SetAsync("data", DateTime.Now);
 
 
         });
