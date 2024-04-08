@@ -17,24 +17,22 @@ public class SignalRService
 
     public bool NoDataAndConnection = false;
 
-    
 
-   
+
+
     public async Task InitializeConnection()
     {
         _hubConnection = new HubConnectionBuilder()
-            //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-            .WithUrl(new Uri("https://localhost:7009/client-hub"))
-            //.WithUrl(new Uri("https://localhost:44324/client-hub"))
+            .WithUrl(LinkToHub.ArsenTest)
             .WithAutomaticReconnect()
             .Build();
 
         _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
         {
-             DataReceived?.Invoke(status);
+            DataReceived?.Invoke(status);
             string jsonString = JsonSerializer.Serialize(status);
             await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
-          
+
         });
 
         try
@@ -43,10 +41,10 @@ public class SignalRService
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             if (output == null) { throw new InvalidDataException(); }
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-             DataReceived?.Invoke(status);
+            DataReceived?.Invoke(status);
             if (_hubConnection.State == HubConnectionState.Connected)
             {
-                Debug.WriteLine("Connection to hub established.");             
+                Debug.WriteLine("Connection to hub established.");
             }
             else throw new System.Net.Http.HttpRequestException();
         }
@@ -54,16 +52,14 @@ public class SignalRService
         {
             Console.WriteLine("No internet connectiom");
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
-            
-            if (output != null)
+
+            if (output != null )
             {
                 WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-                DateTime time = status.TimeNow;
-                Console.WriteLine(time.Date);
                 DataReceived?.Invoke(status);
             }
-            else
-             NoDataAndConnection = true;
+            else 
+            NoDataAndConnection = true;
            
         }
         catch (Exception ex)
