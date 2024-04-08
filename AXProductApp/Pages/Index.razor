@@ -1,9 +1,11 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.SignalR.Client
 @using AXProductApp.Data
+@using AXProductApp.Data
 @using System.Diagnostics
 @inject NavigationManager NavManager
 @inject SignalRService SignalRService
+@inject SendDataService SendDataService
 
 <style class="body-style">
         body {
@@ -51,7 +53,7 @@
             <div class="common-box-styles box-2">
                 <p>Turn off alarm?
                 <label class="switch-box-2">
-                        <input type="checkbox">
+                    <input type="checkbox" @onchange="async eventArgs => {await OnProtectedInput(eventArgs.Value); }"/>
                         <span class="slider-2"></span>
                     </label>
                 </p>
@@ -73,13 +75,12 @@
             </div>
 
             <div class="button r" id="button-1">
-                <input type="checkbox" class="checkbox" />
+            <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnOpenInput(eventArgs.Value); }"/>
                 <div class="knobs"></div>
                 <div class="layer"></div>
             </div>
-    
         </div>
-    </div>
+     </div>
 @if (NoDataAndConnection)
 {
     <NoConnectionModal></NoConnectionModal>
@@ -87,6 +88,7 @@
 
 
 @code {
+    private UserInputStatus userInputStatus = new UserInputStatus();
     private string Temperature, ProtectionStatus, Humidity;
     private bool isRain;
     bool NoDataAndConnection = false;
@@ -98,12 +100,16 @@
         NoDataAndConnection = SignalRService.NoDataAndConnection;
     }
 
+    async private Task OnProtectedInput(object checkedValue) => await SendDataService.SendProtectedInfo((bool)checkedValue);
+
+    async private Task OnOpenInput(object checkedValue) => await SendDataService.SendOpenInfo((bool)checkedValue);
+
     private void OnDataReceived(WindowStatus status)
     {
         Temperature = $"{status.Temparature} °C";
         Humidity = $"{status.Humidity} %";
         ProtectionStatus = status.IsProtected;
         isRain = status.isRain != 0;
-        InvokeAsync(StateHasChanged);
+         InvokeAsync(StateHasChanged);
     }
 }
