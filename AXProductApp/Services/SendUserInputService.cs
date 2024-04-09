@@ -13,11 +13,11 @@ namespace AXProductApp.Data
     {
         UserInputStatus userInputStatus = new UserInputStatus();
         private HubConnection _hubConnection;
-        public  SendUserInputService()
+        public SendUserInputService()
         {
            InitiaizeConnection();
         }
-        private async Task InitiaizeConnection()
+        private async Task<bool> InitiaizeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
            .WithUrl(LinkToHub.ArsenTestInput)
@@ -26,16 +26,15 @@ namespace AXProductApp.Data
             try
             {
                 await _hubConnection.StartAsync();   
-
+                return true;
             }
             catch (Exception ex)
             {
-
                 Debug.WriteLine($"Error sending data tu hub {ex.Message}");
+                return false;
             }
         }
-
-       
+  
         public async Task SendOpenInfo(bool isOpened)
         {
             userInputStatus.IsOpen = isOpened;
@@ -55,8 +54,15 @@ namespace AXProductApp.Data
             {
                 if (_hubConnection.State == HubConnectionState.Connected)
                     await _hubConnection.SendAsync("SaveUserInput", userInputStatus);
+                else if (_hubConnection.State == HubConnectionState.Connecting)
+                    throw new Exception("FAILED TO CONECT TO HUB");
                 else
-                    await InitiaizeConnection();
+                {
+                    if (await InitiaizeConnection())
+                        await sendDataToHub(userInputStatus);
+                    else
+                        throw new Exception("FAILED TO CONECT TO HUB");
+                }
             }
             catch (Exception ex)
             {
