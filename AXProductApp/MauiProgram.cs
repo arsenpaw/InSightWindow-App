@@ -21,8 +21,6 @@ public static class MauiProgram
         builder.Services.AddMauiBlazorWebView();
 
         builder.Services.AddSingleton<SignalRService>();
-        builder.Services.AddSingleton<SendUserInputService>();
-       
         builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
         
