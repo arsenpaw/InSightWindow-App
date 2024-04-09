@@ -236,11 +236,25 @@ width: 60px;  /* Adjust width as needed */
         left: 4px;
         bottom: 4px;
         border-radius: 75%;
-        background: linear-gradient(180deg, #f89797 0%, #eb4040 100%);
+        background: url("/icons/shield-halved-solid.png"), linear-gradient(180deg, #f89797 0%, #eb4040 100%);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: cover;
         transition: .4s;
-        border-radius: 50%;
         box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
     }
+
+.slider-handle {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: .4s;
+    border-radius: 60px;
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+}
 
 input:checked + .slider-2 {
     background-color: #CFCDCD;
@@ -248,7 +262,7 @@ input:checked + .slider-2 {
 
     input:checked + .slider-2:before {
         transform: translateX(50px);
-        background: linear-gradient(180deg, #a0d58e 0%, #73896c 100%);
+        background-image: url("/icons/shield-halved-solid.png"), linear-gradient(180deg, #a0d58e 0%, #73896c 100%);
     }
 
 .common-box-styles.box-2 {
