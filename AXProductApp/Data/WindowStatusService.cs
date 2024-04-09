@@ -23,15 +23,17 @@ public class SignalRService
     public async Task InitializeConnection()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(LinkToHub.RomaTest)
+            .WithUrl(LinkToHub.ArsenTest)
             .WithAutomaticReconnect()
             .Build();
 
         _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
         {
-             DataReceived?.Invoke(status);
-            string jsonString = JsonSerializer.Serialize(status);
+           
             status.TimeNow = DateTime.Now;
+            DataReceived?.Invoke(status);
+            string jsonString = JsonSerializer.Serialize(status);
+           
             await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
            
             
@@ -55,12 +57,12 @@ public class SignalRService
             Console.WriteLine("No internet connectiom");
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-            TimeSpan difference = status.TimeNow - DateTime.Now;
-            if (output != null || difference.TotalHours > 2)
+            TimeSpan difference = DateTime.Now - status.TimeNow ;
+            if (output != null )
             {
 
                 DataReceived?.Invoke(status);
-                Console.WriteLine($"The time for this data is{status.TimeNow}");
+                Console.WriteLine($"The time for this data is{difference.Hours}");
             }
             else
              NoDataAndConnection = true;
