@@ -1,25 +1,28 @@
-<div class="modal fade show" id="myModal" style="display:block; background: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">@Title</h4>
-            </div>
-            <div class="modal-body">
-                <p>@Message</p>
-            </div>
-            <div class="modal-footer">
-                @if (Button == "Restart")
-                {
-                    <button type="button" class="restart-button" @onclick="RestartApp">Restart</button>
-                }
-                else if (Button == "Close")
-                {
-                    <button type="button" class="close-button" @onclick="CloseModal">Close</button>
-                }
+@if(GoModal) 
+{
+    <div class="modal fade show" id="myModal" style="display:block; background: rgba(10,10,10,.8);" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">@Title</h4>
+                </div>
+                <div class="modal-body">
+                    <p>@Message</p>
+                </div>
+                <div class="modal-footer">
+                    @if (Button == "Restart")
+                    {
+                        <button type="button" class="restart-button" @onclick="RestartApp">Restart</button>
+                    }
+                    else if (Button == "Close")
+                    {
+                        <button type="button" class="close-button" @onclick="CloseModal">Close</button>
+                    }
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
 
 @code {
     [Parameter]
@@ -31,9 +34,11 @@
     [Parameter]
     public string Button { get; set; }
 
+    private bool GoModal = true;
+
     public void CloseModal()
     {
-
+        GoModal = false;
     }
 
     public void RestartApp()
