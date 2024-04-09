@@ -19,7 +19,7 @@ public static class MauiProgram
 
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMauiBlazorWebView();
-
+        builder.Services.AddSingleton<SendUserInputService>();
         builder.Services.AddSingleton<SignalRService>();
         builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
