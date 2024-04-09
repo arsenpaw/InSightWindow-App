@@ -1,4 +1,4 @@
-﻿namespace AXProductApp
+﻿namespace AXProductApp.Data
 {
     public class UserInputStatus
     {
