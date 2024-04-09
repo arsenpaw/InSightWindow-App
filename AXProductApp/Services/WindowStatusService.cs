@@ -23,18 +23,20 @@ public class SignalRService
     public async Task InitializeConnection()
     {
         _hubConnection = new HubConnectionBuilder()
-            //.WithUrl(new Uri("http://192.168.4.2:81/client-hub")) // This URL should match your SignalR hub endpoint
-            //.WithUrl(new Uri("https://localhost:7009/client-hub"))
-            .WithUrl(new Uri("https://localhost:44324/client-hub"))
+            .WithUrl(LinkToHub.ArsenTest)
             .WithAutomaticReconnect()
             .Build();
 
         _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
         {
-             DataReceived?.Invoke(status);
+           
+            status.TimeNow = DateTime.Now;
+            DataReceived?.Invoke(status);
             string jsonString = JsonSerializer.Serialize(status);
+           
             await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
-          
+           
+            
         });
 
         try
@@ -43,31 +45,33 @@ public class SignalRService
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             if (output == null) { throw new InvalidDataException(); }
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-             DataReceived?.Invoke(status);
+            DataReceived?.Invoke(status);
             if (_hubConnection.State == HubConnectionState.Connected)
             {
-                Debug.WriteLine("Connection to hub established.");             
+                Debug.WriteLine("Connection to hub established.");
             }
-            else throw new System.Net.Http.HttpRequestException();
+            else throw new HttpRequestException();
         }
-        catch (System.Net.Http.HttpRequestException)
+        catch (HttpRequestException)
         {
             Console.WriteLine("No internet connectiom");
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
-            
-            if (output != null)
+            WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
+            TimeSpan difference = DateTime.Now - status.TimeNow ;
+            if (output != null )
             {
-                WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-                //
+
                 DataReceived?.Invoke(status);
+                Console.WriteLine($"The time for this data is{difference.Hours}");
             }
             else
              NoDataAndConnection = true;
-           
+             Console.WriteLine("No data in cashe or no connection");
+
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error establishing connection to hub: {ex.Message}");
+            Console.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
         }
     }
 

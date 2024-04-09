@@ -12,5 +12,7 @@ namespace AXProductApp.Data
 
         public string IsProtected { get; set; }
 
-    }
+        public DateTime TimeNow { get; set; }
+
+}
 }
