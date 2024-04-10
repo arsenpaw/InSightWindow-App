@@ -61,7 +61,9 @@
     height: 38px;
     border-radius: 6px;
     margin-left: auto;
-    font-size: 50px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
 .fas {
@@ -291,4 +293,3 @@ p {
     height: auto;
     margin-left: auto;
 }
-
