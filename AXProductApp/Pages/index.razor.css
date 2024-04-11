@@ -293,3 +293,10 @@ p {
     height: auto;
     margin-left: auto;
 }
+
+.connectstatus {
+    font-size: 20px;
+    text-align: left;
+    margin-bottom: 20px;
+    color: rgba(0, 0, 0, 0.4)
+}
