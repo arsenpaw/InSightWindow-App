@@ -108,7 +108,7 @@
 
 .tree-dot-menu {
     position: relative;
-    background: none;
+    background-image: url("/icons/ellipsis-vertical-solid.png");
     border: none;
     padding: 0;
     cursor: pointer;
