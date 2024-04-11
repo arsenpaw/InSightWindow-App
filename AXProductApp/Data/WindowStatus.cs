@@ -14,5 +14,7 @@ namespace AXProductApp.Data
 
         public DateTime TimeNow { get; set; }
 
+        public string StringTimeFromLastConnection { get; set; }
+
 }
 }

@@ -19,6 +19,7 @@
         }
     </style>
     <div class="body">
+        @LastConnect
 
         <div class="container">
 
@@ -98,7 +99,7 @@
 
 
 @code {
-    private string Temperature, ProtectionStatus, Humidity;
+    private string Temperature, ProtectionStatus, Humidity, LastConnect;
     private bool isRain;
     bool NoDataAndConnection = false;
 
@@ -118,6 +119,7 @@
         Humidity = $"{status.Humidity} %";
         ProtectionStatus = status.IsProtected;
         isRain = status.isRain != 0;
+        LastConnect = status.StringTimeFromLastConnection;
         InvokeAsync(StateHasChanged);
     }
 }
