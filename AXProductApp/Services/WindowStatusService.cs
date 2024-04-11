@@ -33,7 +33,6 @@ public class SignalRService
             
             string jsonString = JsonSerializer.Serialize(status);
             await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
-            status.StringTimeFromLastConnection = await LastConnectInfo(status);
             DataReceived?.Invoke(status);
 
         });
@@ -44,8 +43,7 @@ public class SignalRService
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             if (output == null) { throw new InvalidDataException(); }
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-            TimeSpan difference = DateTime.Now - status.TimeNow;
-            status.StringTimeFromLastConnection = await LastConnectInfo(status);
+
            
             if (_hubConnection.State == HubConnectionState.Connected)
             {
@@ -59,8 +57,7 @@ public class SignalRService
             Console.WriteLine("No internet connectiom");
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-           
-            status.StringTimeFromLastConnection = await LastConnectInfo(status);
+
             if (output != null )
             {
 
@@ -79,30 +76,6 @@ public class SignalRService
 
     }
 
-    public async Task<string > LastConnectInfo(WindowStatus status)
-    {
-        string ReturnString;
-        TimeSpan TimeDiff = DateTime.Now - status.TimeNow;
-        if (TimeDiff.TotalMinutes <= 1)
-        {
-            ReturnString = "Online";
-        }
-        else if (TimeDiff.TotalMinutes <= 59 && TimeDiff.TotalMinutes > 1)
-        {
-            ReturnString = ($"Last connection {TimeDiff.Minutes} minutes ago");
-        }
-        else if (TimeDiff.TotalHours < 24)
-        {
-            ReturnString = ($"Last connection {TimeDiff.Hours} hours ago");
-        }
-        else
-        {
-            ReturnString = ($"Last connection {TimeDiff.Days} days ago");
-        }
-
-        return ReturnString;
-
-
-    }
+    
 
 }
