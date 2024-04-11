@@ -17,7 +17,6 @@ public class SignalRService
 
     public bool NoDataAndConnection = false;
 
-    
 
    
     public async Task InitializeConnection()
@@ -45,7 +44,9 @@ public class SignalRService
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             if (output == null) { throw new InvalidDataException(); }
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
+            TimeSpan difference = DateTime.Now - status.TimeNow;
             DataReceived?.Invoke(status);
+            status.StringTimeFromLastConnection = LastConnectInfo(difference);
             if (_hubConnection.State == HubConnectionState.Connected)
             {
                 Debug.WriteLine("Connection to hub established.");
@@ -57,20 +58,11 @@ public class SignalRService
             Console.WriteLine("No internet connectiom");
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-            TimeSpan difference = DateTime.Now - status.TimeNow ;
             if (output != null )
             {
 
                 DataReceived?.Invoke(status);
-                if (difference.Hours < 24){
-                    status.StringTimeFromLastConnection = ($"Last connection {difference.Hours} ago");
-                }
-                
-                else if (difference.Hours > 24)
-                {
-                    status.StringTimeFromLastConnection = ($"Last connection {difference.Days} ago");
-                }
-                    
+               
             }
             else
              NoDataAndConnection = true;
@@ -81,6 +73,33 @@ public class SignalRService
         {
             Console.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
         }
+
+    }
+
+    public string LastConnectInfo(TimeSpan TimeDiff)
+    {
+        string ReturnString;
+
+        if (TimeDiff.Minutes < 5)
+        {
+            ReturnString = "Online";
+        }
+        else if (TimeDiff.Minutes <= 59 || TimeDiff.Minutes > 5)
+        {
+            ReturnString = ($"Last connection {TimeDiff.Minutes} Minutes ago");
+        }
+        else if (TimeDiff.Hours < 24)
+        {
+            ReturnString = ($"Last connection {TimeDiff.Hours} Hours ago");
+        }
+        else
+        {
+            ReturnString = ($"Last connection {TimeDiff.Days} Days ago");
+        }
+
+        return ReturnString;
+
+
     }
 
 }
