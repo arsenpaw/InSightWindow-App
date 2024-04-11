@@ -20,7 +20,7 @@ namespace AXProductApp.Data
         private async Task<bool> InitiaizeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
-           .WithUrl(LinkToHub.RealeseUrlInput)
+           .WithUrl(LinkToHub.ArsenTestInput)
            .WithAutomaticReconnect()
            .Build();
             try

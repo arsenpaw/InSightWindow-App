@@ -22,7 +22,7 @@ public class SignalRService
     public async Task InitializeConnection()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(LinkToHub.RomaTest)
+            .WithUrl(LinkToHub.ArsenTest)
             .WithAutomaticReconnect()
             .Build();
 
@@ -30,12 +30,12 @@ public class SignalRService
         {
            
             status.TimeNow = DateTime.Now;
-            DataReceived?.Invoke(status);
-            string jsonString = JsonSerializer.Serialize(status);
-           
-            await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
-           
             
+            string jsonString = JsonSerializer.Serialize(status);
+            await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
+            status.StringTimeFromLastConnection = await LastConnectInfo(status);
+            DataReceived?.Invoke(status);
+
         });
 
         try
@@ -45,10 +45,11 @@ public class SignalRService
             if (output == null) { throw new InvalidDataException(); }
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
             TimeSpan difference = DateTime.Now - status.TimeNow;
-            DataReceived?.Invoke(status);
-            status.StringTimeFromLastConnection = LastConnectInfo(difference);
+            status.StringTimeFromLastConnection = await LastConnectInfo(status);
+           
             if (_hubConnection.State == HubConnectionState.Connected)
             {
+                DataReceived?.Invoke(status);
                 Debug.WriteLine("Connection to hub established.");
             }
             else throw new HttpRequestException();
@@ -58,6 +59,8 @@ public class SignalRService
             Console.WriteLine("No internet connectiom");
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
+           
+            status.StringTimeFromLastConnection = await LastConnectInfo(status);
             if (output != null )
             {
 
@@ -76,25 +79,25 @@ public class SignalRService
 
     }
 
-    public string LastConnectInfo(TimeSpan TimeDiff)
+    public async Task<string > LastConnectInfo(WindowStatus status)
     {
         string ReturnString;
-
-        if (TimeDiff.Minutes < 5)
+        TimeSpan TimeDiff = DateTime.Now - status.TimeNow;
+        if (TimeDiff.TotalMinutes <= 1)
         {
             ReturnString = "Online";
         }
-        else if (TimeDiff.Minutes <= 59 || TimeDiff.Minutes > 5)
+        else if (TimeDiff.TotalMinutes <= 59 && TimeDiff.TotalMinutes > 1)
         {
-            ReturnString = ($"Last connection {TimeDiff.Minutes} Minutes ago");
+            ReturnString = ($"Last connection {TimeDiff.Minutes} minutes ago");
         }
-        else if (TimeDiff.Hours < 24)
+        else if (TimeDiff.TotalHours < 24)
         {
-            ReturnString = ($"Last connection {TimeDiff.Hours} Hours ago");
+            ReturnString = ($"Last connection {TimeDiff.Hours} hours ago");
         }
         else
         {
-            ReturnString = ($"Last connection {TimeDiff.Days} Days ago");
+            ReturnString = ($"Last connection {TimeDiff.Days} days ago");
         }
 
         return ReturnString;
