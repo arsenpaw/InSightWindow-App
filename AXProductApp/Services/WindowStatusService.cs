@@ -61,16 +61,16 @@ public class SignalRService
             if (output != null )
             {
 
-                DataReceived?.Invoke(status);
+              
                 if (difference.Hours < 24){
-                    status.StringTimeFromLastConnection = ($"Last connection {difference.Hours} ago");
+                    status.StringTimeFromLastConnection = ($"Last connection {difference.Hours} hours ago");
                 }
                 
                 else if (difference.Hours > 24)
                 {
-                    status.StringTimeFromLastConnection = ($"Last connection {difference.Days} ago");
+                    status.StringTimeFromLastConnection = ($"Last connection {difference.Days} days ago");
                 }
-                    
+                DataReceived?.Invoke(status);
             }
             else
              NoDataAndConnection = true;
