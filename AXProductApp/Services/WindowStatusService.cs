@@ -23,7 +23,7 @@ public class SignalRService
     public async Task InitializeConnection()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(LinkToHub.RealeseUrl)
+            .WithUrl(LinkToHub.RomaTest)
             .WithAutomaticReconnect()
             .Build();
 
@@ -62,7 +62,15 @@ public class SignalRService
             {
 
                 DataReceived?.Invoke(status);
-                Console.WriteLine($"The time for this data is{difference.Hours}");
+                if (difference.Hours < 24){
+                    status.StringTimeFromLastConnection = ($"Last connection {difference.Hours} ago");
+                }
+                
+                else if (difference.Hours > 24)
+                {
+                    status.StringTimeFromLastConnection = ($"Last connection {difference.Days} ago");
+                }
+                    
             }
             else
              NoDataAndConnection = true;
