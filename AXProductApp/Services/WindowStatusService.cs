@@ -29,8 +29,7 @@ public class SignalRService
         _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
         {
            
-            status.TimeNow = DateTime.Now;
-            
+            status.TimeNow = DateTime.Now; 
             string jsonString = JsonSerializer.Serialize(status);
             await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
             DataReceived?.Invoke(status);

@@ -13,6 +13,7 @@ namespace AXProductApp.Data
     {
         UserInputStatus userInputStatus = new UserInputStatus();
         private HubConnection _hubConnection;
+        
         public SendUserInputService()
         {
            InitiaizeConnection();
@@ -23,6 +24,10 @@ namespace AXProductApp.Data
            .WithUrl(LinkToHub.ArsenTestInput)
            .WithAutomaticReconnect()
            .Build();
+            _hubConnection.On<WindowStatus>("ReceiveUserInputResponce", (status) =>
+            {
+                Debug.WriteLine($"User input received: {status.IsOpen} {status.IsProtected}");
+            });
             try
             {
                 await _hubConnection.StartAsync();   
@@ -34,7 +39,7 @@ namespace AXProductApp.Data
                 return false;
             }
         }
-  
+    
         public async Task SendOpenInfo(bool isOpened)
         {
             userInputStatus.IsOpen = isOpened;
@@ -63,11 +68,16 @@ namespace AXProductApp.Data
                     else
                         throw new Exception("FAILED TO CONECT TO HUB");
                 }
+                throw new Exception("FAILED TO CONECT TO HUB");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error in sendind data to hub {ex.Message}");
             }
         }
+
+
+
+
     }
 }
