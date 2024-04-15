@@ -13,7 +13,7 @@ namespace AXProductApp.Data
     {
         UserInputStatus userInputStatus = new UserInputStatus();
         private HubConnection _hubConnection;
-        
+        public event Action<WindowStatus> DataReceived;
         public SendUserInputService()
         {
            InitiaizeConnection();
@@ -26,7 +26,9 @@ namespace AXProductApp.Data
            .Build();
             _hubConnection.On<WindowStatus>("ReceiveUserInputResponce", (status) =>
             {
+                status.TimeNow = DateTime.Now;
                 Debug.WriteLine($"User input received: {status.IsOpen} {status.IsProtected}");
+                DataReceived.Invoke(status);
             });
             try
             {
@@ -68,7 +70,6 @@ namespace AXProductApp.Data
                     else
                         throw new Exception("FAILED TO CONECT TO HUB");
                 }
-                throw new Exception("FAILED TO CONECT TO HUB");
             }
             catch (Exception ex)
             {

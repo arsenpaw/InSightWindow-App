@@ -83,14 +83,14 @@
                     </div>
                 </div>
             </div>
+            @isOpen
             <div class="common-box-styles box-3">
                 <div class="button r" id="button-1">
-                <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnOpenInput(eventArgs.Value); }"  />
+                    <input type="checkbox" class="checkbox" value="@isOpen" @onchange="async eventArgs => {await OnOpenInput(eventArgs.Value); }" />
                     <div class="knobs"></div>
                     <div class="layer"></div>
                 </div>
             </div>
-    
         </div>
     </div>
 @if (NoDataAndConnection)
@@ -101,12 +101,13 @@
 
 @code {
     private string Temperature, ProtectionStatus, Humidity, LastConnect;
-    private bool isRain;
+    private bool isRain,isOpen;
     bool NoDataAndConnection = false;
 
     protected override async Task OnInitializedAsync()
     {
         SignalRService.DataReceived += OnDataReceived;
+        SendUserInputService.DataReceived += OnResponceReceived;
         await SignalRService.InitializeConnection();
         NoDataAndConnection = SignalRService.NoDataAndConnection;
     }
@@ -115,6 +116,13 @@
 
     async private Task OnOpenInput(object checkedValue) => await SendUserInputService.SendOpenInfo((bool)checkedValue);
 
+    
+    private async void OnResponceReceived(WindowStatus status)
+    {
+        isOpen = await BoolToString(status.IsOpen);
+        Debug.WriteLine($"IsOpen updated to {isOpen}");
+        await InvokeAsync(StateHasChanged);
+    }
     private async  void OnDataReceived(WindowStatus status)
     {
         Temperature = $"{status.Temparature} °C";
@@ -122,7 +130,23 @@
         ProtectionStatus = status.IsProtected;
         isRain = status.isRain != 0;
         LastConnect = await LastConnectInfo(status);
+        isOpen = await BoolToString(status.IsOpen);
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task<bool> BoolToString(string val)
+    {
+        int value;  
+        if (int.TryParse(val, out value))
+        {
+            if (value == 0)
+                return false;
+            else
+                return true;
+        }
+        else    
+            return false;
+         
     }
     private async Task<string> LastConnectInfo(WindowStatus status)
     {
