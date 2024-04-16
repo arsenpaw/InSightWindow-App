@@ -62,11 +62,7 @@
                 <p>
                     Turn on alarm?
                     <label class="switch-box-2">
-<<<<<<< HEAD
-                        <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnProtectedInput(eventArgs.Value); }">
-=======
-                    <input type="checkbox" class="checkbox" @bind="isProteced" @oninput="async eventArgs => { await OnProtectedInput(eventArgs.Value); }" />
->>>>>>> abdfa0f68b39207a2539cc62f4ed8a714afcf4e3
+                        <input type="checkbox" class="checkbox" @bind="isProteced" @oninput="async eventArgs => { await OnProtectedInput(eventArgs.Value); }" />
                         <span class="slider-2">
                             <span class="slider-handle"></span>
                         </span>
@@ -88,26 +84,16 @@
                     </div>
                 </div>
             </div>
-<<<<<<< HEAD
 
             <div class="box-3">
                 <label class="switch-box-1">
-                    <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnOpenInput(eventArgs.Value); }">
+                    <input type="checkbox" class="checkbox"  @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
                     <span class="slider-1">
                         <span class="slider-handle"></span>
                     </span>
                 </label>
             </div>
 
-=======
-            <div class="common-box-styles box-3">
-                <div class="button r" id="button-1">
-                <input type="checkbox" class="checkbox" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
-                <div class="knobs"></div>
-                    <div class="layer"></div>
-                </div>
-            </div>
->>>>>>> abdfa0f68b39207a2539cc62f4ed8a714afcf4e3
         </div>
     </div>
 @if (NoDataAndConnection)
