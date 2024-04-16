@@ -2,6 +2,7 @@ namespace AXProductApp.Data
 {
     public class WindowStatus
     {
+
         public int Temparature { get; set; }
 
         public int Humidity { get; set; }
@@ -15,5 +16,5 @@ namespace AXProductApp.Data
         public DateTime TimeNow { get; set; }
 
 
-}
+    }
 }

@@ -16,7 +16,7 @@ namespace AXProductApp.Data
         public event Action<WindowStatus> DataReceived;
         public SendUserInputService()
         {
-           InitiaizeConnection();
+            InitiaizeConnection();
         }
         private async Task<bool> InitiaizeConnection()
         {
@@ -26,13 +26,18 @@ namespace AXProductApp.Data
            .Build();
             _hubConnection.On<WindowStatus>("ReceiveUserInputResponce", (status) =>
             {
-                status.TimeNow = DateTime.Now;
-                Debug.WriteLine($"User input received: {status.IsOpen} {status.IsProtected}");
-                DataReceived.Invoke(status);
+                if (status != null)
+                {
+                    status.TimeNow = DateTime.Now;
+                    Debug.WriteLine($"User input received: {status.IsOpen} {status.IsProtected}");
+                    DataReceived.Invoke(status);
+                }
+                else
+                    throw new Exception("FAILED TO GET DATA");
             });
             try
             {
-                await _hubConnection.StartAsync();   
+                await _hubConnection.StartAsync();
                 return true;
             }
             catch (Exception ex)
@@ -41,7 +46,7 @@ namespace AXProductApp.Data
                 return false;
             }
         }
-    
+
         public async Task SendOpenInfo(bool isOpened)
         {
             userInputStatus.IsOpen = isOpened;

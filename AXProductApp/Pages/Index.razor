@@ -61,7 +61,7 @@
             <div class="common-box-styles box-2">
                 <p>Turn on alarm?
                     <label class="switch-box-2">
-                    <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnProtectedInput(eventArgs.Value); }">
+                    <input type="checkbox" class="checkbox" @bind="isProteced" @oninput="async eventArgs => { await OnProtectedInput(eventArgs.Value); }" />
                         <span class="slider-2">
                             <span class="slider-handle"></span>
                         </span>
@@ -83,11 +83,10 @@
                     </div>
                 </div>
             </div>
-            @isOpen
             <div class="common-box-styles box-3">
                 <div class="button r" id="button-1">
-                    <input type="checkbox" class="checkbox" value="@isOpen" @onchange="async eventArgs => {await OnOpenInput(eventArgs.Value); }" />
-                    <div class="knobs"></div>
+                <input type="checkbox" class="checkbox" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
+                <div class="knobs"></div>
                     <div class="layer"></div>
                 </div>
             </div>
@@ -101,7 +100,7 @@
 
 @code {
     private string Temperature, ProtectionStatus, Humidity, LastConnect;
-    private bool isRain,isOpen;
+    private bool isRain,isOpen,isProteced;
     bool NoDataAndConnection = false;
 
     protected override async Task OnInitializedAsync()
@@ -119,7 +118,9 @@
     
     private async void OnResponceReceived(WindowStatus status)
     {
+        isProteced = await BoolToString(status.IsProtected);
         isOpen = await BoolToString(status.IsOpen);
+        Debug.WriteLine($"IsProtected updated to {isProteced}");
         Debug.WriteLine($"IsOpen updated to {isOpen}");
         await InvokeAsync(StateHasChanged);
     }
@@ -130,7 +131,6 @@
         ProtectionStatus = status.IsProtected;
         isRain = status.isRain != 0;
         LastConnect = await LastConnectInfo(status);
-        isOpen = await BoolToString(status.IsOpen);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -145,8 +145,7 @@
                 return true;
         }
         else    
-            return false;
-         
+            return false;   
     }
     private async Task<string> LastConnectInfo(WindowStatus status)
     {
