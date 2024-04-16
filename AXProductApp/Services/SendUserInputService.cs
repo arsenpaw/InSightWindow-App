@@ -21,7 +21,7 @@ namespace AXProductApp.Data
         private async Task<bool> InitiaizeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
-           .WithUrl(LinkToHub.ArsenTestInput)
+           .WithUrl(LinkToHub.RealeseUrlInput)
            .WithAutomaticReconnect()
            .Build();
             _hubConnection.On<WindowStatus>("ReceiveUserInputResponce", (status) =>
@@ -51,6 +51,7 @@ namespace AXProductApp.Data
         {
             userInputStatus.IsOpen = isOpened;
             Debug.WriteLine($"Is open: {userInputStatus.IsOpen}");
+            await Task.Run(() => sendDataToHub(userInputStatus));
             await sendDataToHub(userInputStatus);
         }
 
@@ -58,7 +59,7 @@ namespace AXProductApp.Data
         {
             userInputStatus.isProtected = isProtected;
             Debug.WriteLine($"Is protected: {userInputStatus.isProtected}");
-            await sendDataToHub(userInputStatus);
+            await Task.Run(() => sendDataToHub(userInputStatus));
         }
         private async Task sendDataToHub(UserInputStatus userInputStatus)
         {

@@ -22,7 +22,7 @@ public class SignalRService
     public async Task InitializeConnection()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(LinkToHub.ArsenTest)
+            .WithUrl(LinkToHub.RealeseUrl)
             .WithAutomaticReconnect()
             .Build();
 
