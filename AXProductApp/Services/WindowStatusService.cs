@@ -10,7 +10,7 @@ using System.Text.Json;
 
 public class SignalRService
 {
- 
+
     private HubConnection _hubConnection;
 
     public event Action<WindowStatus> DataReceived;
@@ -18,19 +18,17 @@ public class SignalRService
     public bool NoDataAndConnection = false;
 
 
-   
+
     public async Task InitializeConnection()
     {
         _hubConnection = new HubConnectionBuilder()
-            .WithUrl(LinkToHub.ArsenTest)
+            .WithUrl(LinkToHub.RealeseUrl)
             .WithAutomaticReconnect()
             .Build();
 
         _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
         {
-           
             status.TimeNow = DateTime.Now;
-            
             string jsonString = JsonSerializer.Serialize(status);
             await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
             DataReceived?.Invoke(status);
@@ -43,8 +41,6 @@ public class SignalRService
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             if (output == null) { throw new InvalidDataException(); }
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-
-           
             if (_hubConnection.State == HubConnectionState.Connected)
             {
                 DataReceived?.Invoke(status);
@@ -54,28 +50,26 @@ public class SignalRService
         }
         catch (HttpRequestException)
         {
-            Console.WriteLine("No internet connectiom");
+            Debug.WriteLine("No internet connectiom");
             string output = await SecureStorage.GetAsync(nameof(WindowStatus));
             WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
 
-            if (output != null )
+            if (output != null)
             {
-
                 DataReceived?.Invoke(status);
-               
             }
             else
-             NoDataAndConnection = true;
-             Console.WriteLine("No data in cashe or no connection");
+                NoDataAndConnection = true;
+            Debug.WriteLine("No data in cashe or no connection");
 
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
+            Debug.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
         }
 
     }
 
-    
+
 
 }

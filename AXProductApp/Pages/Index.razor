@@ -39,7 +39,7 @@
             <div class="common-box-styles box-1">
                 <div class="icon-2">
                     <img src="/icons/humidity-solid.png" alt="Thermonetr">
-                </div>                
+                </div>
                 <i class="fas fa-tint"></i>
                 Humidity
                 <div class="gray_box">
@@ -59,9 +59,14 @@
             </div>
 
             <div class="common-box-styles box-2">
-                <p>Turn on alarm?
+                <p>
+                    Turn on alarm?
                     <label class="switch-box-2">
-                    <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnProtectedInput(eventArgs.Value); }">
+<<<<<<< HEAD
+                        <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnProtectedInput(eventArgs.Value); }">
+=======
+                    <input type="checkbox" class="checkbox" @bind="isProteced" @oninput="async eventArgs => { await OnProtectedInput(eventArgs.Value); }" />
+>>>>>>> abdfa0f68b39207a2539cc62f4ed8a714afcf4e3
                         <span class="slider-2">
                             <span class="slider-handle"></span>
                         </span>
@@ -83,14 +88,26 @@
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
+
+            <div class="box-3">
+                <label class="switch-box-1">
+                    <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnOpenInput(eventArgs.Value); }">
+                    <span class="slider-1">
+                        <span class="slider-handle"></span>
+                    </span>
+                </label>
+            </div>
+
+=======
             <div class="common-box-styles box-3">
                 <div class="button r" id="button-1">
-                <input type="checkbox" class="checkbox" @onchange="async eventArgs => {await OnOpenInput(eventArgs.Value); }" />
-                    <div class="knobs"></div>
+                <input type="checkbox" class="checkbox" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
+                <div class="knobs"></div>
                     <div class="layer"></div>
                 </div>
             </div>
-    
+>>>>>>> abdfa0f68b39207a2539cc62f4ed8a714afcf4e3
         </div>
     </div>
 @if (NoDataAndConnection)
@@ -101,12 +118,13 @@
 
 @code {
     private string Temperature, ProtectionStatus, Humidity, LastConnect;
-    private bool isRain;
+    private bool isRain,isOpen,isProteced;
     bool NoDataAndConnection = false;
 
     protected override async Task OnInitializedAsync()
     {
         SignalRService.DataReceived += OnDataReceived;
+        SendUserInputService.DataReceived += OnResponceReceived;
         await SignalRService.InitializeConnection();
         NoDataAndConnection = SignalRService.NoDataAndConnection;
     }
@@ -115,6 +133,15 @@
 
     async private Task OnOpenInput(object checkedValue) => await SendUserInputService.SendOpenInfo((bool)checkedValue);
 
+    
+    private async void OnResponceReceived(WindowStatus status)
+    {
+        isProteced = await BoolToString(status.IsProtected);
+        isOpen = await BoolToString(status.IsOpen);
+        Debug.WriteLine($"IsProtected updated to {isProteced}");
+        Debug.WriteLine($"IsOpen updated to {isOpen}");
+        await InvokeAsync(StateHasChanged);
+    }
     private async  void OnDataReceived(WindowStatus status)
     {
         Temperature = $"{status.Temparature} °C";
@@ -123,6 +150,20 @@
         isRain = status.isRain != 0;
         LastConnect = await LastConnectInfo(status);
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task<bool> BoolToString(string val)
+    {
+        int value;  
+        if (int.TryParse(val, out value))
+        {
+            if (value == 0)
+                return false;
+            else
+                return true;
+        }
+        else    
+            return false;   
     }
     private async Task<string> LastConnectInfo(WindowStatus status)
     {

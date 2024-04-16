@@ -13,19 +13,31 @@ namespace AXProductApp.Data
     {
         UserInputStatus userInputStatus = new UserInputStatus();
         private HubConnection _hubConnection;
+        public event Action<WindowStatus> DataReceived;
         public SendUserInputService()
         {
-           InitiaizeConnection();
+            InitiaizeConnection();
         }
         private async Task<bool> InitiaizeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
-           .WithUrl(LinkToHub.ArsenTestInput)
+           .WithUrl(LinkToHub.RealeseUrlInput)
            .WithAutomaticReconnect()
            .Build();
+            _hubConnection.On<WindowStatus>("ReceiveUserInputResponce", (status) =>
+            {
+                if (status != null)
+                {
+                    status.TimeNow = DateTime.Now;
+                    Debug.WriteLine($"User input received: {status.IsOpen} {status.IsProtected}");
+                    DataReceived.Invoke(status);
+                }
+                else
+                    throw new Exception("FAILED TO GET DATA");
+            });
             try
             {
-                await _hubConnection.StartAsync();   
+                await _hubConnection.StartAsync();
                 return true;
             }
             catch (Exception ex)
@@ -34,11 +46,12 @@ namespace AXProductApp.Data
                 return false;
             }
         }
-  
+
         public async Task SendOpenInfo(bool isOpened)
         {
             userInputStatus.IsOpen = isOpened;
             Debug.WriteLine($"Is open: {userInputStatus.IsOpen}");
+            await Task.Run(() => sendDataToHub(userInputStatus));
             await sendDataToHub(userInputStatus);
         }
 
@@ -46,7 +59,7 @@ namespace AXProductApp.Data
         {
             userInputStatus.isProtected = isProtected;
             Debug.WriteLine($"Is protected: {userInputStatus.isProtected}");
-            await sendDataToHub(userInputStatus);
+            await Task.Run(() => sendDataToHub(userInputStatus));
         }
         private async Task sendDataToHub(UserInputStatus userInputStatus)
         {
@@ -69,5 +82,9 @@ namespace AXProductApp.Data
                 Debug.WriteLine($"Error in sendind data to hub {ex.Message}");
             }
         }
+
+
+
+
     }
 }
