@@ -15,7 +15,7 @@ namespace AXProductApp.Data
 
         public DateTime TimeNow { get; set; }
 
-        private async Task<string> GetLastConnectInfo()
+        public  string GetLastConnectInfo()
         {
             string ReturnString;
             TimeSpan TimeDiff = DateTime.Now - TimeNow;
