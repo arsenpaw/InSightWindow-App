@@ -21,7 +21,7 @@ namespace AXProductApp.Data
         private async Task<bool> InitiaizeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
-           .WithUrl(LinkToHub.RealeseUrlInput)
+           .WithUrl(LinkToHub.ArsenTestInput)
            .WithAutomaticReconnect()
            .Build();
             _hubConnection.On<WindowStatus>("ReceiveUserInputResponce", (status) =>
@@ -82,6 +82,7 @@ namespace AXProductApp.Data
                 Debug.WriteLine($"Error in sendind data to hub {ex.Message}");
             }
         }
+        
 
 
 
