@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AXProductApp.Data
 {
-    public class SendUserInputService
+    public class SendUserInputService : ISendUserInputService
     {
         UserInputStatus userInputStatus = new UserInputStatus();
         private HubConnection _hubConnection;
@@ -18,7 +18,7 @@ namespace AXProductApp.Data
         {
             InitiaizeConnection();
         }
-        private async Task<bool> InitiaizeConnection()
+        public async Task<bool> InitiaizeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
            .WithUrl(LinkToHub.ArsenTestInput)
@@ -61,7 +61,7 @@ namespace AXProductApp.Data
             Debug.WriteLine($"Is protected: {userInputStatus.isProtected}");
             await Task.Run(() => sendDataToHub(userInputStatus));
         }
-        private async Task sendDataToHub(UserInputStatus userInputStatus)
+        public async Task sendDataToHub(UserInputStatus userInputStatus)
         {
             try
             {
@@ -82,10 +82,5 @@ namespace AXProductApp.Data
                 Debug.WriteLine($"Error in sendind data to hub {ex.Message}");
             }
         }
-        
-
-
-
-
     }
 }

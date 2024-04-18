@@ -3,7 +3,7 @@
 @using AXProductApp.Data
 @using System.Diagnostics
 @inject SendUserInputService SendUserInputService
-@inject SignalRService SignalRService
+@inject ReceiveWindowStatusService SignalRService
 
 <style class="body-style">
         body {
@@ -111,7 +111,8 @@
     {
         SignalRService.DataReceived += OnDataReceived;
         SendUserInputService.DataReceived += OnResponceReceived;
-        await SignalRService.InitializeConnection();
+        await SignalRService.OnAppUpdate();
+        await SendUserInputService.InitiaizeConnection();  
         NoDataAndConnection = SignalRService.NoDataAndConnection;
     }
 

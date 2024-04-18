@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AXProductApp
 {
-     public static class StringExtension
+    public static class StringExtension
     {
         public static bool ToBool(this string str)
         {
@@ -16,7 +16,7 @@ namespace AXProductApp
                 if (value > 0)
                     return true;
             }
-           return false;
+            return false;
         }
 
     }
