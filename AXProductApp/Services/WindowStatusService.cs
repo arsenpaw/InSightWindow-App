@@ -7,7 +7,7 @@ using Blazored.LocalStorage;
 using System.IO;
 using System.Text.Json;
 using Plugin.LocalNotification;
-
+using AXProductApp.Services;
 
 namespace AXProductApp.Data
 {
@@ -25,24 +25,7 @@ namespace AXProductApp.Data
         {
             InitializeConnection();
         }
-        private void TestSms()
-        {
-            var request = new NotificationRequest
-            {
-                NotificationId = 1337,
-                Title = "MEDIUM",
-                Subtitle = "Hello! I'm Erdal",
-                Description = "Local Push Notification",
-                BadgeNumber = 1,
-
-                Schedule = new NotificationRequestSchedule
-                {
-                    NotifyTime = DateTime.Now.AddSeconds(3),
-                }
-            };
-
-            LocalNotificationCenter.Current.Show(request);
-        }
+       
         public async Task<bool> InitializeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
@@ -56,7 +39,7 @@ namespace AXProductApp.Data
                 string jsonString = JsonSerializer.Serialize(status);
                 await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
                 DataReceived?.Invoke(status);
-                TestSms();
+                NotificationService.TestSms();
             });
 
             try
