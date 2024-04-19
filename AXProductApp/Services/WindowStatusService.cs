@@ -7,7 +7,7 @@ using Blazored.LocalStorage;
 using System.IO;
 using System.Text.Json;
 
-namespace AXProductApp.Data 
+namespace AXProductApp.Data
 {
 
     public class ReceiveWindowStatusService : IReceiveWindowStatusService

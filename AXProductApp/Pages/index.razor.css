@@ -1,5 +1,7 @@
 .container {
     text-align: center;
+    position:relative;
+    top: -50px;
 }
 
 .data {
@@ -200,7 +202,7 @@ p {
 /*Code for Opening button*/
 .switch-box-1 {
     position: relative;
-    top: 80%;
+    top: 88%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: inline-block;
