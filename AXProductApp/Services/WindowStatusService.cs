@@ -24,7 +24,7 @@ namespace AXProductApp.Data
             InitializeConnection();
         }
 
-        public async Task InitializeConnection()
+        public async Task<bool> InitializeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
                 .WithUrl(LinkToHub.ArsenTest)
@@ -43,10 +43,12 @@ namespace AXProductApp.Data
             try
             {
                 await _hubConnection.StartAsync();
+                return true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
+                return false;
             }
 
         }
@@ -89,3 +91,6 @@ namespace AXProductApp.Data
 
     }
 }
+
+
+

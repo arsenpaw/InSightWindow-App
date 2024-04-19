@@ -33,7 +33,10 @@ namespace AXProductApp.Data
                     DataReceived.Invoke(status);
                 }
                 else
-                    throw new Exception("FAILED TO GET DATA");
+                {
+                    Debug.WriteLine("No data received");
+                }
+
             });
             try
             {

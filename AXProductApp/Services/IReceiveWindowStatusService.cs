@@ -5,7 +5,7 @@ namespace AXProductApp.Data
     {
         event Action<WindowStatus> DataReceived;
 
-        Task InitializeConnection();
+        Task<bool> InitializeConnection();
         Task OnAppUpdate();
     }
 }
