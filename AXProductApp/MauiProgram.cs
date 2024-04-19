@@ -2,7 +2,7 @@
 using AXProductApp.Data;
 using Microsoft.AspNetCore.SignalR;
 using Blazored.LocalStorage;
-
+using Plugin.LocalNotification;
 namespace AXProductApp;
 
 public static class MauiProgram

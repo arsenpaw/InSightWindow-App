@@ -21,7 +21,7 @@ namespace AXProductApp.Data
         public async Task<bool> InitiaizeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
-           .WithUrl(LinkToHub.ArsenTestInput)
+           .WithUrl(LinkToHub.WIFI_INPUT)
            .WithAutomaticReconnect()
            .Build();
             _hubConnection.On<WindowStatus>("ReceiveUserInputResponce", (status) =>
