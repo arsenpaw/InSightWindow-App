@@ -28,6 +28,7 @@ namespace AXProductApp.Data
             {
                 if (status != null)
                 {
+                    
                     status.TimeNow = DateTime.Now;
                     Debug.WriteLine($"User input received: {status.IsOpen} {status.IsProtected}");
                     DataReceived.Invoke(status);

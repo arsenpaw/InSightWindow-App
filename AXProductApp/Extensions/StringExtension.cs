@@ -18,6 +18,12 @@ namespace AXProductApp
             }
             return false;
         }
+        public static bool ToBool(this int val)
+        {
+            if (val > 0 )
+                    return true;
+            return false;
+        }
 
     }
 }

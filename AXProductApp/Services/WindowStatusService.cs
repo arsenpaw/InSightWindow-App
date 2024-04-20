@@ -8,12 +8,13 @@ using System.IO;
 using System.Text.Json;
 using Plugin.LocalNotification;
 using AXProductApp.Services;
-
+using Microsoft.Maui.Controls;
 namespace AXProductApp.Data
 {
 
     public class ReceiveWindowStatusService : IReceiveWindowStatusService
     {
+        private bool prevAlarmTriggered;    
 
         private HubConnection _hubConnection;
 
@@ -24,6 +25,7 @@ namespace AXProductApp.Data
         public ReceiveWindowStatusService()
         {
             InitializeConnection();
+            
         }
        
         public async Task<bool> InitializeConnection()
@@ -35,11 +37,20 @@ namespace AXProductApp.Data
 
             _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
             {
+                if (status.isAlarm.ToBool() && prevAlarmTriggered != true)
+                {
+                    prevAlarmTriggered = true;
+                    new NotificationService().sendAlarmMessage();
+                }
+                else if (!status.isAlarm.ToBool())
+                {
+                    prevAlarmTriggered = false;
+                }
                 status.TimeNow = DateTime.Now;
                 string jsonString = JsonSerializer.Serialize(status);
                 await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
-                DataReceived?.Invoke(status);
-                NotificationService.TestSms();
+                DataReceived?.Invoke(status);             
+                
             });
 
             try
@@ -49,6 +60,7 @@ namespace AXProductApp.Data
             }
             catch (Exception ex)
             {
+                
                 Debug.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
                 return false;
             }

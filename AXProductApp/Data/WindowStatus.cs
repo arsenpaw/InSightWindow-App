@@ -15,6 +15,8 @@ namespace AXProductApp.Data
 
         public DateTime TimeNow { get; set; }
 
+        public int isAlarm { get; set; }    
+
         public string GetLastConnectInfo()
         {
             string ReturnString;
