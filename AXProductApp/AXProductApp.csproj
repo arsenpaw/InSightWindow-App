@@ -58,6 +58,7 @@
 	
     <ItemGroup>
       <None Remove="Platforms\Android\Resources\raw\alarm_sound.mp3" />
+      <None Remove="Platforms\Android\Resources\raw\Falarm_sound.mp3" />
     </ItemGroup>
 	
 
