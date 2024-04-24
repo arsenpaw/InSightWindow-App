@@ -12,7 +12,7 @@ namespace AXProductApp.Data
     public class SendUserInputService : ISendUserInputService
     {
         UserInputStatus userInputStatus = new UserInputStatus();
-        private HubConnection _hubConnection;
+        public HubConnection _hubConnection;
         public event Action<WindowStatus> DataReceived;
         public SendUserInputService()
         {
@@ -31,6 +31,8 @@ namespace AXProductApp.Data
                     
                     status.TimeNow = DateTime.Now;
                     Debug.WriteLine($"User input received: {status.IsOpen} {status.IsProtected}");
+                    string jsonString = JsonSerializer.Serialize(status);
+                    SecureStorage.SetAsync(nameof(UserInputStatus), jsonString);
                     DataReceived.Invoke(status);
                 }
                 else
@@ -51,19 +53,32 @@ namespace AXProductApp.Data
             }
         }
 
+        public async Task OnAppUpdate()
+        {
+            try
+            {
+                string output = await SecureStorage.GetAsync(nameof(UserInputStatus));
+                WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
+                if (status == null) { Debug.WriteLine("no data in user input cache"); return; }
+                DataReceived.Invoke(status);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
         public async Task SendOpenInfo(bool isOpened)
         {
             userInputStatus.IsOpen = isOpened;
             Debug.WriteLine($"Is open: {userInputStatus.IsOpen}");
-            await Task.Run(() => sendDataToHub(userInputStatus));
-            await sendDataToHub(userInputStatus);
+            await  sendDataToHub(userInputStatus);
         }
 
         public async Task SendProtectedInfo(bool isProtected)
         {
             userInputStatus.isProtected = isProtected;
             Debug.WriteLine($"Is protected: {userInputStatus.isProtected}");
-            await Task.Run(() => sendDataToHub(userInputStatus));
+            await sendDataToHub(userInputStatus);
         }
         public async Task sendDataToHub(UserInputStatus userInputStatus)
         {
@@ -71,15 +86,8 @@ namespace AXProductApp.Data
             {
                 if (_hubConnection.State == HubConnectionState.Connected)
                     await _hubConnection.SendAsync("SaveUserInput", userInputStatus);
-                else if (_hubConnection.State == HubConnectionState.Connecting)
-                    throw new Exception("FAILED TO CONECT TO HUB");
                 else
-                {
-                    if (await InitiaizeConnection())
-                        await sendDataToHub(userInputStatus);
-                    else
-                        throw new Exception("FAILED TO CONECT TO HUB");
-                }
+                    throw new Exception("FAILED TO CONECT TO HUB");
             }
             catch (Exception ex)
             {
