@@ -31,7 +31,7 @@ namespace AXProductApp.Data
         public async Task<bool> InitializeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl(LinkToHub.WIFI)
+                .WithUrl(LinkToHub.RealeseUrl)
                 .WithAutomaticReconnect()
                 .Build();
 
