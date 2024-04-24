@@ -57,8 +57,16 @@
     </ItemGroup>
 	
     <ItemGroup>
+      <None Remove="Data\IsUserScrollingDown.js" />
       <None Remove="Platforms\Android\Resources\raw\alarm_sound.mp3" />
       <None Remove="Platforms\Android\Resources\raw\Falarm_sound.mp3" />
+    </ItemGroup>
+	
+    <ItemGroup>
+      <Content Include="Data\IsUserScrollingDown.js">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
     </ItemGroup>
 	
 
