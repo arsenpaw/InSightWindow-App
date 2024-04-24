@@ -112,12 +112,20 @@
     bool NoDataAndConnection = false;
     bool IsScrollingDown;
 
+
+
     protected override async Task OnInitializedAsync()
     {
         SignalRService.DataReceived += OnDataReceived;
         SendUserInputService.DataReceived += OnResponceReceived;
         await SignalRService.OnAppUpdate();
-        await SendUserInputService.InitiaizeConnection();  
+        await SendUserInputService.OnAppUpdate();
+        if (SignalRService._hubConnection.State != HubConnectionState.Connected )
+            await SignalRService.InitializeConnection();
+        if (SendUserInputService._hubConnection.State != HubConnectionState.Connected)
+            await SendUserInputService.InitiaizeConnection();
+        
+
         NoDataAndConnection = SignalRService.NoDataAndConnection;
     }
 

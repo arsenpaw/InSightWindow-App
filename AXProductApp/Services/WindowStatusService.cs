@@ -16,7 +16,7 @@ namespace AXProductApp.Data
     {
         private bool prevAlarmTriggered;    
 
-        private HubConnection _hubConnection;
+        public HubConnection _hubConnection;
 
         public event Action<WindowStatus> DataReceived;
 
@@ -59,8 +59,7 @@ namespace AXProductApp.Data
                 return true;
             }
             catch (Exception ex)
-            {
-                
+            { 
                 Debug.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
                 return false;
             }
@@ -74,27 +73,6 @@ namespace AXProductApp.Data
                 if (output == null) { throw new InvalidDataException(); }
                 WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
                 DataReceived?.Invoke(status);
-                if (_hubConnection.State == HubConnectionState.Connected)
-                {
-                    DataReceived?.Invoke(status);
-                    Debug.WriteLine("Connection to hub established.");
-                }
-                else throw new HttpRequestException();
-            }
-            catch (HttpRequestException)
-            {
-                Debug.WriteLine("No internet connectiom");
-                string output = await SecureStorage.GetAsync(nameof(WindowStatus));
-                WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-
-                if (output != null)
-                {
-                    DataReceived?.Invoke(status);
-                }
-                else
-                    NoDataAndConnection = true;
-                Debug.WriteLine("No data in cashe or no connection");
-
             }
             catch (Exception ex)
             {
