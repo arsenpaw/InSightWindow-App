@@ -8,5 +8,6 @@ namespace AXProductApp.Data
         Task<bool> InitiaizeConnection();
         Task SendOpenInfo(bool isOpened);
         Task SendProtectedInfo(bool isProtected);
+        Task sendDataToHub(UserInputStatus userInputStatus);
     }
 }

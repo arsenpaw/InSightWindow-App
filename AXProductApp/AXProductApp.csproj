@@ -68,5 +68,9 @@
         <PackageReference Include="Plugin.LocalNotification" Version="10.1.8" />
         <PackageReference Include="Plugin.Maui.Audio" Version="2.1.0" />
     </ItemGroup>
+	
+    <ItemGroup>
+      <None Include="wwwroot\scripts\reload.js" />
+    </ItemGroup>
 
 </Project>
