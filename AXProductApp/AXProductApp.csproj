@@ -43,9 +43,9 @@
 		<MauiIcon Include="Resources\AppIcon\ax_icon.jpg" />
 
         <!-- Splash Screen -->
-        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\Splash\ax2.png" Color="#000000" BaseSize="128,128" />
 
-        <!-- Images -->
+		<!-- Images -->
         <MauiImage Include="Resources\Images\*" />
         <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
 
@@ -59,6 +59,8 @@
     <ItemGroup>
 
       <None Remove="Platforms\Android\Resources\raw\alarm_sound.mp3" />
+
+      <None Remove="Resources\Splash\ax_icon.jpg" />
     </ItemGroup>
 	
     <ItemGroup>
