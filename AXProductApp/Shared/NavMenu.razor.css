@@ -135,3 +135,21 @@ oi {
     .dot:nth-child(3) {
         top: 24px;
     }
+
+.dropdown_menu {
+    display: none;
+    position: fixed;
+    right: 2rem;
+    height: 0;
+    top: 40px;
+    with: 50px;
+    background: rgba(255, 255, 255);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.dropdown_menu.open{
+    height: 240px;
+}
+.dropdown_menu{
+    display: block;
+}
