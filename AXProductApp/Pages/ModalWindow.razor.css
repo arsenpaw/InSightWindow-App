@@ -1,0 +1,29 @@
+﻿.modal-dialog {
+    background-color: rgba(240,240,57,0);
+    top: 25%;
+    font-size: 25px
+}
+
+.modal-content {
+    font-family: 'Trebuchet MS', sans-serif;
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 1);
+    justify-content: center;
+    align-items: center;
+    
+}
+
+.modal-header {
+   font-size: 30px
+}
+
+.close-button {
+    border-radius: 10px;
+    font-size: 30px;
+    width: 120%
+    
+}
