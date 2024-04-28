@@ -5,7 +5,6 @@
 @using AXProductApp.Pages;
 @inject SendUserInputService SendUserInputService
 @inject ReceiveWindowStatusService SignalRService
-@inject IJSRuntime JSRuntime
 
 <style class="body-style">
         body {
@@ -104,7 +103,7 @@
 
 @if (NoDataAndConnection)
 {
-    <ModalWindow Title="Error" Message="No connection" Button="Close"></ModalWindow>
+    <ModalWindow Title="Error" Message="No connection"></ModalWindow>
 }
 
 
