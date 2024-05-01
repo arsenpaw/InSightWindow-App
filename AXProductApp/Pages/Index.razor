@@ -22,9 +22,46 @@
         }
     </style>
 
-    <script src="~/scripts/reload.js"></script>
-    <div class="body">
+    <script>
+        var startY;
+        var pulling = false;
 
+        window.addEventListener('touchstart', function (e) {
+            if (window.scrollY === 0) {
+                startY = e.touches[0].clientY;
+                pulling = true;
+            }
+        }, { passive: true });
+
+        window.addEventListener('touchmove', function (e) {
+            if (pulling) {
+                var currentY = e.touches[0].clientY;
+                var diffY = currentY - startY;
+
+                if (diffY > 0) {
+                    e.preventDefault();
+                }
+            }
+        }, { passive: false });
+
+        window.addEventListener('touchend', function (e) {
+            if (pulling) {
+                var currentY = e.changedTouches[0].clientY;
+                var diffY = currentY - startY;
+
+                if (diffY > 50) {
+                    location.reload();
+                }
+            }
+
+            startY = null;
+            pulling = false;
+        }, { passive: true });
+
+    </script>
+
+
+    <div class="body">
         <div class="container">
 
             <div class="data">Data</div>
@@ -91,7 +128,7 @@
 
             <div class="box-3">
                 <label class="switch-box-1">
-                    <input type="checkbox" class="checkbox"  @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
+                    <input type="checkbox" class="checkbox" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
                     <span class="slider-1">
                         <span class="slider-handle"></span>
                     </span>
@@ -100,7 +137,7 @@
 
         </div>
     </div>
-
+   
 @if (NoDataAndConnection)
 {
     <ModalWindow Message="No connection"></ModalWindow>
@@ -125,7 +162,7 @@
             await SignalRService.InitializeConnection();
         if (SendUserInputService._hubConnection.State != HubConnectionState.Connected)
             await SendUserInputService.InitiaizeConnection();
-        
+
 
         NoDataAndConnection = SignalRService.NoDataAndConnection;
     }
@@ -152,6 +189,5 @@
         LastConnect = status.GetLastConnectInfo();
         await InvokeAsync(StateHasChanged);
     }
+
 }
-
-
