@@ -7,141 +7,140 @@
 @inject ReceiveWindowStatusService SignalRService
 
 <style class="body-style">
-        body {
-            background-image: linear-gradient(-135deg, rgba(163, 197, 237, 1) 0%, rgba(137, 159, 240, 1) 50%, rgba(199, 156, 232, 1) 100%);
-            background-size: auto;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            display: flex;
-            position: fixed;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Trebuchet MS', sans-serif;
-            font-size: 18px;
-            font-weight: 600;
-        }
-    </style>
+    body {
+        background-image: linear-gradient(-135deg, rgba(163, 197, 237, 1) 0%, rgba(137, 159, 240, 1) 50%, rgba(199, 156, 232, 1) 100%);
+        background-size: auto;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        display: flex;
+        position: fixed;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Trebuchet MS', sans-serif;
+        font-size: 18px;
+        font-weight: 600;
+    }
+</style>
 
-    <script>
-        var startY;
-        var pulling = false;
+<div class="body">
+    <div class="container">
 
-        window.addEventListener('touchstart', function (e) {
-            if (window.scrollY === 0) {
-                startY = e.touches[0].clientY;
-                pulling = true;
-            }
-        }, { passive: true });
-
-        window.addEventListener('touchmove', function (e) {
-            if (pulling) {
-                var currentY = e.touches[0].clientY;
-                var diffY = currentY - startY;
-
-                if (diffY > 0) {
-                    e.preventDefault();
-                }
-            }
-        }, { passive: false });
-
-        window.addEventListener('touchend', function (e) {
-            if (pulling) {
-                var currentY = e.changedTouches[0].clientY;
-                var diffY = currentY - startY;
-
-                if (diffY > 50) {
-                    location.reload();
-                }
-            }
-
-            startY = null;
-            pulling = false;
-        }, { passive: true });
-
-    </script>
-
-
-    <div class="body">
-        <div class="container">
-
-            <div class="data">Data</div>
-            <div class="connectstatus">@LastConnect</div>
-            <div class="common-box-styles box-1">
-                <div class="icon-1">
-                    <img src="/icons/temperature-three-quarters-solid.png" alt="Thermonetr">
-                </div>
-                <i class="fas fa-thermometer"></i>
-                Temperature
-                <div class="gray_box">
-                    @Temperature
-                </div>
+        <div class="data">Data</div>
+        <div class="connectstatus">@LastConnect</div>
+        <div class="common-box-styles box-1">
+            <div class="icon-1">
+                <img src="/icons/temperature-three-quarters-solid.png" alt="Thermonetr">
             </div>
-
-            <div class="common-box-styles box-1">
-                <div class="icon-2">
-                    <img src="/icons/humidity-solid.png" alt="Thermonetr">
-                </div>
-                <i class="fas fa-tint"></i>
-                Humidity
-                <div class="gray_box">
-                    @Humidity
-                </div>
+            <i class="fas fa-thermometer"></i>
+            Temperature
+            <div class="gray_box">
+                @Temperature
             </div>
+        </div>
 
-            <div class="common-box-styles box-1">
-                <div class="icon-3">
-                    <img src="/icons/rain-2-solid.png" alt="Thermonetr">
-                </div>
-                <i class="fas fa-wind"></i>
-                Rain
-                <div class="gray_box">
-                    @isRain
-                </div>
+        <div class="common-box-styles box-1">
+            <div class="icon-2">
+                <img src="/icons/humidity-solid.png" alt="Thermonetr">
             </div>
-
-            <div class="common-box-styles box-2">
-                <p>
-                    Turn on alarm?
-                    <label class="switch-box-2">
-                        <input type="checkbox" class="checkbox" @bind="isProteced" @oninput="async eventArgs => { await OnProtectedInput(eventArgs.Value); }" />
-                        <span class="slider-2">
-                            <span class="slider-handle"></span>
-                        </span>
-                    </label>
-                </p>
-
-                <div class="marquee-infinite">
-                    <div>
-                        <h1>secured by MINOS Group </h1>
-                        <h1>\ </h1>
-                        <h1>secured by MINOS Group </h1>
-                        <h1>\ </h1>
-                        <h1>secured by MINOS Group </h1>
-                        <h1>\ </h1>
-                        <h1>secured by MINOS Group </h1>
-                        <h1>\ </h1>
-                        <h1>secured by MINOS Group </h1>з
-                        <h1>\ </h1>
-                    </div>
-                </div>
+            <i class="fas fa-tint"></i>
+            Humidity
+            <div class="gray_box">
+                @Humidity
             </div>
+        </div>
 
-            <div class="box-3">
-                <label class="switch-box-1">
-                    <input type="checkbox" class="checkbox" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
-                    <span class="slider-1">
+        <div class="common-box-styles box-1">
+            <div class="icon-3">
+                <img src="/icons/rain-2-solid.png" alt="Thermonetr">
+            </div>
+            <i class="fas fa-wind"></i>
+            Rain
+            <div class="gray_box">
+                @isRain
+            </div>
+        </div>
+
+        <div class="common-box-styles box-2">
+            <p>
+                Turn on alarm?
+                <label class="switch-box-2">
+                    <input type="checkbox" class="checkbox" @bind="isProteced" @oninput="async eventArgs => { await OnProtectedInput(eventArgs.Value); }" />
+                    <span class="slider-2">
                         <span class="slider-handle"></span>
                     </span>
                 </label>
-            </div>
+            </p>
 
+            <div class="marquee-infinite">
+                <div>
+                    <h1>secured by MINOS Group </h1>
+                    <h1>\ </h1>
+                    <h1>secured by MINOS Group </h1>
+                    <h1>\ </h1>
+                    <h1>secured by MINOS Group </h1>
+                    <h1>\ </h1>
+                    <h1>secured by MINOS Group </h1>
+                    <h1>\ </h1>
+                    <h1>secured by MINOS Group </h1>з
+                    <h1>\ </h1>
+                </div>
+            </div>
         </div>
+
+        <div class="box-3">
+            <label class="switch-box-1">
+                <input type="checkbox" class="checkbox" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
+                <span class="slider-1">
+                    <span class="slider-handle"></span>
+                </span>
+            </label>
+        </div>
+
     </div>
-   
+
+</div>
+
 @if (NoDataAndConnection)
 {
     <ModalWindow Message="No connection"></ModalWindow>
 }
+
+<script>
+    var startY;
+    var pulling = false;
+
+    window.addEventListener('touchstart', function (e) {
+        if (window.scrollY === 0) {
+            startY = e.touches[0].clientY;
+            pulling = true;
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', function (e) {
+        if (pulling) {
+            var currentY = e.touches[0].clientY;
+            var diffY = currentY - startY;
+
+            if (diffY > 0) {
+                e.preventDefault();
+            }
+        }
+    }, { passive: false });
+
+    window.addEventListener('touchend', function (e) {
+        if (pulling) {
+            var currentY = e.changedTouches[0].clientY;
+            var diffY = currentY - startY;
+
+            if (diffY > 50) {
+                location.reload();
+            }
+        }
+
+        startY = null;
+        pulling = false;
+    }, { passive: true });
+</script>
 
 
 @code {
