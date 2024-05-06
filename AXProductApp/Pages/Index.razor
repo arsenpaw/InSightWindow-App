@@ -89,12 +89,35 @@
 
         <div class="box-3">
             <label class="switch-box-1">
-                <input type="checkbox" class="checkbox" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
+                <input type="checkbox" class="checkbox" id="myCheckbox" onclick="handleCheckboxClick()" />
                 <span class="slider-1">
                     <span class="slider-handle"></span>
                 </span>
             </label>
         </div>
+
+        <script>
+            let isDisabled = false;  
+
+            function handleCheckboxClick() {
+                if (isDisabled) {
+                    return;  
+                }
+
+                const checkbox = document.getElementById("myCheckbox");
+
+                isDisabled = true;
+                checkbox.disabled = true;
+
+                console.log("Checkbox clicked, action triggered.");
+
+                setTimeout(() => {
+                    isDisabled = false; 
+                    checkbox.disabled = false;
+                }, 3000);
+            }
+        </script>
+
 
     </div>
 
