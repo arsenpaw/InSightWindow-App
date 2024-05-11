@@ -14,6 +14,7 @@ namespace AXProductApp.Data
         UserInputStatus userInputStatus = new UserInputStatus();
         public HubConnection _hubConnection;
         public event Action<WindowStatus> DataReceived;
+        public event Action<string> ErrorDroped;
         public SendUserInputService()
         {
             InitiaizeConnection();
@@ -49,6 +50,7 @@ namespace AXProductApp.Data
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error sending data tu hub {ex.Message}");
+                ErrorDroped.Invoke(ex.Message);
                 return false;
             }
         }
@@ -87,11 +89,12 @@ namespace AXProductApp.Data
                 if (_hubConnection.State == HubConnectionState.Connected)
                     await _hubConnection.SendAsync("SaveUserInput", userInputStatus);
                 else
-                    throw new Exception("FAILED TO CONECT TO HUB");
+                    throw new Exception("FAILED CONECT TO HUB");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error in sendind data to hub {ex.Message}");
+                ErrorDroped.Invoke(ex.Message);
             }
         }
     }

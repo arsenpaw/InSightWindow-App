@@ -89,7 +89,7 @@
 
         <div class="box-3">
             <label class="switch-box-1">
-                <input type="checkbox" class="checkbox" id="myCheckbox" onclick="handleCheckboxClick()" />
+                <input type="checkbox" class="checkbox" id="myCheckbox" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
                 <span class="slider-1">
                     <span class="slider-handle"></span>
                 </span>
@@ -123,9 +123,9 @@
 
 </div>
 
-@if (NoDataAndConnection)
+@if (isErrorDroped)
 {
-    <ModalWindow Message="No connection"></ModalWindow>
+    <ModalWindow Message=@errorMessage></ModalWindow>
 }
 
 <script>
@@ -167,33 +167,34 @@
 
 
 @code {
-    private string Temperature, ProtectionStatus, Humidity, LastConnect;
-    private bool isRain,isOpen,isProteced;
-    bool NoDataAndConnection = false;
-    bool IsScrollingDown;
-
-
+    private string Temperature, ProtectionStatus, Humidity, LastConnect, errorMessage;
+    private bool isRain,isOpen,isProteced,isErrorDroped;
 
     protected override async Task OnInitializedAsync()
     {
         SignalRService.DataReceived += OnDataReceived;
         SendUserInputService.DataReceived += OnResponceReceived;
+        SignalRService.ErrorDroped += OnExeptionReceived;
+        SendUserInputService.ErrorDroped += OnExeptionReceived;
         await SignalRService.OnAppUpdate();
         await SendUserInputService.OnAppUpdate();
         if (SignalRService._hubConnection.State != HubConnectionState.Connected )
             await SignalRService.InitializeConnection();
         if (SendUserInputService._hubConnection.State != HubConnectionState.Connected)
             await SendUserInputService.InitiaizeConnection();
-
-
-        NoDataAndConnection = SignalRService.NoDataAndConnection;
     }
 
     async private Task OnProtectedInput(object checkedValue) => await SendUserInputService.SendProtectedInfo((bool)checkedValue);
 
     async private Task OnOpenInput(object checkedValue) => await SendUserInputService.SendOpenInfo((bool)checkedValue);
 
-
+    private async void  OnExeptionReceived(string message)
+    {
+        errorMessage = message;
+        isErrorDroped = true;
+        await InvokeAsync(StateHasChanged);
+        Console.WriteLine(isErrorDroped);
+    }
     private async void OnResponceReceived(WindowStatus status)
     {
         isProteced = status.IsProtected.ToBool();
