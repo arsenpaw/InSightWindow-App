@@ -64,7 +64,8 @@
             <p>
                 Turn on alarm?
                 <label class="switch-box-2">
-                    <input type="checkbox" class="checkbox" onclick="handleCheckboxClick()" @bind="isProteced" @oninput="async eventArgs => { await OnProtectedInput(eventArgs.Value); }" />
+                    <input type="checkbox" class="checkbox" id="myCheckbox1" onclick="handleCheckboxClick('myCheckbox1')" />
+
                     <span class="slider-2">
                         <span class="slider-handle"></span>
                     </span>
@@ -89,7 +90,8 @@
 
         <div class="box-3">
             <label class="switch-box-1">
-                <input type="checkbox" class="checkbox" id="myCheckbox" onclick="handleCheckboxClick()" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
+                <input type="checkbox" class="checkbox" id="myCheckbox2" onclick="handleCheckboxClick('myCheckbox2')" />
+
                 <span class="slider-1">
                     <span class="slider-handle"></span>
                 </span>
@@ -97,14 +99,24 @@
         </div>
 
         <script>
-            let isDisabled = false;  
+            let isDisabled1 = false;
+            let isDisabled2 = false;
 
-            function handleCheckboxClick() {
-                if (isDisabled) {
-                    return;  
+            function handleCheckboxClick(checkboxId) {
+                let isDisabled;
+                let checkbox;
+
+                if (checkboxId === "myCheckbox1") {
+                    isDisabled = isDisabled1;
+                    checkbox = document.getElementById("myCheckbox1");
+                } else if (checkboxId === "myCheckbox2") {
+                    isDisabled = isDisabled2;
+                    checkbox = document.getElementById("myCheckbox2");
                 }
 
-                const checkbox = document.getElementById("myCheckbox");
+                if (isDisabled) {
+                    return;
+                }
 
                 isDisabled = true;
                 checkbox.disabled = true;
@@ -112,11 +124,17 @@
                 console.log("Checkbox clicked, action triggered.");
 
                 setTimeout(() => {
-                    isDisabled = false; 
+                    if (checkboxId === "myCheckbox1") {
+                        isDisabled1 = false;
+                    } else if (checkboxId === "myCheckbox2") {
+                        isDisabled2 = false;
+                    }
                     checkbox.disabled = false;
                 }, 3000);
             }
         </script>
+
+
 
 
     </div>
