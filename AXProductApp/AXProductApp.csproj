@@ -40,7 +40,7 @@
 	
     <ItemGroup>
         <!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\ax_icon.jpg" />
+		<MauiIcon Include="Resources\AppIcon\ax_icon.png" />
 
         <!-- Splash Screen -->
 		<MauiSplashScreen Include="Resources\Splash\ax2.png" Color="#000000" BaseSize="128,128" />
