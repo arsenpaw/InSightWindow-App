@@ -42,6 +42,7 @@ namespace AXProductApp.Data
                 }
 
             });
+
             try
             {
                 await _hubConnection.StartAsync();

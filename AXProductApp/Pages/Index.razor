@@ -64,7 +64,7 @@
             <p>
                 Turn on alarm?
                 <label class="switch-box-2">
-                    <input type="checkbox" class="checkbox" id="myCheckbox1" onclick="handleCheckboxClick('myCheckbox1')" />
+                    <input type="checkbox" class="checkbox" id="myCheckbox1" onclick="handleCheckboxClick('myCheckbox1')" @bind="isProteced" @oninput="async eventArgs => { await OnProtectedInput(eventArgs.Value); }" />
 
                     <span class="slider-2">
                         <span class="slider-handle"></span>
@@ -90,7 +90,7 @@
 
         <div class="box-3">
             <label class="switch-box-1">
-                <input type="checkbox" class="checkbox" id="myCheckbox2" onclick="handleCheckboxClick('myCheckbox2')" />
+                <input type="checkbox" class="checkbox" id="myCheckbox2" onclick="handleCheckboxClick('myCheckbox2')"  @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
 
                 <span class="slider-1">
                     <span class="slider-handle"></span>
