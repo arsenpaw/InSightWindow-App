@@ -39,7 +39,7 @@ namespace AXProductApp.Data
 
             _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
             {
-                if (status.isAlarm.ToBool() && prevAlarmTriggered != true)
+                if (status.isAlarm.ToBool() && prevAlarmTriggered == false)
                 {
                     prevAlarmTriggered = true;
                     new NotificationService().sendAlarmMessage();

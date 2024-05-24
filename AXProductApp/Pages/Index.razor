@@ -227,6 +227,7 @@
         Humidity = $"{status.Humidity} %";
         ProtectionStatus = status.IsProtected;
         isRain = status.isRain != 0;
+        isOpen = status.IsOpen.ToBool();
         LastConnect = status.GetLastConnectInfo();
         await InvokeAsync(StateHasChanged);
     }
