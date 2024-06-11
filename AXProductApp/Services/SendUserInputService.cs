@@ -22,7 +22,7 @@ namespace AXProductApp.Data
         public async Task<bool> InitiaizeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
-           .WithUrl(LinkToHub.RealeseUrlInput)
+           .WithUrl($"{LinkToHub.RealeseUrl}/user-input-hub")
            .WithAutomaticReconnect()
            .Build();
             _hubConnection.On<WindowStatus>("ReceiveUserInputResponce", (status) =>

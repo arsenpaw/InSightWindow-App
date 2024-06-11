@@ -22,7 +22,7 @@ namespace AXProductApp.Data
 
         public event Action<string> ErrorDroped;
 
-        
+       
 
         public ReceiveWindowStatusService()
         {
@@ -33,7 +33,7 @@ namespace AXProductApp.Data
         public async Task<bool> InitializeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl(LinkToHub.RealeseUrl)
+                  .WithUrl($"{LinkToHub.RealeseUrl}/user-hub")
                 .WithAutomaticReconnect()
                 .Build();
 

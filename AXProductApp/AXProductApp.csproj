@@ -67,6 +67,7 @@
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.17" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
         <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Plugin.LocalNotification" Version="10.1.8" />
         <PackageReference Include="Plugin.Maui.Audio" Version="2.1.0" />
     </ItemGroup>
