@@ -1,7 +1,10 @@
 ﻿@page "/"
 @page "/login"
 @using AXProductApp.Models
+@using AXProductApp.Services
 @using System.Diagnostics
+@inject ILoginService LoginService
+@inject NavigationManager Navigation
 
 <h3>Login</h3>
 <EditForm Model="@userModel" OnValidSubmit="Submit">
@@ -9,38 +12,56 @@
     <div>
         <div class="form-group">
             <label>Email address</label>
-            <input type="email" @bind-value="userModel.Email"  class="form-control" placeholder="Enter email">
-            <ValidationMessage For="@(() => userModel.Email)"></ValidationMessage>
+            <input type="email" @bind-value="userModel.Email" class="form-control" placeholder="Enter email" required>
+            <ValidationMessage For="@(() => userModel.Email)" />
         </div>
         <div class="mt-2 form-group">
             <label>Password</label>
-            <input type="password" @bind-value="userModel.Password" class="form-control" placeholder="Password">
-            <ValidationMessage For="@(() => userModel.Password)"></ValidationMessage>
-
+            <input type="password" @bind-value="userModel.Password" class="form-control" placeholder="Password" required>
+            <ValidationMessage For="@(() => userModel.Password)" />
         </div>
     </div>
     <div class="mt-2 text-end">
         <NavLink class="nav-link" href="registration">
-            <span> Click here to create new account ? </span>
+            <span> Click here to create a new account? </span>
         </NavLink>
     </div>
     <div class="text-center mt-2">
-        <button class="btn btn-primary" type="submit"> 
+        <button class="btn btn-primary" type="submit">
             <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
-            Sign In 
+            Sign In
         </button>
     </div>
 </EditForm>
+
 @code {
-    UserLoginModel userModel = new UserLoginModel();
-
+    private UserLoginModel userModel = new UserLoginModel();
     private string _spinnerClass = "";
+    private bool _isSubmitting = false;
 
-    private async void Submit()
+    private async Task Submit()
     {
+        if (_isSubmitting)
+            return;
+
+        _isSubmitting = true;
         _spinnerClass = "spinner-border spinner-border-sm";
-        await Task.Delay(500);
+
+        var response = await LoginService.AuthenticateUser(userModel);
+
+        if (!string.IsNullOrEmpty(response))
+        {
+            // Navigate to a different page or show a success message
+            Navigation.NavigateTo("/main");
+        }
+        else
+        {
+            // Show an error message
+            await App.Current.MainPage.DisplayAlert("Oops", "Incorrect email or password", "Ok");
+        }
+
         _spinnerClass = "";
+        _isSubmitting = false;
         Debug.WriteLine(userModel.Email);
     }
 }

@@ -5,6 +5,7 @@ using Blazored.LocalStorage;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using Plugin.Maui.Audio;
+using AXProductApp.Services;
 namespace AXProductApp;
 
 public static class MauiProgram
@@ -36,6 +37,7 @@ public static class MauiProgram
         builder.Services.AddSingleton(AudioManager.Current);
         builder.Services.AddSingleton<SendUserInputService>();
         builder.Services.AddSingleton<ReceiveWindowStatusService>();
+        builder.Services.AddTransient<ILoginService, LoginService>();
         builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
 
