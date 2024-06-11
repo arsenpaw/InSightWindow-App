@@ -1,27 +1,30 @@
 ﻿@page "/registration"
 @using AXProductApp.Models
 @using System.Diagnostics
+@using AXProductApp.Services;
+@inject IRegisterService RegisterService
+@inject NavigationManager Navigation
 <EditForm Model="@userRegister" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
     <div class="form-group">
         <label>First Name</label>
-        <input class="form-control" placeholder="Enter First Name">
+        <input class="form-control" @bind-value="userRegister.FirstName" placeholder="Enter First Name">
         <ValidationMessage For="@(() => userRegister.FirstName)"></ValidationMessage>
 
     </div>
     <div class="form-group">
         <label>Last Name</label>
-        <input class="form-control" placeholder="Enter Last Name">
+        <input class="form-control" @bind-value="userRegister.LastName" placeholder="Enter Last Name">
         <ValidationMessage For="@(() => userRegister.LastName)"></ValidationMessage>
     </div>
     <div class="form-group">
         <label>Email</label>
-    <input class="form-control" type="email" placeholder="Enter Email Adress">
+        <input class="form-control" @bind-value="userRegister.Email" type="email" placeholder="Enter Email Adress">
     <ValidationMessage For="@(() => userRegister.Email)"></ValidationMessage>
     </div>
     <div class="form-group">
         <label>Password</label>
-    <input class="form-control" type="password" placeholder="Password">
+        <input class="form-control" @bind-value="userRegister.Password" type="password" placeholder="Password">
     <ValidationMessage For="@(() => userRegister.Password)"></ValidationMessage>
     </div>
     <div class="mt-2 text-end">
@@ -30,14 +33,40 @@
         </NavLink>
     </div>
     <div class="text-center mt-2">
-        <button class="btn btn-primary" type="submit"> Sign Up </button>
+        <button class="btn btn-primary" type="submit"> 
+            <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
+            Sign Up
+        </button>
     </div>
 </EditForm>
 
 @code {
     UserRegisterModel userRegister = new UserRegisterModel();
-    private void Submit()
+    private string _spinnerClass = "";
+    private bool _isSubmitting = false;
+    private async Task Submit()
     {
+        if (_isSubmitting)
+            return;
+
+        _isSubmitting = true;
+        _spinnerClass = "spinner-border spinner-border-sm";
+
+        var response = await RegisterService.AuthenticateUser(userRegister);
+
+        if (!string.IsNullOrEmpty(response))
+        {
+            await App.Current.MainPage.DisplayAlert("Congratulations", "Youre accaount have been sucesfully added", "Das is gut");
+            Navigation.NavigateTo("/login");
+        }
+        else
+        {
+            // Show an error message
+            await App.Current.MainPage.DisplayAlert("Oops", "Youre account was not registered ", "Ok");
+        }
+
+        _spinnerClass = "";
+        _isSubmitting = false;
         Debug.WriteLine(userRegister.Email);
     }
 

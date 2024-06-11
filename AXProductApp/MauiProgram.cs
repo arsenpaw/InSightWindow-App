@@ -38,6 +38,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<SendUserInputService>();
         builder.Services.AddSingleton<ReceiveWindowStatusService>();
         builder.Services.AddTransient<ILoginService, LoginService>();
+        builder.Services.AddTransient<IRegisterService, RegisterService>();
         builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
 

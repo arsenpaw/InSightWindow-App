@@ -50,9 +50,9 @@
         var response = await LoginService.AuthenticateUser(userModel);
 
         if (!string.IsNullOrEmpty(response))
-        {
-            // Navigate to a different page or show a success message
+        {   
             Navigation.NavigateTo("/main");
+         
         }
         else
         {
