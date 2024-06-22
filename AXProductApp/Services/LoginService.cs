@@ -1,4 +1,5 @@
-﻿using AXProductApp.Models;
+﻿using Android.Gms.Common.Apis;
+using AXProductApp.Interfaces;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,16 @@ namespace AXProductApp.Services
                     var responce = await httpClient.PostAsync(_Url, new StringContent(objectToSendStr, Encoding.UTF8, "application/json"));
                     if (responce.IsSuccessStatusCode)
                     {
+                        string responseBody = await responce.Content.ReadAsStringAsync();
+
+                       
+                        dynamic responseObject = JsonConvert.DeserializeObject(responseBody);
+
+                        
+                        string token = responseObject?.token;
+
+                        await SecureStorage.SetAsync("token", token);
+
                         responceStr = responce.StatusCode.ToString();
                     }
                     

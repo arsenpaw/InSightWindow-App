@@ -1,5 +1,6 @@
-﻿
-namespace AXProductApp.Data
+﻿using AXProductApp.Data;
+
+namespace AXProductApp.Interfaces
 {
     public interface IReceiveWindowStatusService
     {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AXProductApp.Models
+namespace AXProductApp.Interfaces
 {
     public class UserLoginModel
     {

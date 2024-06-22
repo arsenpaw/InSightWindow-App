@@ -1,4 +1,4 @@
-﻿@page "/main"
+﻿@page "/device"
 @using Microsoft.AspNetCore.SignalR.Client;
 @using AXProductApp.Data;
 @using System.Diagnostics;
@@ -227,6 +227,7 @@
         Humidity = $"{status.Humidity} %";
         ProtectionStatus = status.IsProtected;
         isRain = status.isRain != 0;
+        //this line can do 2 connection to servev but it coused a lag
        // isOpen = status.IsOpen.ToBool();
         LastConnect = status.GetLastConnectInfo();
         await InvokeAsync(StateHasChanged);

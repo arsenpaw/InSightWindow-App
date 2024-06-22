@@ -1,4 +1,4 @@
-﻿using AXProductApp.Models;
+﻿using AXProductApp.Interfaces;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using Newtonsoft.Json;
 using System;
@@ -24,8 +24,10 @@ namespace AXProductApp.Services
                 try
                 {
                     var responce = await httpClient.PostAsync(_Url, new StringContent(objectToSendStr, Encoding.UTF8, "application/json"));
+                   
                     if (responce.IsSuccessStatusCode)
                     {
+                        
                         responceStr =  responce.StatusCode.ToString();
                     }
                     

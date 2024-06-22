@@ -6,6 +6,7 @@ using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using Plugin.Maui.Audio;
 using AXProductApp.Services;
+using AXProductApp.Interfaces;
 namespace AXProductApp;
 
 public static class MauiProgram
@@ -39,6 +40,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ReceiveWindowStatusService>();
         builder.Services.AddTransient<ILoginService, LoginService>();
         builder.Services.AddTransient<IRegisterService, RegisterService>();
+        builder.Services.AddTransient<IMainMenu, MainMenuService>();
         builder.Services.AddBlazorWebViewDeveloperTools();
 		builder.Logging.AddDebug();
 

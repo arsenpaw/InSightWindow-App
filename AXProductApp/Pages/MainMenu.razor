@@ -1,0 +1,12 @@
+﻿@page "/main"
+@using AXProductApp.Interfaces
+@using AXProductApp.Services
+@inject IMainMenu MainMenuService
+<h3>MainPage</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await MainMenuService.OnInitializedAsync();
+    }
+}

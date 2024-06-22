@@ -2,6 +2,7 @@
 @using AXProductApp.Models
 @using System.Diagnostics
 @using AXProductApp.Services;
+@using AXProductApp.Interfaces;
 @inject IRegisterService RegisterService
 @inject NavigationManager Navigation
 <EditForm Model="@userRegister" OnValidSubmit="Submit">
