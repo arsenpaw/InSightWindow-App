@@ -1,4 +1,4 @@
-﻿using Android.Gms.Common.Apis;
+﻿
 using AXProductApp.Interfaces;
 using Newtonsoft.Json;
 using System;
@@ -36,7 +36,10 @@ namespace AXProductApp.Services
                         
                         string token = responseObject?.token;
 
+                        Guid userId = responseObject?.userId;
+
                         await SecureStorage.SetAsync("token", token);
+                        await SecureStorage.SetAsync("userId", userId.ToString());
 
                         responceStr = responce.StatusCode.ToString();
                     }

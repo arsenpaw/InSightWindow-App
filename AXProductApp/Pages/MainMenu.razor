@@ -1,12 +1,31 @@
 ﻿@page "/main"
 @using AXProductApp.Interfaces
-@using AXProductApp.Services
+@using AXProductApp.Models.Dto
 @inject IMainMenu MainMenuService
+
 <h3>MainPage</h3>
 
+@if (deviceList == null)
+{
+    <p>Loading...</p>
+}
+else if (deviceList.Count == 0)
+{
+    <p>No devices found.</p>
+}
+else
+{
+    @foreach (var item in deviceList)
+    {
+        <p>@item.Name</p>
+    }
+}
+
 @code {
+    private List<DeviceDto> deviceList;
+
     protected override async Task OnInitializedAsync()
     {
-        await MainMenuService.OnInitializedAsync();
+        deviceList = await MainMenuService.GetUserDevicesAsync();
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AXProductApp.Models.Dto;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace AXProductApp.Interfaces
 {
     interface IMainMenu
     {
-        Task OnInitializedAsync();
-        Task OnAppUpdate();
+        Task OnAppUpdateAsync();
+        Task<List<DeviceDto>> GetUserDevicesAsync();
     }
 }
