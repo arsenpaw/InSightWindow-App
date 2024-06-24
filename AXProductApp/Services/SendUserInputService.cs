@@ -30,13 +30,13 @@ namespace AXProductApp.Data
             {
                 if (status != null)
                 {
-                   
+
                     status.TimeNow = DateTime.Now;
                     Debug.WriteLine($"User input received: {status.IsOpen} {status.IsProtected}");
                     string jsonString = JsonSerializer.Serialize(status);
                     SecureStorage.SetAsync(nameof(UserInputStatus), jsonString);
                     DataReceived.Invoke(status);
-                   
+
                 }
                 else
                 {
@@ -76,7 +76,7 @@ namespace AXProductApp.Data
         {
             userInputStatus.IsOpen = isOpened;
             Debug.WriteLine($"Is open: {userInputStatus.IsOpen}");
-            await  sendDataToHub(userInputStatus);
+            await sendDataToHub(userInputStatus);
         }
 
         public async Task SendProtectedInfo(bool isProtected)

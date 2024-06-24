@@ -31,7 +31,7 @@ namespace AXProductApp.Services
 
         private async Task GrabUserParametersAsync()
         {
-            var userStr= await SecureStorage.GetAsync(nameof(UserDetail));
+            var userStr = await SecureStorage.GetAsync(nameof(UserDetail));
             Debug.WriteLine(userStr);
             if (string.IsNullOrEmpty(userStr))
             {
@@ -39,17 +39,17 @@ namespace AXProductApp.Services
             }
             _userDetail = JsonConvert.DeserializeObject<UserDetail>(userStr);
             _url = $"{_baseUrl}/{_userDetail.Id}";
-       
+
         }
 
-     
+
         public async Task<List<DeviceDto>> GetUserDevicesAsync()
         {
-           await  GrabUserParametersAsync();
-            if (_userDetail == null )
+            await GrabUserParametersAsync();
+            if (_userDetail == null)
             {
                 throw new Exception("Token value is empty");
-              
+
             }
             try
             {
@@ -61,7 +61,7 @@ namespace AXProductApp.Services
                     if (response.IsSuccessStatusCode)
                     {
                         var responceBody = await response.Content.ReadAsStringAsync();
-                        var devicesList= JsonConvert.DeserializeObject<List<DeviceDto>>(responceBody);
+                        var devicesList = JsonConvert.DeserializeObject<List<DeviceDto>>(responceBody);
                         return devicesList;
                     }
                     else
@@ -76,8 +76,8 @@ namespace AXProductApp.Services
                 Debug.WriteLine($"General error: {ex.Message}");
                 await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while fetching devices.", "Ok");
                 throw new Exception("Bad responce");
-                
+
             }
         }
     }
-    }
+}

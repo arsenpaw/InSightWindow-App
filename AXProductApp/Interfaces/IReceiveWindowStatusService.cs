@@ -7,6 +7,7 @@ namespace AXProductApp.Interfaces
         event Action<WindowStatus> DataReceived;
 
         Task<bool> InitializeConnection();
+
         Task OnAppUpdate();
     }
 }

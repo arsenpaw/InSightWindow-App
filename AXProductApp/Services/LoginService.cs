@@ -39,13 +39,13 @@ namespace AXProductApp.Services
             }
             var user = new UserDetail { Token = jwtToken, Id = userId };//add role
             var userStr = JsonConvert.SerializeObject(user);
-            await SecureStorage.SetAsync(nameof(UserDetail), userStr);    
+            await SecureStorage.SetAsync(nameof(UserDetail), userStr);
         }
 
         public async Task<string> AuthenticateUser(UserLoginModel userLogin)
         {
-            
-            using (var httpClient = new HttpClient()) 
+
+            using (var httpClient = new HttpClient())
             {
                 string responceStr = String.Empty;
                 var objectToSendStr = JsonConvert.SerializeObject(userLogin);
@@ -56,17 +56,17 @@ namespace AXProductApp.Services
                     {
                         string responseBody = await responce.Content.ReadAsStringAsync();
 
-                       
+
                         dynamic responseObject = JsonConvert.DeserializeObject(responseBody);
 
-                        
+
                         string token = responseObject?.token;
                         await WriteTokenDataToStorage(token);
-                      
+
 
                         responceStr = responce.StatusCode.ToString();
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {

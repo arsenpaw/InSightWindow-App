@@ -25,13 +25,13 @@ namespace AXProductApp.Services
                 try
                 {
                     var responce = await httpClient.PostAsync(_Url, new StringContent(objectToSendStr, Encoding.UTF8, "application/json"));
-                   
+
                     if (responce.IsSuccessStatusCode)
                     {
-                        
-                        responceStr =  responce.StatusCode.ToString();
+
+                        responceStr = responce.StatusCode.ToString();
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {

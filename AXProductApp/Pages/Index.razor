@@ -90,7 +90,7 @@
 
         <div class="box-3">
             <label class="switch-box-1">
-                <input type="checkbox" class="checkbox" id="myCheckbox2" onclick="handleCheckboxClick('myCheckbox2')"  @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
+                <input type="checkbox" class="checkbox" id="myCheckbox2" onclick="handleCheckboxClick('myCheckbox2')" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
 
                 <span class="slider-1">
                     <span class="slider-handle"></span>
@@ -186,7 +186,7 @@
 
 @code {
     private string Temperature, ProtectionStatus, Humidity, LastConnect, errorMessage;
-    private bool isRain,isOpen,isProteced,isErrorDroped;
+    private bool isRain, isOpen, isProteced, isErrorDroped;
 
     protected override async Task OnInitializedAsync()
     {
@@ -196,7 +196,7 @@
         SendUserInputService.ErrorDroped += OnExeptionReceived;
         await SignalRService.OnAppUpdate();
         await SendUserInputService.OnAppUpdate();
-        if (SignalRService._hubConnection.State != HubConnectionState.Connected )
+        if (SignalRService._hubConnection.State != HubConnectionState.Connected)
             await SignalRService.InitializeConnection();
         if (SendUserInputService._hubConnection.State != HubConnectionState.Connected)
             await SendUserInputService.InitiaizeConnection();
@@ -206,7 +206,7 @@
 
     async private Task OnOpenInput(object checkedValue) => await SendUserInputService.SendOpenInfo((bool)checkedValue);
 
-    private async void  OnExeptionReceived(string message)
+    private async void OnExeptionReceived(string message)
     {
         errorMessage = message;
         isErrorDroped = true;
@@ -221,14 +221,14 @@
         Debug.WriteLine($"IsOpen updated to {isOpen}");
         await InvokeAsync(StateHasChanged);
     }
-    private async  void OnDataReceived(WindowStatus status)
+    private async void OnDataReceived(WindowStatus status)
     {
         Temperature = $"{status.Temparature} °C";
         Humidity = $"{status.Humidity} %";
         ProtectionStatus = status.IsProtected;
         isRain = status.isRain != 0;
         //this line can do 2 connection to servev but it coused a lag
-       // isOpen = status.IsOpen.ToBool();
+        // isOpen = status.IsOpen.ToBool();
         LastConnect = status.GetLastConnectInfo();
         await InvokeAsync(StateHasChanged);
     }

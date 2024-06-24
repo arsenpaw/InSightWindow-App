@@ -14,7 +14,7 @@ namespace AXProductApp.Data
 
     public class ReceiveWindowStatusService : IReceiveWindowStatusService
     {
-        private bool prevAlarmTriggered;    
+        private bool prevAlarmTriggered;
 
         public HubConnection _hubConnection;
 
@@ -22,14 +22,14 @@ namespace AXProductApp.Data
 
         public event Action<string> ErrorDroped;
 
-       
+
 
         public ReceiveWindowStatusService()
         {
             InitializeConnection();
-            
+
         }
-       
+
         public async Task<bool> InitializeConnection()
         {
             _hubConnection = new HubConnectionBuilder()
@@ -51,8 +51,8 @@ namespace AXProductApp.Data
                 status.TimeNow = DateTime.Now;
                 string jsonString = JsonSerializer.Serialize(status);
                 await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
-                DataReceived?.Invoke(status);             
-                
+                DataReceived?.Invoke(status);
+
             });
 
             try
@@ -61,7 +61,7 @@ namespace AXProductApp.Data
                 return true;
             }
             catch (Exception ex)
-            { 
+            {
                 Debug.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
                 ErrorDroped.Invoke(ex.Message);
                 return false;

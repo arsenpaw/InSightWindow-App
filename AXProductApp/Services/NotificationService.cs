@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace AXProductApp.Services
 {
-    public  class NotificationService
+    public class NotificationService
     {
-        public  void TestSms()
+        public void TestSms()
         {
             var request = new NotificationRequest
             {
@@ -29,7 +29,7 @@ namespace AXProductApp.Services
 
             LocalNotificationCenter.Current.Show(request);
         }
-        public  void sendAlarmMessage()
+        public void sendAlarmMessage()
         {
             var request = new NotificationRequest
             {

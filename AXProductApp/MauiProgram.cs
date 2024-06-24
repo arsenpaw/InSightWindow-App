@@ -12,11 +12,11 @@ namespace AXProductApp;
 
 public static class MauiProgram
 {
-	public static MauiApp CreateMauiApp()
-	{
-		var builder = MauiApp.CreateBuilder();
-		builder
-			.UseMauiApp<App>()
+    public static MauiApp CreateMauiApp()
+    {
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseMauiApp<App>()
             .UseLocalNotification(config =>
             {
                 config.AddAndroid(android =>
@@ -24,15 +24,15 @@ public static class MauiProgram
                     android.AddChannel(new NotificationChannelRequest
                     {
                         Id = "alarm_sound1",
-                        Name = "alarm_sound",   
+                        Name = "alarm_sound",
                         Sound = "alarm_sound"
                     });
                 });
             })
-			.ConfigureFonts(fonts =>
-			{
-				fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-			});
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+            });
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddSingleton(AudioManager.Current);
@@ -43,9 +43,9 @@ public static class MauiProgram
 
         builder.Services.AddTransient<IMainMenu, MainMenuService>();
         builder.Services.AddBlazorWebViewDeveloperTools();
-		builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 
-        
+
         return builder.Build();
-	}
+    }
 }
