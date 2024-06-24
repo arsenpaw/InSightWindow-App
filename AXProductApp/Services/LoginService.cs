@@ -23,9 +23,7 @@ namespace AXProductApp.Services
         {
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(jwtToken) as JwtSecurityToken;
-
             var userId = jsonToken?.Claims?.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
-
             if (jsonToken != null)
             {
                 foreach (Claim claim in jsonToken.Claims)
@@ -34,9 +32,7 @@ namespace AXProductApp.Services
                 }
             }
             else
-            {
                 Console.WriteLine("Invalid token");
-            }
             var user = new UserDetail { Token = jwtToken, Id = userId };//add role
             var userStr = JsonConvert.SerializeObject(user);
             await SecureStorage.SetAsync(nameof(UserDetail), userStr);
@@ -44,7 +40,6 @@ namespace AXProductApp.Services
 
         public async Task<string> AuthenticateUser(UserLoginModel userLogin)
         {
-
             using (var httpClient = new HttpClient())
             {
                 string responceStr = String.Empty;
@@ -55,18 +50,10 @@ namespace AXProductApp.Services
                     if (responce.IsSuccessStatusCode)
                     {
                         string responseBody = await responce.Content.ReadAsStringAsync();
-
-
-                        dynamic responseObject = JsonConvert.DeserializeObject(responseBody);
-
-
-                        string token = responseObject?.token;
+                        var token = responce.Headers.FirstOrDefault(x => x.Key == "Bearer").Value.First();
                         await WriteTokenDataToStorage(token);
-
-
                         responceStr = responce.StatusCode.ToString();
                     }
-
                 }
                 catch (Exception ex)
                 {
