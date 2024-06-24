@@ -1,15 +1,19 @@
 ﻿@inherits LayoutComponentBase
+@using AXProductApp.Models;
 
 <div class="page">
     <div class="sidebar">
-      
-        <NavMenu />
+        @if (SecureStorage.GetAsync(nameof(UserDetail)).Result != null)//quastinable desicion
+        {
+            <NavMenu />
+        }
     </div>
 
     <main>
-  
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+
+

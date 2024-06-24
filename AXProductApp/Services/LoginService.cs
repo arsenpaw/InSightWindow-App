@@ -1,10 +1,13 @@
 ﻿
 using AXProductApp.Interfaces;
+using AXProductApp.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -15,6 +18,29 @@ namespace AXProductApp.Services
     class LoginService : ILoginService
     {
         private readonly string _Url = $"{RealeseUrl}api/UsersDb/login";
+
+        public async Task WriteTokenDataToStorage(string jwtToken)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(jwtToken) as JwtSecurityToken;
+
+            var userId = jsonToken?.Claims?.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+
+            if (jsonToken != null)
+            {
+                foreach (Claim claim in jsonToken.Claims)
+                {
+                    Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Invalid token");
+            }
+            var user = new UserDetail { Token = jwtToken, Id = userId };//add role
+            var userStr = JsonConvert.SerializeObject(user);
+            await SecureStorage.SetAsync(nameof(UserDetail), userStr);    
+        }
 
         public async Task<string> AuthenticateUser(UserLoginModel userLogin)
         {
@@ -35,11 +61,8 @@ namespace AXProductApp.Services
 
                         
                         string token = responseObject?.token;
-
-                        Guid userId = responseObject?.userId;
-
-                        await SecureStorage.SetAsync("token", token);
-                        await SecureStorage.SetAsync("userId", userId.ToString());
+                        await WriteTokenDataToStorage(token);
+                      
 
                         responceStr = responce.StatusCode.ToString();
                     }

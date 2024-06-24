@@ -4,6 +4,9 @@
 @using AXProductApp.Services
 @using AXProductApp.Interfaces
 @using System.Diagnostics
+@using Newtonsoft.Json;
+@using System.IdentityModel.Tokens.Jwt;
+@inject NavigationManager NavigationManager
 @inject ILoginService LoginService
 @inject NavigationManager Navigation
 
@@ -40,6 +43,35 @@
     private string _spinnerClass = "";
     private bool _isSubmitting = false;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var userStr = await SecureStorage.GetAsync(nameof(UserDetail));
+
+        if (!string.IsNullOrWhiteSpace(userStr))
+        {
+            var user = JsonConvert.DeserializeObject<UserDetail>(userStr);
+
+            var handler = new JwtSecurityTokenHandler();
+
+            var jwtToken = handler.ReadToken(user.Token) as JwtSecurityToken;
+
+            if (jwtToken.ValidTo > DateTime.UtcNow)
+            {
+                NavigationManager.NavigateTo("/main");
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/login");
+            }
+           
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+
+    }
+
     private async Task Submit()
     {
         if (_isSubmitting)
@@ -53,7 +85,8 @@
         if (!string.IsNullOrEmpty(response))
         {   
             Navigation.NavigateTo("/main");
-         
+           
+
         }
         else
         {

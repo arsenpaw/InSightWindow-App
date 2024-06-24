@@ -106,23 +106,29 @@ oi {
         background-size: auto;
     }
 
-.tree-dot-menu {
-    position: relative;
-    background-image: url("/icons/ellipsis-vertical-solid.png");
+
+.three-dot-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 20px;
+    height: 35px;
+    background: none;
     border: none;
-    padding: 0;
     cursor: pointer;
-    left: -30px;
-    top: -15px;
+    padding: 0;
 }
 
+
 .dot {
-    position: absolute;
-    width: 5px;
-    height: 5px;
-    background-color: black;
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: #333;
     border-radius: 50%;
+    
 }
+
 
     .dot:nth-child(1) {
         top: 0;

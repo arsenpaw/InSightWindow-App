@@ -1,4 +1,5 @@
 ﻿using AXProductApp.Interfaces;
+using AXProductApp.Models;
 using Microsoft.Maui.Controls.PlatformConfiguration.AndroidSpecific;
 using Newtonsoft.Json;
 using System;

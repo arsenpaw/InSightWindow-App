@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using AXProductApp.Interfaces;
+using AXProductApp.Models;
 using AXProductApp.Models.Dto;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using static AXProductApp.Data.LinkToHub;
 
@@ -16,40 +22,40 @@ namespace AXProductApp.Services
 
         private readonly string _baseUrl = $"{RealeseUrl}api/DevicesDb/DeviceOfUser";
         private string _url;
-        private string _token = string.Empty;
-
-        public MainMenuService()
-        {
-            GrabUserParametersAsync();
-        }
-
-        private async void GrabUserParametersAsync()
-        {
-            var userId = await SecureStorage.GetAsync("userId");
-            _url = $"{_baseUrl}/{userId}";
-       
-        }
+        private UserDetail _userDetail;
 
         public async Task OnAppUpdateAsync()
         {
             await GetUserDevicesAsync();
         }
 
-        public async Task<List<DeviceDto>> GetUserDevicesAsync()
+        private async Task GrabUserParametersAsync()
         {
-            _token = await SecureStorage.GetAsync("token");
-            Debug.Write(_token);
-
-            if (string.IsNullOrEmpty(_token))
+            var userStr= await SecureStorage.GetAsync(nameof(UserDetail));
+            Debug.WriteLine(userStr);
+            if (string.IsNullOrEmpty(userStr))
             {
                 throw new Exception("Token value is empty");
             }
+            _userDetail = JsonConvert.DeserializeObject<UserDetail>(userStr);
+            _url = $"{_baseUrl}/{_userDetail.Id}";
+       
+        }
 
+     
+        public async Task<List<DeviceDto>> GetUserDevicesAsync()
+        {
+           await  GrabUserParametersAsync();
+            if (_userDetail == null )
+            {
+                throw new Exception("Token value is empty");
+              
+            }
             try
             {
                 using (HttpClient httpClient = new HttpClient())
                 {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userDetail.Token);
                     var response = await httpClient.GetAsync(_url);
 
                     if (response.IsSuccessStatusCode)
