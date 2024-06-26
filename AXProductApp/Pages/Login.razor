@@ -83,11 +83,12 @@
 
         if (!string.IsNullOrEmpty(response))
         {
+          
             Navigation.NavigateTo("/main");
         }
         else
         {
-            // Show an error message
+            Vibration.Default.Vibrate(3000);
             await App.Current.MainPage.DisplayAlert("Oops", "Incorrect email or password", "Ok");
         }
 
