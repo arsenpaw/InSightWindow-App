@@ -9,7 +9,7 @@
 @inject NavigationManager NavigationManager
 @inject ILoginService LoginService
 @inject NavigationManager Navigation
-
+@inject IRefreshTokenService RefreshTokenService
 <h3>Login</h3>
 <EditForm Model="@userModel" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
@@ -45,14 +45,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var userStr = await SecureStorage.GetAsync(nameof(UserDetail));
+        var oldUserStr = await SecureStorage.GetAsync(nameof(UserDetail));
 
-        if (!string.IsNullOrWhiteSpace(userStr))
+        if (!string.IsNullOrWhiteSpace(oldUserStr))
         {
-            var user = JsonConvert.DeserializeObject<UserDetail>(userStr);
-
+            var user = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
+            await RefreshTokenService.UpdateTokens();
             var handler = new JwtSecurityTokenHandler();
-
             var jwtToken = handler.ReadToken(user.Token) as JwtSecurityToken;
 
             if (jwtToken.ValidTo > DateTime.UtcNow)
@@ -89,7 +88,7 @@
         else
         {
             Vibration.Default.Vibrate(3000);
-            await App.Current.MainPage.DisplayAlert("Oops", "Incorrect email or password", "Ok");
+            await App.Current.MainPage.DisplayAlert("Oops", "Incorrect email or password", "O shit,here we go againg");
         }
 
         _spinnerClass = "";

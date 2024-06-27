@@ -1,7 +1,9 @@
 ﻿
 using AXProductApp.Interfaces;
 using AXProductApp.Models;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,6 +14,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using static AXProductApp.Data.LinkToHub;
+using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
 namespace AXProductApp.Services
 {
@@ -19,21 +22,15 @@ namespace AXProductApp.Services
     {
         private readonly string _Url = $"{RealeseUrl}api/UsersDb/login";
 
-        public async Task WriteTokenDataToStorage(string jwtToken)
+       
+
+        public async Task WriteTokenDataToStorage(string jwtToken, string refreshToken )
         {
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(jwtToken) as JwtSecurityToken;
-            var userId = jsonToken?.Claims?.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
-            if (jsonToken != null)
-            {
-                foreach (Claim claim in jsonToken.Claims)
-                {
-                    Console.WriteLine($"Type: {claim.Type}, Value: {claim.Value}");
-                }
-            }
-            else
-                Console.WriteLine("Invalid token");
-            var user = new UserDetail { Token = jwtToken, Id = userId };//add role
+            var userId = jsonToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+         
+            var user = new UserDetail { Token = jwtToken, Id = userId, RefreshToken = refreshToken };//add role
             var userStr = JsonConvert.SerializeObject(user);
             await SecureStorage.SetAsync(nameof(UserDetail), userStr);
         }
@@ -50,15 +47,18 @@ namespace AXProductApp.Services
                     if (responce.IsSuccessStatusCode)
                     {
                         string responseBody = await responce.Content.ReadAsStringAsync();
-                        var token = responce.Headers.FirstOrDefault(x => x.Key == "Bearer").Value.First();
-                        await WriteTokenDataToStorage(token);
+                        var token = responce.Headers.FirstOrDefault(x => x.Key == "Token").Value.First();
+                        var refreshToken = responce.Headers.FirstOrDefault(x => x.Key == "Refresh-Token").Value.First();
+                        if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(token))
+                            throw new Exception("One of tokens are not valid");
+                        await WriteTokenDataToStorage(token, refreshToken);
                         responceStr = responce.StatusCode.ToString();
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
-                    await App.Current.MainPage.DisplayAlert("Oops", "Incorrect email or password", "Ok");
+                    await App.Current.MainPage.DisplayAlert("Critical", "Some trouble has happened during registration", "Ok");
                 }
 
                 return responceStr;
