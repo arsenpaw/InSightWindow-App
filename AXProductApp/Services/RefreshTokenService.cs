@@ -9,13 +9,14 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using AXProductApp.Models;
 using System.Net.Http.Headers;
+using System.Net;
 namespace AXProductApp.Services
 {
     public class RefreshTokenService : IRefreshTokenService
     {
-        private readonly string _Url = $"{RealeseUrl}api/UsersDb/refresh-token";
+        private readonly string _Url = $"{RealeseUrl}api/UsersDb/refresh-tokens";
 
-        public async Task UpdateTokens()//new tokens will be writen to secure storage
+        public async Task<HttpStatusCode> UpdateTokens()//new tokens will be writen to secure storage
         {
             var oldUserstr = await SecureStorage.GetAsync(nameof(UserDetail));
             var oldUser = JsonConvert.DeserializeObject<UserDetail>(oldUserstr);
@@ -24,8 +25,9 @@ namespace AXProductApp.Services
             {
                 using (HttpClient httpClient = new HttpClient())
                 {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("refresh-token", oldUser.RefreshToken);
-                    var response = await httpClient.GetAsync(_Url);
+                    httpClient.DefaultRequestHeaders.Add("refresh-token", oldUser.RefreshToken);
+                    
+                    var response = await httpClient.PostAsync(_Url, null);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -33,19 +35,14 @@ namespace AXProductApp.Services
                         oldUser.RefreshToken = response.Headers.First(x => x.Key == "refresh-token").Value.First();
                         await SecureStorage.SetAsync(nameof(UserDetail), JsonConvert.SerializeObject(oldUser));
                     }
-                    else
-                    {
-                        Debug.WriteLine($"Error: {response.StatusCode}");
-                        throw new Exception("Some mistake happen while hadndling responce");
-                    }
+                   return response.StatusCode;
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"General error: {ex.Message}");
-                await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while fetching devices.", "Ok");
-                throw new Exception("Bad responce");
-
+                await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while handling responce", "Ok");
+                throw new Exception("Some mistake happen while hadndling responce");
             }
 
         }
