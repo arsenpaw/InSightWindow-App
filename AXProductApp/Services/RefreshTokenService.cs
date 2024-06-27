@@ -28,7 +28,7 @@ namespace AXProductApp.Services
                     httpClient.DefaultRequestHeaders.Add("refresh-token", oldUser.RefreshToken);
                     
                     var response = await httpClient.PostAsync(_Url, null);
-
+                    var t = response.Content.ReadAsStringAsync();
                     if (response.IsSuccessStatusCode)
                     {
                         oldUser.Token = response.Headers.First(x => x.Key == "token").Value.First();

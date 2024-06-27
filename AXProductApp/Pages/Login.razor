@@ -6,6 +6,7 @@
 @using System.Diagnostics
 @using Newtonsoft.Json;
 @using System.IdentityModel.Tokens.Jwt;
+@using System.Net
 @inject NavigationManager NavigationManager
 @inject ILoginService LoginService
 @inject NavigationManager Navigation
@@ -49,20 +50,24 @@
 
         if (!string.IsNullOrWhiteSpace(oldUserStr))
         {
+            var statusCode = await RefreshTokenService.UpdateTokens();
             var user = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
-            await RefreshTokenService.UpdateTokens();
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadToken(user.Token) as JwtSecurityToken;
-
-            if (jwtToken.ValidTo > DateTime.UtcNow)
+            var t = DateTime.UtcNow;
+            var f = jwtToken.ValidTo;
+            
+            if (jwtToken.ValidTo > DateTime.UtcNow && statusCode == HttpStatusCode.OK)
             {
                 NavigationManager.NavigateTo("/main");
             }
             else
             {
                 NavigationManager.NavigateTo("/login");
+            await App.Current.MainPage.DisplayAlert("Oops", "Something wrong happen while autologing", "O shit,here we go againg");
             }
         }
+
         else
         {
             NavigationManager.NavigateTo("/login");

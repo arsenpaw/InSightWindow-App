@@ -47,8 +47,8 @@ namespace AXProductApp.Services
                     if (responce.IsSuccessStatusCode)
                     {
                         string responseBody = await responce.Content.ReadAsStringAsync();
-                        var token = responce.Headers.FirstOrDefault(x => x.Key == "Token").Value.First();
-                        var refreshToken = responce.Headers.FirstOrDefault(x => x.Key == "Refresh-Token").Value.First();
+                        var token = responce.Headers.FirstOrDefault(x => x.Key == "token").Value.First();
+                        var refreshToken = responce.Headers.FirstOrDefault(x => x.Key == "refresh-token").Value.First();
                         if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(token))
                             throw new Exception("One of tokens are not valid");
                         await WriteTokenDataToStorage(token, refreshToken);
