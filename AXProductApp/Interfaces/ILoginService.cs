@@ -9,7 +9,7 @@ namespace AXProductApp.Interfaces
 {
     interface ILoginService
     {
-        public Task<string> AuthenticateUser(UserLoginModel userLogin);
+        public Task<bool> TryAuthenticateUserAsync(UserLoginModel userLogin);
 
         public Task<bool> TryUserAutoLoggingAsync();
         

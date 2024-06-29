@@ -75,7 +75,7 @@ namespace AXProductApp.Services
             {
                 Debug.WriteLine($"General error: {ex.Message}");
                 await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while fetching devices.", "Ok");
-                throw new Exception("Bad responce");
+                throw new Exception("Error while handling request responce");
 
             }
         }

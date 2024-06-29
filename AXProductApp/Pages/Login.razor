@@ -69,11 +69,10 @@
         _isSubmitting = true;
         _spinnerClass = "spinner-border spinner-border-sm";
 
-        var response = await LoginService.AuthenticateUser(userModel);
+        bool isUserAuthenticated = await LoginService.TryAuthenticateUserAsync(userModel);
 
-        if (!string.IsNullOrEmpty(response))
+        if (isUserAuthenticated)
         {
-          
             Navigation.NavigateTo("/main");
         }
         else

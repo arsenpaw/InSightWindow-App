@@ -60,11 +60,10 @@ namespace AXProductApp.Services
             await SecureStorage.SetAsync(nameof(UserDetail), userStr);
         }
 
-        public async Task<string> AuthenticateUser(UserLoginModel userLogin)
+        public async Task<bool> TryAuthenticateUserAsync(UserLoginModel userLogin)
         {
             using (var httpClient = new HttpClient())
             {
-                string responceStr = String.Empty;
                 var objectToSendStr = JsonConvert.SerializeObject(userLogin);
                 try
                 {
@@ -77,16 +76,16 @@ namespace AXProductApp.Services
                         if (string.IsNullOrEmpty(refreshToken) || string.IsNullOrEmpty(token))
                             throw new Exception("One of tokens are not valid");
                         await WriteTokenDataToStorage(token, refreshToken);
-                        responceStr = responce.StatusCode.ToString();
+                        return  true;
                     }
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
                     await App.Current.MainPage.DisplayAlert("Critical", "Some trouble has happened during registration", "Ok");
+                    throw new Exception("Error while AuthenticateUser");
                 }
-
-                return responceStr;
+                return false;
             }
         }
     }
