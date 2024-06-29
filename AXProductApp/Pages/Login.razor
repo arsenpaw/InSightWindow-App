@@ -10,7 +10,6 @@
 @inject NavigationManager NavigationManager
 @inject ILoginService LoginService
 @inject NavigationManager Navigation
-@inject IRefreshTokenService RefreshTokenService
 <h3>Login</h3>
 <EditForm Model="@userModel" OnValidSubmit="Submit">
     <DataAnnotationsValidator />
@@ -46,37 +45,24 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var oldUserStr = await SecureStorage.GetAsync(nameof(UserDetail));
 
-        if (!string.IsNullOrWhiteSpace(oldUserStr))
+        bool isAutoLogginSucess = await LoginService.TryUserAutoLoggingAsync();
+        if (isAutoLogginSucess)
         {
-            var statusCode = await RefreshTokenService.UpdateTokens();
-            var user = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadToken(user.Token) as JwtSecurityToken;
-            var t = DateTime.UtcNow;
-            var f = jwtToken.ValidTo;
-            
-            if (jwtToken.ValidTo > DateTime.UtcNow && statusCode == HttpStatusCode.OK)
-            {
-                NavigationManager.NavigateTo("/main");
-            }
-            else
-            {
-                NavigationManager.NavigateTo("/login");
-            await App.Current.MainPage.DisplayAlert("Oops", "Something wrong happen while autologing", "O shit,here we go againg");
-            }
+            NavigationManager.NavigateTo("/main");
         }
-
         else
         {
             NavigationManager.NavigateTo("/login");
+           
         }
-
+     
+      
     }
 
     private async Task Submit()
     {
+        
         if (_isSubmitting)
             return;
 

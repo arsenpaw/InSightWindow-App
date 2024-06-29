@@ -1,6 +1,7 @@
 ﻿
 using AXProductApp.Interfaces;
 using AXProductApp.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -16,13 +18,36 @@ using System.Threading.Tasks;
 using static AXProductApp.Data.LinkToHub;
 using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegisteredClaimNames;
 
+
 namespace AXProductApp.Services
 {
     class LoginService : ILoginService
     {
         private readonly string _Url = $"{RealeseUrl}api/UsersDb/login";
+        private IRefreshTokenService _refreshTokenService;
 
-       
+         public LoginService(IRefreshTokenService refreshTokenService)
+        {
+            _refreshTokenService = refreshTokenService;
+        }
+
+        public async Task<bool> TryUserAutoLoggingAsync()
+        {
+            var oldUserStr = await SecureStorage.GetAsync(nameof(UserDetail));
+
+            if (!string.IsNullOrWhiteSpace(oldUserStr))
+            {
+                var statusCode = await _refreshTokenService.UpdateTokens();
+                var user = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
+                var handler = new JwtSecurityTokenHandler();
+                var jwtToken = handler.ReadToken(user.Token) as JwtSecurityToken;
+                if (jwtToken.ValidTo > DateTime.UtcNow && statusCode == HttpStatusCode.OK)
+                     return true;
+                else 
+                     await App.Current.MainPage.DisplayAlert("Oops", "Something wrong happen while autologing", "O shit,here we go againg");
+            }
+            return false;
+        }
 
         public async Task WriteTokenDataToStorage(string jwtToken, string refreshToken )
         {
