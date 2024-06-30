@@ -45,19 +45,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-
         bool isAutoLogginSucess = await LoginService.TryUserAutoLoggingAsync();
         if (isAutoLogginSucess)
-        {
             NavigationManager.NavigateTo("/main");
-        }
+        
         else
-        {
             NavigationManager.NavigateTo("/login");
-           
-        }
-     
-      
     }
 
     private async Task Submit()

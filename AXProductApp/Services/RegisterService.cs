@@ -13,7 +13,7 @@ namespace AXProductApp.Services
 {
     class RegisterService : IRegisterService
     {
-        private readonly string _Url = $"{RealeseUrl}api/UsersDb/create";
+        private readonly string _Url = $"{RealeseUrl}api/Auth/create";
 
         public async Task<string> AuthenticateUser(UserLoginModel userLogin)
         {

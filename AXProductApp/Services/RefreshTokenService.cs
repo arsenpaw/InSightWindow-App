@@ -14,7 +14,7 @@ namespace AXProductApp.Services
 {
     public class RefreshTokenService : IRefreshTokenService
     {
-        private readonly string _Url = $"{RealeseUrl}api/UsersDb/refresh-tokens";
+        private readonly string _Url = $"{RealeseUrl}api/Auth/refresh-tokens";
 
         public async Task<HttpStatusCode> UpdateTokens()//new tokens will be writen to secure storage
         {

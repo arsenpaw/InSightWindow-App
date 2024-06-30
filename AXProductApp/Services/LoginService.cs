@@ -23,7 +23,7 @@ namespace AXProductApp.Services
 {
     class LoginService : ILoginService
     {
-        private readonly string _Url = $"{RealeseUrl}api/UsersDb/login";
+        private readonly string _Url = $"{RealeseUrl}api/Auth/login";
         private IRefreshTokenService _refreshTokenService;
 
          public LoginService(IRefreshTokenService refreshTokenService)
