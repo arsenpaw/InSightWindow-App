@@ -4,7 +4,7 @@
 @using System.Diagnostics;
 @using AXProductApp.Pages;
 @inject SendUserInputService SendUserInputService;
-@inject ReceiveWindowStatusService SignalRService;
+@inject ReceiveWindowStatusService ReveiveWindowStatus;
 
 <style class="body-style">
     body {
@@ -190,16 +190,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        SignalRService.DataReceived += OnDataReceived;
+        ReveiveWindowStatus.DataReceived += OnDataReceived;
         SendUserInputService.DataReceived += OnResponceReceived;
-        SignalRService.ErrorDroped += OnExeptionReceived;
-        SendUserInputService.ErrorDroped += OnExeptionReceived;
-        await SignalRService.OnAppUpdate();
+
+        await ReveiveWindowStatus.OnAppUpdate();
         await SendUserInputService.OnAppUpdate();
-        if (SignalRService._hubConnection.State != HubConnectionState.Connected)
-            await SignalRService.InitializeConnection();
-        if (SendUserInputService._hubConnection.State != HubConnectionState.Connected)
-            await SendUserInputService.InitiaizeConnection();
+        // if (ReveiveWindowStatus._hubConnection.State != HubConnectionState.Connected)
+        //     await ReveiveWindowStatus.InitializeConnection();
+        // if (SendUserInputService._hubConnection.State != HubConnectionState.Connected)
+        //     await SendUserInputService.InitiaizeConnection();
     }
 
     async private Task OnProtectedInput(object checkedValue) => await SendUserInputService.SendProtectedInfo((bool)checkedValue);

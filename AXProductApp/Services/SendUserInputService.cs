@@ -13,9 +13,11 @@ namespace AXProductApp.Data
     public class SendUserInputService : ISendUserInputService
     {
         UserInputStatus userInputStatus = new UserInputStatus();
+
         public HubConnection _hubConnection;
+
         public event Action<WindowStatus> DataReceived;
-        public event Action<string> ErrorDroped;
+
         public SendUserInputService()
         {
             InitiaizeConnection();
@@ -53,7 +55,7 @@ namespace AXProductApp.Data
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error sending data tu hub {ex.Message}");
-                ErrorDroped.Invoke(ex.Message);
+                await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while sendig youre command ", "Ok");
                 return false;
             }
         }
@@ -97,7 +99,7 @@ namespace AXProductApp.Data
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error in sendind data to hub {ex.Message}");
-                ErrorDroped.Invoke(ex.Message);
+                await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while sendig youre command ", "Ok");
             }
         }
     }

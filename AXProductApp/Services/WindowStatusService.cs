@@ -20,7 +20,6 @@ namespace AXProductApp.Data
 
         public event Action<WindowStatus> DataReceived;
 
-        public event Action<string> ErrorDroped;
 
 
 
@@ -63,7 +62,7 @@ namespace AXProductApp.Data
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
-                ErrorDroped.Invoke(ex.Message);
+                await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while receiving widnow info", "Ok");
                 return false;
             }
 
@@ -80,7 +79,7 @@ namespace AXProductApp.Data
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error getting data from cache: {ex.Message}");
-                ErrorDroped.Invoke(ex.Message);
+                await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while receiving widnow info", "Ok");
             }
         }
 
