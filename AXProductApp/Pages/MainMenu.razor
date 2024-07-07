@@ -2,7 +2,8 @@
 @using AXProductApp.Interfaces
 @using AXProductApp.Models.Dto
 @inject IMainMenu MainMenuService
-
+@inject NavigationManager Navigation
+@inject StateContainer _stateContainer
 <h3>MainPage</h3>
 
 @if (deviceList == null)
@@ -17,12 +18,19 @@ else
 {
     @foreach (var item in deviceList)
     {
-        <p>@item.DeviceType</p>
+     
+        <button @onclick="() => OnDeviceSelectAsync(item.Id) ">@item.DeviceType</button>
     }
 }
 
 @code {
     private List<DeviceDto> deviceList;
+
+    public async Task OnDeviceSelectAsync(Guid id)
+    {
+        _stateContainer.ObjectTunnel.Add(id.GetHashCode(), id);
+        Navigation.NavigateTo($"/deviceDetails/{id.GetHashCode()}");
+    }
 
     protected override async Task OnInitializedAsync()
     {

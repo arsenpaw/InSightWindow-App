@@ -1,11 +1,11 @@
-﻿@page "/device"
+﻿@page "/deviceDetails/{StateHashCode:int}"
 @using Microsoft.AspNetCore.SignalR.Client;
 @using AXProductApp.Data;
 @using System.Diagnostics;
 @using AXProductApp.Pages;
 @inject SendUserInputService SendUserInputService;
 @inject ReceiveWindowStatusService ReveiveWindowStatus;
-
+@inject StateContainer _stateContainer
 <style class="body-style">
     body {
         background-image: linear-gradient(-135deg, rgba(163, 197, 237, 1) 0%, rgba(137, 159, 240, 1) 50%, rgba(199, 156, 232, 1) 100%);
@@ -187,14 +187,25 @@
 @code {
     private string Temperature, ProtectionStatus, Humidity, LastConnect, errorMessage;
     private bool isRain, isOpen, isProteced, isErrorDroped;
+    private  Guid selectedDeviceId;
+
+    [Parameter]
+    public int StateHashCode { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        if (_stateContainer.ObjectTunnel.TryGetValue(StateHashCode, out var deviceId))
+            selectedDeviceId = (Guid)deviceId;
+        else
+            await App.Current.MainPage.DisplayAlert("Oops", "No data datected in state container", "O shit,here we go againg");
+
         ReveiveWindowStatus.DataReceived += OnDataReceived;
         SendUserInputService.DataReceived += OnResponceReceived;
 
         await ReveiveWindowStatus.OnAppUpdate();
         await SendUserInputService.OnAppUpdate();
+
+
         // if (ReveiveWindowStatus._hubConnection.State != HubConnectionState.Connected)
         //     await ReveiveWindowStatus.InitializeConnection();
         // if (SendUserInputService._hubConnection.State != HubConnectionState.Connected)
@@ -205,13 +216,6 @@
 
     async private Task OnOpenInput(object checkedValue) => await SendUserInputService.SendOpenInfo((bool)checkedValue);
 
-    private async void OnExeptionReceived(string message)
-    {
-        errorMessage = message;
-        isErrorDroped = true;
-        await InvokeAsync(StateHasChanged);
-        Console.WriteLine(isErrorDroped);
-    }
     private async void OnResponceReceived(WindowStatus status)
     {
         isProteced = status.IsProtected.ToBool();

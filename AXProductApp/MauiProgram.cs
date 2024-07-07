@@ -43,6 +43,7 @@ public static class MauiProgram
         builder.Services.AddTransient<IRefreshTokenService, RefreshTokenService>();
         builder.Services.AddTransient<IMainMenu, MainMenuService>();
         builder.Services.AddBlazorWebViewDeveloperTools();
+        builder.Services.AddScoped<StateContainer>();
         builder.Logging.AddDebug();
 
 
