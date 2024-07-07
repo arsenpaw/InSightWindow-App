@@ -53,7 +53,7 @@ namespace AXProductApp.Services
         {
             var handler = new JwtSecurityTokenHandler();
             var jsonToken = handler.ReadToken(jwtToken) as JwtSecurityToken;
-            var userId = jsonToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub).Value;
+            var userId = jsonToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.NameId).Value;
          
             var user = new UserDetail { Token = jwtToken, Id = userId, RefreshToken = refreshToken };//add role
             var userStr = JsonConvert.SerializeObject(user);
