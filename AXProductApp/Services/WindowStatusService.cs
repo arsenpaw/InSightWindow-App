@@ -32,13 +32,13 @@ namespace AXProductApp.Data
 
             _hubConnection = new HubConnectionBuilder()
 
-                  .WithUrl($"{LinkToHub.RealeseUrl}client-hub", options =>
-                  {
-                      options.AccessTokenProvider = () => Task.FromResult(userDetail.Token);
-                  })
+            .WithUrl($"{LinkToHub.RealeseUrl}client-hub", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(userDetail.Token);
+            })
                   
-                .WithAutomaticReconnect()
-                .Build();
+            .WithAutomaticReconnect()
+            .Build();
             try
             {
                 await _hubConnection.StartAsync();

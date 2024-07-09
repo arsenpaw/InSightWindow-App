@@ -1,4 +1,4 @@
-namespace AXProductApp.Data
+namespace AXProductApp.Models
 {
     public class WindowStatus
     {
@@ -24,11 +24,11 @@ namespace AXProductApp.Data
             if (TimeDiff.TotalMinutes <= 1)
                 ReturnString = "Online";
             else if (TimeDiff.TotalMinutes <= 59 && TimeDiff.TotalMinutes > 1)
-                ReturnString = ($"Last connection {TimeDiff.Minutes} minutes ago");
+                ReturnString = $"Last connection {TimeDiff.Minutes} minutes ago";
             else if (TimeDiff.TotalHours < 24)
-                ReturnString = ($"Last connection {TimeDiff.Hours} hours ago");
+                ReturnString = $"Last connection {TimeDiff.Hours} hours ago";
             else
-                ReturnString = ($"Last connection {TimeDiff.Days} days ago");
+                ReturnString = $"Last connection {TimeDiff.Days} days ago";
             return ReturnString;
         }
     }

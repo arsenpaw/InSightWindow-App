@@ -1,4 +1,4 @@
-﻿using AXProductApp.Data;
+﻿using AXProductApp.Models;
 
 namespace AXProductApp.Interfaces
 {

@@ -1,4 +1,5 @@
 ﻿using AXProductApp.Interfaces;
+using AXProductApp.Models;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
@@ -16,27 +17,22 @@ namespace AXProductApp.Data
 
         public HubConnection _hubConnection;
 
-        public event Action<WindowStatus> DataReceived;
+        private Guid _deviceId; 
 
-        public SendUserInputService()
-        {
-            InitiaizeConnection();
-        }
-        public async Task<bool> InitiaizeConnection()
+        public event Action<UserInputStatus> DataReceived;
+
+        public async Task<bool> InitiaizeConnectionAsync(Guid deviceId)
         {
             _hubConnection = new HubConnectionBuilder()
-           .WithUrl($"{LinkToHub.RealeseUrl}/user-input-hub")
+           .WithUrl($"{LinkToHub.RealeseUrl}user-input-hub")
            .WithAutomaticReconnect()
            .Build();
-            _hubConnection.On<WindowStatus>("ReceiveUserInputResponce", (status) =>
+            _hubConnection.On<UserInputStatus>("ReceiveUserInputResponce", (status) =>
             {
                 if (status != null)
                 {
 
-                    status.TimeNow = DateTime.Now;
-                    Debug.WriteLine($"User input received: {status.IsOpen} {status.IsProtected}");
-                    string jsonString = JsonSerializer.Serialize(status);
-                    SecureStorage.SetAsync(nameof(UserInputStatus), jsonString);
+                    Debug.WriteLine($"User input received: {status.IsOpenButton} {status.IsProtectedButton}");
                     DataReceived.Invoke(status);
 
                 }
@@ -46,10 +42,10 @@ namespace AXProductApp.Data
                 }
 
             });
-
             try
             {
                 await _hubConnection.StartAsync();
+                _deviceId = deviceId;
                 return true;
             }
             catch (Exception ex)
@@ -60,31 +56,33 @@ namespace AXProductApp.Data
             }
         }
 
-        public async Task OnAppUpdate()
-        {
-            try
-            {
-                string output = await SecureStorage.GetAsync(nameof(UserInputStatus));
-                WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
-                if (status == null) { Debug.WriteLine("no data in user input cache"); return; }
-                DataReceived.Invoke(status);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-        }
+        //public async Task OnAppUpdate()
+        //{
+        //    try
+        //    {
+        //        string output = await SecureStorage.GetAsync(nameof(UserInputStatus));
+        //        WindowStatus status = JsonSerializer.Deserialize<WindowStatus>(output);
+        //        if (status == null) { Debug.WriteLine("no data in user input cache"); return; }
+        //        DataReceived.Invoke(status);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine(ex.Message);
+        //    }
+        //}
         public async Task SendOpenInfo(bool isOpened)
         {
-            userInputStatus.IsOpen = isOpened;
-            Debug.WriteLine($"Is open: {userInputStatus.IsOpen}");
+            userInputStatus.IsOpenButton = isOpened;
+            userInputStatus.DeviceId = _deviceId;    
+            Debug.WriteLine($"Is open: {userInputStatus.IsOpenButton}");
             await sendDataToHub(userInputStatus);
         }
 
         public async Task SendProtectedInfo(bool isProtected)
         {
-            userInputStatus.isProtected = isProtected;
-            Debug.WriteLine($"Is protected: {userInputStatus.isProtected}");
+            userInputStatus.IsProtectedButton = isProtected;
+            userInputStatus.DeviceId = _deviceId;
+            Debug.WriteLine($"Is protected: {userInputStatus.IsProtectedButton}");
             await sendDataToHub(userInputStatus);
         }
         public async Task sendDataToHub(UserInputStatus userInputStatus)

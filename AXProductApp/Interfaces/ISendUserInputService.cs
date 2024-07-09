@@ -1,12 +1,12 @@
-﻿using AXProductApp.Data;
+﻿using AXProductApp.Models;
 
 namespace AXProductApp.Interfaces
 {
     public interface ISendUserInputService
     {
-        event Action<WindowStatus> DataReceived;
+        event Action<UserInputStatus> DataReceived;
 
-        Task<bool> InitiaizeConnection();
+        Task<bool> InitiaizeConnectionAsync(Guid deviceId);
 
         Task SendOpenInfo(bool isOpened);
 
