@@ -8,6 +8,6 @@ namespace AXProductApp.Interfaces
 
         Task<bool> InitializeConnectionAsync(Guid deviceId);
 
-        Task OnAppUpdate();
+        //Task OnAppUpdate();
     }
 }

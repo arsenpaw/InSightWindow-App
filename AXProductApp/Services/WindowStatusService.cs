@@ -21,45 +21,41 @@ namespace AXProductApp.Data
         public HubConnection _hubConnection;
 
         public event Action<WindowStatus> DataReceived;
-
        
 
         public async Task<bool> InitializeConnectionAsync(Guid deviceId)
         {
-           
-
             var userDetail = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
-
             _hubConnection = new HubConnectionBuilder()
 
             .WithUrl($"{LinkToHub.RealeseUrl}client-hub", options =>
             {
                 options.AccessTokenProvider = () => Task.FromResult(userDetail.Token);
-            })
-                  
+            })                 
             .WithAutomaticReconnect()
             .Build();
+
             try
             {
                 await _hubConnection.StartAsync();
-                _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
-                {
-                    if (status.isAlarm.ToBool() && prevAlarmTriggered == false)
+                    _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
                     {
-                        prevAlarmTriggered = true;
-                        new NotificationService().sendAlarmMessage();
-                    }
-                    else if (!status.isAlarm.ToBool())
-                    {
-                        prevAlarmTriggered = false;
-                    }
-                    status.TimeNow = DateTime.Now;
-                    string jsonString = JsonConvert.SerializeObject(status);
-                    await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
-                    DataReceived?.Invoke(status);
+                        if (status.isAlarm.ToBool() && prevAlarmTriggered == false)
+                        {
+                            prevAlarmTriggered = true;
+                            new NotificationService().sendAlarmMessage();
+                        }
+                        else if (!status.isAlarm.ToBool())
+                        {
+                            prevAlarmTriggered = false;
+                        }
+                        status.TimeNow = DateTime.Now;
+                        string jsonString = JsonConvert.SerializeObject(status);
+                        await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
+                        DataReceived?.Invoke(status);
 
-                });
-                return true;
+                    });
+               return true;
             }
             catch (Exception ex)
             {
@@ -67,25 +63,22 @@ namespace AXProductApp.Data
                 await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while establishing connection to hub", "Ok");
                 return false;
             }
-           
-
-
         }
-        public async Task OnAppUpdate()
-        {
-            try
-            {
-                string output = await SecureStorage.GetAsync(nameof(WindowStatus));
-                if (output == null) { throw new InvalidDataException(); }
-                WindowStatus status = JsonConvert.DeserializeObject<WindowStatus>(output);
-                DataReceived?.Invoke(status);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error getting data from cache: {ex.Message}");
-                await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while receiving widnow info", "Ok");
-            }
-        }
+        //public async Task OnAppUpdate()
+        //{
+        //    try
+        //    {
+        //        string output = await SecureStorage.GetAsync(nameof(WindowStatus));
+        //        if (output == null) { throw new InvalidDataException(); }
+        //        WindowStatus status = JsonConvert.DeserializeObject<WindowStatus>(output);
+        //        DataReceived?.Invoke(status);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Debug.WriteLine($"Error getting data from cache: {ex.Message}");
+        //        await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while receiving widnow info", "Ok");
+        //    }
+        //}
 
 
     }

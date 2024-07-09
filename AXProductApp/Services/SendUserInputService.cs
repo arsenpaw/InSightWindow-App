@@ -1,6 +1,7 @@
 ﻿using AXProductApp.Interfaces;
 using AXProductApp.Models;
 using Microsoft.AspNetCore.SignalR.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -23,10 +24,16 @@ namespace AXProductApp.Data
 
         public async Task<bool> InitiaizeConnectionAsync(Guid deviceId)
         {
+            var userDetail = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
             _hubConnection = new HubConnectionBuilder()
-           .WithUrl($"{LinkToHub.RealeseUrl}user-input-hub")
+
+            .WithUrl($"{LinkToHub.RealeseUrl}client-hub", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult(userDetail.Token);
+            })
            .WithAutomaticReconnect()
            .Build();
+
             _hubConnection.On<UserInputStatus>("ReceiveUserInputResponce", (status) =>
             {
                 if (status != null)
@@ -34,13 +41,9 @@ namespace AXProductApp.Data
 
                     Debug.WriteLine($"User input received: {status.IsOpenButton} {status.IsProtectedButton}");
                     DataReceived.Invoke(status);
-
                 }
                 else
-                {
-                    Debug.WriteLine("No data received");
-                }
-
+                    Debug.WriteLine("No data received");        
             });
             try
             {
@@ -53,6 +56,38 @@ namespace AXProductApp.Data
                 Debug.WriteLine($"Error sending data tu hub {ex.Message}");
                 await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while sendig youre command ", "Ok");
                 return false;
+            }
+        }
+
+        public async Task SendOpenInfo(bool isOpened)
+        {
+            userInputStatus.IsOpenButton = isOpened;
+            userInputStatus.DeviceId = _deviceId;    
+            Debug.WriteLine($"Is open: {userInputStatus.IsOpenButton}");
+            await sendDataToHub(userInputStatus);
+        }
+
+        public async Task SendProtectedInfo(bool isProtected)
+        {
+            userInputStatus.IsProtectedButton = isProtected;
+            userInputStatus.DeviceId = _deviceId;
+            Debug.WriteLine($"Is protected: {userInputStatus.IsProtectedButton}");
+            await sendDataToHub(userInputStatus);
+        }
+        
+        public async Task sendDataToHub(UserInputStatus userInputStatus)
+        {
+            try
+            {
+                if (_hubConnection.State == HubConnectionState.Connected)
+                    await _hubConnection.SendAsync("SaveUserInput", userInputStatus);
+                else
+                    throw new Exception("FAILED CONECT TO HUB");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error in sendind data to hub {ex.Message}");
+                await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while sendig youre command ", "Ok");
             }
         }
 
@@ -70,35 +105,5 @@ namespace AXProductApp.Data
         //        Debug.WriteLine(ex.Message);
         //    }
         //}
-        public async Task SendOpenInfo(bool isOpened)
-        {
-            userInputStatus.IsOpenButton = isOpened;
-            userInputStatus.DeviceId = _deviceId;    
-            Debug.WriteLine($"Is open: {userInputStatus.IsOpenButton}");
-            await sendDataToHub(userInputStatus);
-        }
-
-        public async Task SendProtectedInfo(bool isProtected)
-        {
-            userInputStatus.IsProtectedButton = isProtected;
-            userInputStatus.DeviceId = _deviceId;
-            Debug.WriteLine($"Is protected: {userInputStatus.IsProtectedButton}");
-            await sendDataToHub(userInputStatus);
-        }
-        public async Task sendDataToHub(UserInputStatus userInputStatus)
-        {
-            try
-            {
-                if (_hubConnection.State == HubConnectionState.Connected)
-                    await _hubConnection.SendAsync("SaveUserInput", userInputStatus);
-                else
-                    throw new Exception("FAILED CONECT TO HUB");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error in sendind data to hub {ex.Message}");
-                await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while sendig youre command ", "Ok");
-            }
-        }
     }
 }

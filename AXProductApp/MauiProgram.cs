@@ -36,8 +36,8 @@ public static class MauiProgram
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddSingleton(AudioManager.Current);
-        builder.Services.AddSingleton<SendUserInputService>();
-        builder.Services.AddSingleton<ReceiveWindowStatusService>();
+        builder.Services.AddTransient<SendUserInputService>();
+        builder.Services.AddTransient<ReceiveWindowStatusService>();
         builder.Services.AddTransient<ILoginService, LoginService>();
         builder.Services.AddTransient<IRegisterService, RegisterService>();
         builder.Services.AddTransient<IRefreshTokenService, RefreshTokenService>();

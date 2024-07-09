@@ -236,7 +236,7 @@
     {
         Temperature = $"{status.Temparature} °C";
         Humidity = $"{status.Humidity} %";
-        ProtectionStatus = status.IsProtected;
+        ProtectionStatus = status.IsProtected.ToString();
         isRain = status.isRain != 0;
         //this line can do 2 connection to servev but it coused a lag
         // isOpen = status.IsOpen.ToBool();

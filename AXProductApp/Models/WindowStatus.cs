@@ -7,11 +7,11 @@ namespace AXProductApp.Models
 
         public int Humidity { get; set; }
 
-        public string IsOpen { get; set; }
+        public bool IsOpen { get; set; }
 
         public int isRain { get; set; }
 
-        public string IsProtected { get; set; }
+        public bool IsProtected { get; set; }
 
         public DateTime TimeNow { get; set; }
 
