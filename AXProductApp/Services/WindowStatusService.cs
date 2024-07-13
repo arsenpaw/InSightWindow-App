@@ -20,7 +20,7 @@ namespace AXProductApp.Data
 
         public HubConnection _hubConnection;
 
-        public event Action<WindowStatus> DataReceived;
+        public event Action<AllWindowDataDto> DataReceived;
        
 
         public async Task<bool> InitializeConnectionAsync(Guid deviceId)
@@ -38,7 +38,7 @@ namespace AXProductApp.Data
             try
             {
                 await _hubConnection.StartAsync();
-                    _hubConnection.On<WindowStatus>("ReceiveWindowStatus", async (status) =>
+                    _hubConnection.On<AllWindowDataDto>("ReceiveWindowStatus", async (status) =>
                     {
                         if (status.isAlarm.ToBool() && prevAlarmTriggered == false)
                         {

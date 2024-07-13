@@ -189,7 +189,7 @@
 @code {
     private string Temperature, ProtectionStatus, Humidity, LastConnect, errorMessage;
     private bool isRain, isOpen, isProteced, isErrorDroped;
-   
+
 
     [Parameter]
     public int StateHashCode { get; set; }
@@ -200,7 +200,7 @@
     {
         if (_stateContainer.ObjectTunnel.TryGetValue(StateHashCode, out var deviceId))
         {
-            
+
             await ReveiveWindowStatus.InitializeConnectionAsync((Guid)deviceId);
             await SendUserInputService.InitiaizeConnectionAsync((Guid)deviceId);
         }
@@ -212,12 +212,8 @@
 
         // hz чи то тре
         //await ReveiveWindowStatus.OnAppUpdate();
-       // await SendUserInputService.OnAppUpdate();
+        // await SendUserInputService.OnAppUpdate();
 
-        // if (ReveiveWindowStatus._hubConnection.State != HubConnectionState.Connected)
-        //     await ReveiveWindowStatus.InitializeConnection();
-        // if (SendUserInputService._hubConnection.State != HubConnectionState.Connected)
-        //     await SendUserInputService.InitiaizeConnection();
     }
 
     async private Task OnProtectedInput(object checkedValue) => await SendUserInputService.SendProtectedInfo((bool)checkedValue);
@@ -232,12 +228,12 @@
         Debug.WriteLine($"IsOpen updated to {isOpen}");
         await InvokeAsync(StateHasChanged);
     }
-    private async void OnDataReceived(WindowStatus status)
+    private async void OnDataReceived(AllWindowDataDto status)
     {
         Temperature = $"{status.Temparature} °C";
         Humidity = $"{status.Humidity} %";
         ProtectionStatus = status.IsProtected.ToString();
-        isRain = status.isRain != 0;
+        isRain = status.isRain;
         //this line can do 2 connection to servev but it coused a lag
         // isOpen = status.IsOpen.ToBool();
         LastConnect = status.GetLastConnectInfo();

@@ -2,7 +2,7 @@
 
 namespace AXProductApp.Models.Dto
 {
-    public record DeviceDto
+    public class DeviceDto
     {
         [Required]
         public Guid Id { get;  set; }    

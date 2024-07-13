@@ -4,7 +4,7 @@ namespace AXProductApp.Interfaces
 {
     public interface IReceiveWindowStatusService
     {
-        event Action<WindowStatus> DataReceived;
+        event Action<AllWindowDataDto> DataReceived;
 
         Task<bool> InitializeConnectionAsync(Guid deviceId);
 
