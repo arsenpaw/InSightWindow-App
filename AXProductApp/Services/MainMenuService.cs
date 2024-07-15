@@ -20,32 +20,20 @@ namespace AXProductApp.Services
     public class MainMenuService : IMainMenu
     {
 
-        private readonly string _baseUrl = $"{RealeseUrl}api/DevicesDb/DeviceOfUser";
-        private string _url;
-        private UserDetail _userDetail;
+        private readonly string _url = $"{RealeseUrl}api/DevicesDb/DeviceOfUser";
 
         public async Task OnAppUpdateAsync()
         {
             await GetUserDevicesAsync();
         }
 
-        private async Task GrabUserParametersAsync()
-        {
-            var userStr = await SecureStorage.GetAsync(nameof(UserDetail));
-            Debug.WriteLine(userStr);
-            if (string.IsNullOrEmpty(userStr))
-            {
-                throw new Exception("Token value is empty");
-            }
-            _userDetail = JsonConvert.DeserializeObject<UserDetail>(userStr);
-            _url = $"{_baseUrl}/{_userDetail.Id}";
-
-        }
+  
 
 
         public async Task<List<DeviceDto>> GetUserDevicesAsync()
         {
-            await GrabUserParametersAsync();
+            var userStr = await SecureStorage.GetAsync(nameof(UserDetail));
+            var _userDetail = JsonConvert.DeserializeObject<UserDetail>(userStr);
             if (_userDetail == null)
             {
                 throw new Exception("Token value is empty");

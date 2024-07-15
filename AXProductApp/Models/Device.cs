@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations; 
 using System.Reflection.Metadata;
-using InSightWindowAPI.Models.Dto;
 
-namespace InSightWindowAPI.Models.DeviceModel
+
+namespace AXProductApp.Models.DeviceModel
 {
     public class Device
     {
@@ -15,6 +15,6 @@ namespace InSightWindowAPI.Models.DeviceModel
 
         public virtual Guid? UserId { get; set; }
 
-        public virtual User? User { get; set; }
+
     }
 }
