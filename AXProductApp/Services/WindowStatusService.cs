@@ -51,7 +51,8 @@ namespace AXProductApp.Data
                         }
                         status.TimeNow = DateTime.Now;
                         string jsonString = JsonConvert.SerializeObject(status);
-                        await SecureStorage.SetAsync(nameof(WindowStatus), jsonString);
+                        await SecureStorage.SetAsync(status.Id.ToString(), jsonString);
+                        
                         DataReceived?.Invoke(status);
 
                     });
@@ -64,6 +65,17 @@ namespace AXProductApp.Data
                 return false;
             }
         }
+
+        public async Task TryShowDataFromCashe(string deviceId)
+        {
+            var strData = await SecureStorage.GetAsync(deviceId);
+            if (strData != null)
+            {
+               var objDataFromCache =  JsonConvert.DeserializeObject<AllWindowDataDto>(strData);
+                DataReceived?.Invoke(objDataFromCache);
+            }
+        }
+
         //public async Task OnAppUpdate()
         //{
         //    try

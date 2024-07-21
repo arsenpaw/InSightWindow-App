@@ -198,17 +198,22 @@
 
     protected override async Task OnInitializedAsync()
     {
+
+        ReveiveWindowStatus.DataReceived += OnDataReceived;
+        SendUserInputService.DataReceived += OnResponceReceived;
+
         if (_stateContainer.ObjectTunnel.TryGetValue(StateHashCode, out var deviceId))
         {
-
-            await ReveiveWindowStatus.InitializeConnectionAsync((Guid)deviceId);
-            await SendUserInputService.InitiaizeConnectionAsync((Guid)deviceId);
+            Guid deviceIdGuid = (Guid)deviceId;
+            await ReveiveWindowStatus.TryShowDataFromCashe(deviceIdGuid.ToString());
+            await ReveiveWindowStatus.InitializeConnectionAsync(deviceIdGuid);
+            await SendUserInputService.InitiaizeConnectionAsync(deviceIdGuid);
         }
         else
             await App.Current.MainPage.DisplayAlert("Oops", "No data datected in state container", "O shit,here we go againg");
 
-        ReveiveWindowStatus.DataReceived += OnDataReceived;
-        SendUserInputService.DataReceived += OnResponceReceived;
+       
+       
 
         // hz чи то тре
         //await ReveiveWindowStatus.OnAppUpdate();
@@ -220,6 +225,7 @@
 
     async private Task OnOpenInput(object checkedValue) => await SendUserInputService.SendOpenInfo((bool)checkedValue);
 
+    
     private async void OnResponceReceived(UserInputStatus status)
     {
         isProteced = status.IsProtectedButton;
