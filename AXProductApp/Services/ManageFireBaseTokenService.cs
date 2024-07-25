@@ -65,18 +65,12 @@ namespace AXProductApp.Services
 
         public async Task CreateToken()
         {
-            var oldToken = await SecureStorage.GetAsync("FirebaseToken");
-          
-            if (oldToken != null)
-            {
-                return;
-            }
+
             await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
             var firebaseToken = await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
 
             if (!string.IsNullOrEmpty(firebaseToken))
             {
-                await SecureStorage.SetAsync("FirebaseToken", firebaseToken);
                 await SendTokenToServer(firebaseToken);    
             }
             else

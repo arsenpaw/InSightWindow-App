@@ -87,13 +87,5 @@
     <ItemGroup>
       <None Include="wwwroot\scripts\reloadApp.js" />
     </ItemGroup>
-	
-    <ItemGroup>
-      <Content Update="google-services.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-    </ItemGroup>
 
 </Project>
