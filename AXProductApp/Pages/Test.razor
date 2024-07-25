@@ -40,11 +40,12 @@
     }
     private async void SendPushClicked()
     {
+        
         var app = FirebaseApp.Create(new AppOptions
         {
             Credential = await GetCredential()
         });
-
+        
         FirebaseMessaging messaging = FirebaseMessaging.GetMessaging(app);
         var message = new Message()
         {
