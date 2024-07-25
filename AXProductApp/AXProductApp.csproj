@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFrameworks>net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
-        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+        <TargetFrameworks>net7.0-android</TargetFrameworks>
+       <!--<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>--> 
         <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
         <!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
         <OutputType>Exe</OutputType>
@@ -16,7 +16,7 @@
         <ApplicationTitle>AXProductApp</ApplicationTitle>
 
         <!-- App Identifier -->
-        <ApplicationId>com.companyname.axproductapp</ApplicationId>
+        <ApplicationId>com.company.name</ApplicationId>
         <ApplicationIdGuid>349C8D08-95F2-410B-A617-7F698E2CC8BF</ApplicationIdGuid>
 
         <!-- Versions -->
@@ -57,6 +57,11 @@
     </ItemGroup>
 	
     <ItemGroup>
+      <Content Remove="Platforms\Android\google-services.json" />
+      <Content Remove="Resources\Raw\firebase-adminsdk.json" />
+    </ItemGroup>
+	
+    <ItemGroup>
 
       <None Remove="Platforms\Android\Resources\raw\alarm_sound.mp3" />
 
@@ -64,10 +69,16 @@
     </ItemGroup>
 	
     <ItemGroup>
+      <GoogleServicesJson Include="Platforms\Android\google-services.json" />
+    </ItemGroup>
+	
+    <ItemGroup>
+        <PackageReference Include="FirebaseAdminCore" Version="2.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="7.0.17" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
         <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Plugin.Firebase" Version="1.2.0" />
         <PackageReference Include="Plugin.LocalNotification" Version="10.1.8" />
         <PackageReference Include="Plugin.Maui.Audio" Version="2.1.0" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.2" />
@@ -75,6 +86,14 @@
 	
     <ItemGroup>
       <None Include="wwwroot\scripts\reloadApp.js" />
+    </ItemGroup>
+	
+    <ItemGroup>
+      <Content Update="google-services.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

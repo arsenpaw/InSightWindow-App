@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using Firebase;
 [assembly: UsesPermission(Android.Manifest.Permission.Vibrate)]
 namespace AXProductApp;
 
@@ -11,5 +12,6 @@ public class MainActivity : MauiAppCompatActivity
     {
        base.OnCreate(savedInstanceState);
         RequestedOrientation = ScreenOrientation.Portrait;
-   }
+        FirebaseApp.InitializeApp(this);
+    }
 }

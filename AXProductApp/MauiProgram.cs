@@ -7,6 +7,14 @@ using Plugin.LocalNotification.AndroidOption;
 using Plugin.Maui.Audio;
 using AXProductApp.Services;
 using AXProductApp.Interfaces;
+using Microsoft.Maui.LifecycleEvents;
+using Microsoft.Maui.LifecycleEvents;
+using Plugin.Firebase.Android;
+using Plugin.Firebase.Auth;
+
+using Plugin.Firebase.Shared;
+
+
 
 namespace AXProductApp;
 
@@ -16,6 +24,7 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
+            .RegisterFirebaseServices() 
             .UseMauiApp<App>()
             .UseLocalNotification(config =>
             {
@@ -48,5 +57,23 @@ public static class MauiProgram
 
 
         return builder.Build();
+
+    }
+    private static MauiAppBuilder RegisterFirebaseServices(this MauiAppBuilder builder)
+    {
+        builder.ConfigureLifecycleEvents(events =>
+        {
+
+            events.AddAndroid(android => android.OnCreate((activity, state) =>
+                CrossFirebase.Initialize(activity, state, CreateCrossFirebaseSettings())));
+        });
+
+        builder.Services.AddSingleton(_ => CrossFirebaseAuth.Current);
+        return builder;
+    }
+
+    private static CrossFirebaseSettings CreateCrossFirebaseSettings()
+    {
+        return new CrossFirebaseSettings(isAuthEnabled: true, isCloudMessagingEnabled: true);
     }
 }
