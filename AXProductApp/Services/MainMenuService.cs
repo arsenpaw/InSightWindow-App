@@ -24,13 +24,13 @@ namespace AXProductApp.Services
 
         public async Task OnAppUpdateAsync()
         {
-            await GetUserDevicesAsync();
+            await GetUserDevicesListAsync();
         }
 
   
 
 
-        public async Task<List<DeviceDto>> GetUserDevicesAsync()
+        public async Task<List<DeviceDto>> GetUserDevicesListAsync()
         {
             var userStr = await SecureStorage.GetAsync(nameof(UserDetail));
             var _userDetail = JsonConvert.DeserializeObject<UserDetail>(userStr);
@@ -46,11 +46,15 @@ namespace AXProductApp.Services
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userDetail.Token);
                     var response = await httpClient.GetAsync(_url);
 
-                    if (response.IsSuccessStatusCode)
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         var responceBody = await response.Content.ReadAsStringAsync();
                         var devicesList = JsonConvert.DeserializeObject<List<DeviceDto>>(responceBody);
                         return devicesList;
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    {
+                        return new List<DeviceDto>();
                     }
                     else
                     {
