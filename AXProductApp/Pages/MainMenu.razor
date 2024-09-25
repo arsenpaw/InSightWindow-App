@@ -36,7 +36,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        deviceList = await MainMenuService.GetUserDevicesAsync();
+        deviceList = await MainMenuService.GetUserDevicesListAsync();
        await  _manageFireBaseTokenService.CreateToken();
     }
 }

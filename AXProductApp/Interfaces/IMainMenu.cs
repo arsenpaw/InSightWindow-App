@@ -10,6 +10,6 @@ namespace AXProductApp.Interfaces
     interface IMainMenu
     {
         Task OnAppUpdateAsync();
-        Task<List<DeviceDto>> GetUserDevicesAsync();
+        Task<List<DeviceDto>> GetUserDevicesListAsync();
     }
 }
