@@ -11,18 +11,19 @@
 @inject NavigationManager NavigationManager
 @inject ILoginService LoginService
 @inject NavigationManager Navigation
-<h3>Login</h3>
-<EditForm Model="@userModel" OnValidSubmit="Submit">
+
+<EditForm Model="@userModel" OnValidSubmit="Submit" class="section__login">
     <DataAnnotationsValidator />
-    <div>
+    <h3>Login</h3>
+    <div class="section__loging-box" >
         <div class="form-group">
-            <label>Email address</label>
-            <input type="email" @bind-value="userModel.Email" class="form-control" placeholder="Enter email" required>
+            <label>Email</label>
+            <input type="email" @bind-value="userModel.Email" class="form-control" required>
             <ValidationMessage For="@(() => userModel.Email)" />
         </div>
         <div class="mt-2 form-group">
             <label>Password</label>
-            <input type="password" @bind-value="userModel.Password" class="form-control" placeholder="Password" required>
+            <input type="password" @bind-value="userModel.Password" class="form-control" required>
             <ValidationMessage For="@(() => userModel.Password)" />
         </div>
     </div>
@@ -33,8 +34,8 @@
     </div>
     <div class="text-center mt-2">
         <button class="btn btn-primary" type="submit">
-            <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
-            Sign In
+        <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
+        Sign In
         </button>
     </div>
 </EditForm>
