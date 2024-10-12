@@ -57,7 +57,6 @@
     </ItemGroup>
 	
     <ItemGroup>
-      <Content Remove="Platforms\Android\google-services.json" />
       <Content Remove="Resources\Raw\firebase-adminsdk.json" />
     </ItemGroup>
 	
@@ -66,10 +65,6 @@
       <None Remove="Platforms\Android\Resources\raw\alarm_sound.mp3" />
 
       <None Remove="Resources\Splash\ax_icon.jpg" />
-    </ItemGroup>
-	
-    <ItemGroup>
-      <GoogleServicesJson Include="Platforms\Android\google-services.json" />
     </ItemGroup>
 	
     <ItemGroup>
