@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 AXProductApp/Resources/Raw/firebase-adminsdk.json
 AXProductApp/Platforms/Android/google-services.json
+/.idea
