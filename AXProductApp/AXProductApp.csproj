@@ -62,9 +62,15 @@
 	
     <ItemGroup>
 
+      <None Remove="Pages\Register.razor.css" />
+
       <None Remove="Platforms\Android\Resources\raw\alarm_sound.mp3" />
 
       <None Remove="Resources\Splash\ax_icon.jpg" />
+    </ItemGroup>
+	
+    <ItemGroup>
+      <Content Include="Pages\Register.razor.css" />
     </ItemGroup>
 	
     <ItemGroup>
