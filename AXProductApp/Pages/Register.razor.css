@@ -6,7 +6,7 @@
     height: 100%;
 }
 
-h1 {
+.title {
 	margint: 0 auto;
     margin-top: 40px;
     font-family: 'Trebuchet MS', sans-serif;
@@ -44,14 +44,9 @@ h1 {
     align-items: center;
 }
 
-input {
-    font-family: 'Trebuchet MS', sans-serif;
-    font-size: 15px;
-}
-
-label {
+.label-name {
     width: 100px;
-
+    height: 45px;
     font-family: 'Inter';
     font-style: normal;
     font-weight: bold;
@@ -59,16 +54,27 @@ label {
     font-size: 15px;
     line-height: 22px;
     text-align: center;
-
     color: #000000;
 }
 
-.form-control {
+.input-box {
+    display: flex;
+    flex-direction: column;
     width: 75%;
+    height: 75px;
+}
+
+
+.form-control {
+    width: 100%;
     height: 50px;
     border-radius: 20px;
     border-width: 2px;
     border-color: #000000;
+}
+
+.error-messange {
+    font-size: 12px;
 }
 
 .mt-2.text-end {
@@ -112,4 +118,8 @@ label {
     font-weight: bold;
     color: #000000;
     background: #ffffff;
+}
+
+.btn.btn-primary:active {
+    transform: scale(0.9);
 }

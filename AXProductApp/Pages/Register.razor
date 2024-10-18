@@ -17,27 +17,35 @@
 
 <EditForm Model="@userRegister" OnValidSubmit="Submit" class="section__register">
     <DataAnnotationsValidator />
-    <h1>Register</h1>
+    <h1 class="title">Register</h1>
     <div class="section__register-box">
         <div class="form-group">
-            <label>First Name</label>
-            <input class="form-control" @bind-value="userRegister.FirstName" placeholder="Enter First Name">
-            <ValidationMessage For="@(() => userRegister.FirstName)"></ValidationMessage>
+            <label class="label-name">First Name</label>
+            <div class="input-box">
+                <input class="form-control" @bind-value="userRegister.FirstName" placeholder="Enter First Name">
+                <h5 class="error-messange"><ValidationMessage For="@(() => userRegister.FirstName)"></ValidationMessage></h5>
+            </div>
         </div>
         <div class="form-group">
-            <label>Last Name</label>
-            <input class="form-control" @bind-value="userRegister.LastName" placeholder="Enter Last Name">
-            <ValidationMessage For="@(() => userRegister.LastName)"></ValidationMessage>
+            <label class="label-name">Last Name</label>
+            <div class="input-box">
+                <input class="form-control" @bind-value="userRegister.LastName" placeholder="Enter Last Name">
+                <h5 class="error-messange"><ValidationMessage For="@(() => userRegister.LastName)"></ValidationMessage></h5>
+            </div>
         </div>
         <div class="form-group">
-            <label>Email</label>
-            <input class="form-control" @bind-value="userRegister.Email" type="email" placeholder="Enter Email Adress">
-        <ValidationMessage For="@(() => userRegister.Email)"></ValidationMessage>
+            <label class="label-name">Email</label>
+            <div class="input-box">
+                <input class="form-control" @bind-value="userRegister.Email" type="email" placeholder="Enter Email Adress">
+                <h5 class="error-messange"><ValidationMessage For="@(() => userRegister.Email)"></ValidationMessage></h5>
+            </div>
         </div>
         <div class="form-group">
-            <label>Password</label>
-            <input class="form-control" @bind-value="userRegister.Password" type="password" placeholder="Password">
-        <ValidationMessage For="@(() => userRegister.Password)"></ValidationMessage>
+            <label class="label-name">Password</label>
+            <div class="input-box">
+                <input class="form-control" @bind-value="userRegister.Password" type="password" placeholder="Password">
+                <h5 class="error-messange"><ValidationMessage For="@(() => userRegister.Password)"></ValidationMessage></h5>
+            </div>
         </div>
     </div>
     <div class="mt-2 text-end">
