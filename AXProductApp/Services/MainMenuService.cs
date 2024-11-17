@@ -13,23 +13,17 @@ using AXProductApp.Models.Dto;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using static AXProductApp.Data.LinkToHub;
+//TODO Unready page
 
 namespace AXProductApp.Services
 {
     public class MainMenuService : IMainMenu
     {
-
-        private readonly string _url = $"{RealeseUrl}api/DevicesDb/DeviceOfUser";
-
         public async Task OnAppUpdateAsync()
         {
             await GetUserDevicesListAsync();
         }
-
-  
-
-
+        
         public async Task<List<DeviceDto>> GetUserDevicesListAsync()
         {
             var userStr = await SecureStorage.GetAsync(nameof(UserDetail));
@@ -44,7 +38,7 @@ namespace AXProductApp.Services
                 using (HttpClient httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userDetail.Token);
-                    var response = await httpClient.GetAsync(_url);
+                    var response = await httpClient.GetAsync("_url");
 
                     if (response.StatusCode == System.Net.HttpStatusCode.OK)
                     {

@@ -14,6 +14,7 @@ public class AuthApiClient
         _client = new HttpClient
         {
             BaseAddress = new Uri(baseAddress)
+            
         };
 
         _client.DefaultRequestHeaders.Accept.Clear();
@@ -67,6 +68,7 @@ public class AuthApiClient
         var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
         var response = await _client.PostAsync(endpoint, content);
+
 
         if (!response.IsSuccessStatusCode)
             throw new HttpRequestException(

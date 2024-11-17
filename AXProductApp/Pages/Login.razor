@@ -1,16 +1,12 @@
 ﻿@page "/"
 @page "/login"
-@using AXProductApp.Models
-@using AXProductApp.Services
-@using AXProductApp.Interfaces
 @using System.Diagnostics
-@using Newtonsoft.Json;
-@using System.IdentityModel.Tokens.Jwt;
+@using AXProductApp.Interfaces
+@using AXProductApp.Models
 @using AXProductApp.Route
-@using System.Net
 
 @inject NavigationManager NavigationManager
-@inject ILoginService LoginService
+@inject IAuthService AuthService
 @inject NavigationManager Navigation
 <style>
     body {
@@ -22,18 +18,18 @@
 </style>
 
 <EditForm Model="@userModel" OnValidSubmit="Submit" class="section__login">
-    <DataAnnotationsValidator />
+    <DataAnnotationsValidator/>
     <h1 class="title">Login</h1>
-    <div class="section__loging-box" >
+    <div class="section__loging-box">
         <div class="form-group">
             <label class="label-name">Email</label>
             <input placeholder="Enter email" type="email" @bind-value="userModel.Email" class="form-control" required>
-            <ValidationMessage For="@(() => userModel.Email)" />
+            <ValidationMessage For="@(() => userModel.Email)"/>
         </div>
         <div class="mt-2 form-group">
             <label class="label-name">Password</label>
             <input placeholder="Enter password" type="password" @bind-value="userModel.Password" class="form-control" required>
-            <ValidationMessage For="@(() => userModel.Password)" />
+            <ValidationMessage For="@(() => userModel.Password)"/>
         </div>
     </div>
     <div class="mt-2 text-end">
@@ -43,35 +39,35 @@
     </div>
     <div class="text-center mt-2">
         <button class="btn btn-primary" type="submit">
-        <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
-        Sign In
+            <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
+            Sign In
         </button>
     </div>
 </EditForm>
 
 @code {
-    private UserLoginModel userModel = new UserLoginModel();
+    private readonly UserLoginModel userModel = new();
     private string _spinnerClass = "";
-    private bool _isSubmitting = false;
+    private bool _isSubmitting;
 
     protected override async Task OnInitializedAsync()
     {
-        bool isAutoLogginSucess = await LoginService.TryUserAutoLoggingAsync();
+        
+        var isAutoLogginSucess = await AuthService.TryUserAutoLoggingAsync();
         if (isAutoLogginSucess)
             NavigationManager.NavigateTo(Routes.Main);
-        
+
         else
             NavigationManager.NavigateTo(Routes.Login);
     }
 
     private async Task Submit()
     {
-        
         if (_isSubmitting)
             return;
         _isSubmitting = true;
         _spinnerClass = "spinner-border spinner-border-sm";
-        bool isUserAuthenticated = await LoginService.TryAuthenticateUserAsync(userModel);
+        var isUserAuthenticated = await AuthService.TryLoginUser(userModel);
         if (isUserAuthenticated)
         {
             Navigation.NavigateTo(Routes.Main);
@@ -79,11 +75,12 @@
         else
         {
             Vibration.Default.Vibrate(3000);
-            await App.Current.MainPage.DisplayAlert("Oops", "Incorrect email or password", "O shit,here we go againg");
+            await Application.Current.MainPage.DisplayAlert("Oops", "Incorrect email or password", "O shit,here we go againg");
         }
 
         _spinnerClass = "";
         _isSubmitting = false;
         Debug.WriteLine(userModel.Email);
     }
+
 }

@@ -1,9 +1,9 @@
 ﻿@page "/registration"
-@using AXProductApp.Models
 @using System.Diagnostics
-@using AXProductApp.Services;
-@using AXProductApp.Interfaces;
-@inject IRegisterService RegisterService
+@using AXProductApp.Interfaces
+@using AXProductApp.Models
+@using AXProductApp.Route
+@inject IAuthService AuthService
 @inject NavigationManager Navigation
 
 <style>
@@ -16,35 +16,43 @@
 </style>
 
 <EditForm Model="@userRegister" OnValidSubmit="Submit" class="section__register">
-    <DataAnnotationsValidator />
+    <DataAnnotationsValidator/>
     <h1 class="title">Register</h1>
     <div class="section__register-box">
         <div class="form-group">
             <label class="label-name">First Name</label>
             <div class="input-box">
                 <input class="form-control" @bind-value="userRegister.FirstName" placeholder="Enter First Name">
-                <h5 class="error-messange"><ValidationMessage For="@(() => userRegister.FirstName)"></ValidationMessage></h5>
+                <h5 class="error-messange">
+                    <ValidationMessage For="@(() => userRegister.FirstName)"></ValidationMessage>
+                </h5>
             </div>
         </div>
         <div class="form-group">
             <label class="label-name">Last Name</label>
             <div class="input-box">
                 <input class="form-control" @bind-value="userRegister.LastName" placeholder="Enter Last Name">
-                <h5 class="error-messange"><ValidationMessage For="@(() => userRegister.LastName)"></ValidationMessage></h5>
+                <h5 class="error-messange">
+                    <ValidationMessage For="@(() => userRegister.LastName)"></ValidationMessage>
+                </h5>
             </div>
         </div>
         <div class="form-group">
             <label class="label-name">Email</label>
             <div class="input-box">
                 <input class="form-control" @bind-value="userRegister.Email" type="email" placeholder="Enter Email Adress">
-                <h5 class="error-messange"><ValidationMessage For="@(() => userRegister.Email)"></ValidationMessage></h5>
+                <h5 class="error-messange">
+                    <ValidationMessage For="@(() => userRegister.Email)"></ValidationMessage>
+                </h5>
             </div>
         </div>
         <div class="form-group">
             <label class="label-name">Password</label>
             <div class="input-box">
                 <input class="form-control" @bind-value="userRegister.Password" type="password" placeholder="Password">
-                <h5 class="error-messange"><ValidationMessage For="@(() => userRegister.Password)"></ValidationMessage></h5>
+                <h5 class="error-messange">
+                    <ValidationMessage For="@(() => userRegister.Password)"></ValidationMessage>
+                </h5>
             </div>
         </div>
     </div>
@@ -54,7 +62,7 @@
         </NavLink>
     </div>
     <div class="text-center mt-2">
-        <button class="btn btn-primary" type="submit"> 
+        <button class="btn btn-primary" type="submit">
             <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
             Sign Up
         </button>
@@ -62,9 +70,10 @@
 </EditForm>
 
 @code {
-    UserRegisterModel userRegister = new UserRegisterModel();
+    readonly UserRegisterModel userRegister = new();
     private string _spinnerClass = "";
-    private bool _isSubmitting = false;
+    private bool _isSubmitting;
+
     private async Task Submit()
     {
         if (_isSubmitting)
@@ -73,18 +82,14 @@
         _isSubmitting = true;
         _spinnerClass = "spinner-border spinner-border-sm";
 
-        var response = await RegisterService.AuthenticateUser(userRegister);
-
-        if (!string.IsNullOrEmpty(response))
-        {
-            await App.Current.MainPage.DisplayAlert("Congratulations", "Youre accaount have been sucesfully added", "Das is gut");
-            Navigation.NavigateTo("/login");
-        }
-        else
-        {
-            // Show an error message
-            await App.Current.MainPage.DisplayAlert("Oops", "Youre account was not registered ", "Ok");
-        }
+        await AuthService.TryRegisterUser(userRegister);
+        await Application.Current.MainPage.DisplayAlert("Congratulations", "Youre accaount have been sucesfully added", "Das is gut");
+        Navigation.NavigateTo(Routes.Login);
+        // else
+        // {
+        //     // Show an error message
+        //     await App.Current.MainPage.DisplayAlert("Oops", "Youre account was not registered ", "Ok");
+        // }
 
         _spinnerClass = "";
         _isSubmitting = false;

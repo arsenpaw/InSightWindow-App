@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace AXProductApp.Interfaces
 {
      interface IRefreshTokenService
-    {
-        Task<HttpStatusCode> UpdateTokens();
-    }
+     {
+         public  Task UpdateTokens();
+     }
 }

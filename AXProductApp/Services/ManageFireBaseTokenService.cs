@@ -13,15 +13,14 @@ using AXProductApp.Models;
 using Java.Net;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
-using static AXProductApp.Data.LinkToHub;
 using InSightWindowAPI.Models;
 using System.Web;
 using Kotlin.Jvm.Internal;
+//TODO Unready page
 namespace AXProductApp.Services
 {
     public class ManageFireBaseTokenService : IManageFireBaseTokenService
     {
-        private readonly string _url = $"{RealeseUrl}api/FireBaseTokens";
 
         public async Task SendTokenToServer(string token)
         {
@@ -38,7 +37,7 @@ namespace AXProductApp.Services
                 using (HttpClient httpClient = new HttpClient())
                 {
                     httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userDetail.Token);
-                    string finalUrl = _url + $"/{token}";
+                    string finalUrl = "_url" + $"/{token}";
                     var response = await httpClient.PostAsync(finalUrl, null);
 
 
