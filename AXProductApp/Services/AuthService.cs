@@ -8,41 +8,46 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 
 namespace AXProductApp.Services;
 
-internal class LoginService : ILoginService
+internal class AuthService : IAuthService
 {
     private readonly AuthApiClient _httpClient;
+    private readonly ILocalStorageService _localStorageService;
     private readonly IRefreshTokenService _refreshTokenService;
 
-    public LoginService(AuthApiClient httpClient, IRefreshTokenService refreshTokenService)
+    public AuthService(AuthApiClient httpClient, IRefreshTokenService refreshTokenService,
+        ILocalStorageService localStorageService)
     {
         _httpClient = httpClient;
         _refreshTokenService = refreshTokenService;
+        _localStorageService = localStorageService;
+    }
+
+    public async Task TryRegisterUser(UserRegisterModel userLogin)
+    {
+        await _httpClient.PostAsync<HttpStatusCode>("/Auth/create", userLogin);
     }
 
     public async Task<bool> TryUserAutoLoggingAsync()
     {
-        var oldUserStr = await SecureStorage.GetAsync(nameof(UserDetail));
+        var userData = await _localStorageService.GetUserSecret();
+        if (userData == null)
+            return false;
+        await _refreshTokenService.UpdateTokens();
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadToken(userData.Token) as JwtSecurityToken;
 
-        if (!string.IsNullOrWhiteSpace(oldUserStr))
-        {
-            var statusCode = await _refreshTokenService.UpdateTokens();
-            var user = JsonConvert.DeserializeObject<UserDetail>(oldUserStr);
-            var handler = new JwtSecurityTokenHandler();
-            var jwtToken = handler.ReadToken(user.Token) as JwtSecurityToken;
+        //TODO create separete storfage and jwt service to handle all that stuff
+        if (jwtToken.ValidTo > DateTime.UtcNow)
+            return true;
 
-            //TODO create separete storfage and jwt service to handle all that stuff
-            if (jwtToken.ValidTo > DateTime.UtcNow && statusCode == HttpStatusCode.OK)
-                return true;
-            await Application.Current.MainPage.DisplayAlert("Oops", "Something went wrong during auto-login",
-                "Try Again");
-        }
-
+        await Application.Current.MainPage.DisplayAlert("Oops", "Something went wrong during auto-login",
+            "Try Again");
         return false;
     }
 
-    public async Task<bool> TryAuthenticateUserAsync(UserLoginModel userLogin)
+    public async Task<bool> TryLoginUser(UserLoginModel userLogin)
     {
-        var response = await _httpClient.PostAsync<TokenResponse>("Auth/login", userLogin);
+        var response = await _httpClient.PostAsync<CredentialsModel>("/Auth/login", userLogin);
         await WriteTokenDataToStorage(response.AccessToken, response.RefreshToken);
         return true;
     }

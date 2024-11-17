@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-
+//TODO Unready page
 namespace AXProductApp.Data
 {
     public class SendUserInputService : ISendUserInputService
@@ -27,7 +27,7 @@ namespace AXProductApp.Data
             var userDetail = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
             _hubConnection = new HubConnectionBuilder()
 
-            .WithUrl($"{LinkToHub.RealeseUrl}client-hub", options =>
+            .WithUrl($"{"LinkToHub"}client-hub", options =>
             {
                 options.AccessTokenProvider = () => Task.FromResult(userDetail.Token);
             })

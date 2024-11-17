@@ -14,6 +14,7 @@ using Plugin.Firebase.Shared;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using Plugin.Maui.Audio;
+using ILocalStorageService = AXProductApp.Services.ILocalStorageService;
 
 namespace AXProductApp;
 
@@ -23,7 +24,7 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
 
-        
+
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "AXProductApp.appsettings.json";
 
@@ -37,7 +38,7 @@ public static class MauiProgram
 
         builder.Configuration.AddConfiguration(aConfig);
 
-        
+
         builder.Configuration.AddConfiguration(aConfig);
 
         builder
@@ -51,7 +52,6 @@ public static class MauiProgram
                     aConfig.GetSection("Notification").Bind(notificationSetting);
                     android.AddChannel(new NotificationChannelRequest
                     {
-                        
                         Id = notificationSetting.ChannelId,
                         Name = notificationSetting.ChannelName,
                         Sound = notificationSetting.Sound
@@ -66,8 +66,8 @@ public static class MauiProgram
         builder.Services.AddSingleton(AudioManager.Current);
         builder.Services.AddSingleton<SendUserInputService>();
         builder.Services.AddSingleton<ReceiveWindowStatusService>();
-        builder.Services.AddTransient<ILoginService, LoginService>();
-        builder.Services.AddTransient<IRegisterService, RegisterService>();
+        builder.Services.AddTransient<IAuthService, AuthService>();
+        builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
         builder.Services.AddTransient<IRefreshTokenService, RefreshTokenService>();
         builder.Services.AddTransient<IMainMenu, MainMenuService>();
         builder.Services.AddTransient<IManageFireBaseTokenService, ManageFireBaseTokenService>();
