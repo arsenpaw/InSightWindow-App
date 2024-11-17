@@ -11,13 +11,10 @@ public class AuthApiClient
 
     public AuthApiClient(string baseAddress)
     {
-        _client = new HttpClient
-        {
-            BaseAddress = new Uri(baseAddress)
-            
-        };
+        _client = new HttpClient();
+        _client.BaseAddress = new Uri(baseAddress.Trim());
 
-        _client.DefaultRequestHeaders.Accept.Clear();
+       // _client.DefaultRequestHeaders.Accept.Clear();
         _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
         _serializerOptions = new JsonSerializerOptions
@@ -27,22 +24,12 @@ public class AuthApiClient
         };
     }
 
-    /// <summary>
-    ///     Sets the Authorization header with a JWT token.
-    /// </summary>
-    /// <param name="token">JWT token</param>
     public void SetAuthorizationHeader(string token)
     {
         if (!string.IsNullOrEmpty(token))
             _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
     }
 
-    /// <summary>
-    ///     GET request
-    /// </summary>
-    /// <typeparam name="T">Type to deserialize into</typeparam>
-    /// <param name="endpoint">API endpoint</param>
-    /// <returns>Deserialized object of type T</returns>
     public async Task<T> GetAsync<T>(string endpoint)
     {
         var response = await _client.GetAsync(endpoint);
@@ -55,21 +42,14 @@ public class AuthApiClient
         return JsonSerializer.Deserialize<T>(content, _serializerOptions);
     }
 
-    /// <summary>
-    ///     POST request
-    /// </summary>
-    /// <typeparam name="T">Type to deserialize into</typeparam>
-    /// <param name="endpoint">API endpoint</param>
-    /// <param name="data">Data to send</param>
-    /// <returns>Deserialized object of type T</returns>
     public async Task<T> PostAsync<T>(string endpoint, object data)
     {
         var jsonData = JsonSerializer.Serialize(data, _serializerOptions);
         var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
+        Console.WriteLine(_client.BaseAddress);
         var response = await _client.PostAsync(endpoint, content);
 
-
+  
         if (!response.IsSuccessStatusCode)
             throw new HttpRequestException(
                 $"Error: {response.StatusCode}, Message: {await response.Content.ReadAsStringAsync()}");
@@ -78,18 +58,11 @@ public class AuthApiClient
         return JsonSerializer.Deserialize<T>(responseContent, _serializerOptions);
     }
 
-    /// <summary>
-    ///     PUT request
-    /// </summary>
-    /// <typeparam name="T">Type to deserialize into</typeparam>
-    /// <param name="endpoint">API endpoint</param>
-    /// <param name="data">Data to send</param>
-    /// <returns>Deserialized object of type T</returns>
     public async Task<T> PutAsync<T>(string endpoint, object data)
     {
         var jsonData = JsonSerializer.Serialize(data, _serializerOptions);
         var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
+        var t = _client.BaseAddress + endpoint;
         var response = await _client.PutAsync(endpoint, content);
 
         if (!response.IsSuccessStatusCode)
@@ -100,11 +73,7 @@ public class AuthApiClient
         return JsonSerializer.Deserialize<T>(responseContent, _serializerOptions);
     }
 
-    /// <summary>
-    ///     DELETE request
-    /// </summary>
-    /// <param name="endpoint">API endpoint</param>
-    /// <returns>Success or failure message</returns>
+
     public async Task<bool> DeleteAsync(string endpoint)
     {
         var response = await _client.DeleteAsync(endpoint);

@@ -47,7 +47,7 @@ internal class AuthService : IAuthService
 
     public async Task<bool> TryLoginUser(UserLoginModel userLogin)
     {
-        var response = await _httpClient.PostAsync<CredentialsModel>("/Auth/login", userLogin);
+        var response = await _httpClient.PostAsync<CredentialsModel>("Auth/Login", userLogin);
         await WriteTokenDataToStorage(response.AccessToken, response.RefreshToken);
         return true;
     }
