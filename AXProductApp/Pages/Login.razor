@@ -6,6 +6,7 @@
 @using System.Diagnostics
 @using Newtonsoft.Json;
 @using System.IdentityModel.Tokens.Jwt;
+@using AXProductApp.Route
 @using System.Net
 
 @inject NavigationManager NavigationManager
@@ -57,10 +58,10 @@
     {
         bool isAutoLogginSucess = await LoginService.TryUserAutoLoggingAsync();
         if (isAutoLogginSucess)
-            NavigationManager.NavigateTo("/main");
+            NavigationManager.NavigateTo(Routes.Main);
         
         else
-            NavigationManager.NavigateTo("/login");
+            NavigationManager.NavigateTo(Routes.Login);
     }
 
     private async Task Submit()
@@ -68,15 +69,12 @@
         
         if (_isSubmitting)
             return;
-
         _isSubmitting = true;
         _spinnerClass = "spinner-border spinner-border-sm";
-
         bool isUserAuthenticated = await LoginService.TryAuthenticateUserAsync(userModel);
-
         if (isUserAuthenticated)
         {
-            Navigation.NavigateTo("/main");
+            Navigation.NavigateTo(Routes.Main);
         }
         else
         {
