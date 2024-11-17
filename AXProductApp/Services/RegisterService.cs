@@ -15,7 +15,7 @@ namespace AXProductApp.Services
     {
         private readonly string _Url = $"{RealeseUrl}api/Auth/create";
 
-        public async Task<string> AuthenticateUser(UserLoginModel userLogin)
+        public async Task<string> AuthenticateUser(UserRegisterModel userLogin)
         {
 
             using (var httpClient = new HttpClient())

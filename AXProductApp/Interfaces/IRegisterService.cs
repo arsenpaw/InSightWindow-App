@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AXProductApp.Models;
+﻿using AXProductApp.Models;
 
-namespace AXProductApp.Interfaces
+namespace AXProductApp.Interfaces;
+
+internal interface IRegisterService
 {
-    interface IRegisterService
-    {
-        public Task<string> AuthenticateUser(UserLoginModel userLogin);
-    }
+    public Task<string> AuthenticateUser(UserRegisterModel userLogin);
 }
