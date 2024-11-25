@@ -52,7 +52,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        
         var isAutoLogginSucess = await AuthService.TryUserAutoLoggingAsync();
         if (isAutoLogginSucess)
             NavigationManager.NavigateTo(Routes.Main);
@@ -69,9 +68,7 @@
         _spinnerClass = "spinner-border spinner-border-sm";
         var isUserAuthenticated = await AuthService.TryLoginUser(userModel);
         if (isUserAuthenticated)
-        {
             Navigation.NavigateTo(Routes.Main);
-        }
         else
         {
             Vibration.Default.Vibrate(3000);

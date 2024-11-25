@@ -8,5 +8,5 @@ internal interface IAuthService
 
     public Task<bool> TryUserAutoLoggingAsync();
 
-    public Task TryRegisterUser(UserRegisterModel userLogin);
+    public Task<bool> TryRegisterUser(UserRegisterModel userLogin);
 }
