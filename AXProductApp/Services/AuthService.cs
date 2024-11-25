@@ -1,4 +1,5 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using AXProductApp.Interfaces;
 using AXProductApp.Models;
 using AXProductApp.Models.Dto;
@@ -23,7 +24,7 @@ internal class AuthService : IAuthService
 
     public async Task<bool> TryRegisterUser(UserRegisterModel userLogin)
     {
-        var responce = await _httpClient.PostAsync<StringBuilder>("/Auth/create", userLogin);
+        var responce = await _httpClient.PostAsync<object>("Auth/create", userLogin);
         return responce.IsSuccess;
     }
 
@@ -57,16 +58,17 @@ internal class AuthService : IAuthService
     {
         var handler = new JwtSecurityTokenHandler();
         var jsonToken = handler.ReadToken(jwtToken) as JwtSecurityToken;
-        var userId = jsonToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.NameId)?.Value;
+        var userId = jsonToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
+        var role = jsonToken.Claims.FirstOrDefault(x => x.Type == "role")?.Value;
 
         var user = new UserDetail
         {
             Token = jwtToken,
             Id = userId,
+            Role = role,
             RefreshToken = refreshToken
         };
 
-        var userStr = JsonConvert.SerializeObject(user);
-        await SecureStorage.SetAsync(nameof(UserDetail), userStr);
+        await _localStorageService.AddUserSecret(user);
     }
 }

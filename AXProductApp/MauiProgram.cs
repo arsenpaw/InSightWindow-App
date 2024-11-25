@@ -70,7 +70,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
         builder.Services.AddTransient<IMainMenu, MainMenuService>();
         builder.Services.AddTransient<IManageFireBaseTokenService, ManageFireBaseTokenService>();
-
+        builder.Services.AddSingleton<StateContainer>();
         var baseUrl = aConfig["BaseUrl"];
         builder.Services.AddSingleton(provider => new AuthApiClient(baseUrl));
 
