@@ -28,6 +28,7 @@ public class LocalStorageService : ILocalStorageService
 
     public async Task AddUserSecret(UserDetail userDetail)
     {
+        SecureStorage.Remove(nameof(UserDetail));
         await SecureStorage.SetAsync(nameof(UserDetail), JsonSerializer.Serialize(userDetail));
     }
 
