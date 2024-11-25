@@ -82,14 +82,16 @@
         _isSubmitting = true;
         _spinnerClass = "spinner-border spinner-border-sm";
 
-        await AuthService.TryRegisterUser(userRegister);
-        await Application.Current.MainPage.DisplayAlert("Congratulations", "Youre accaount have been sucesfully added", "Das is gut");
-        Navigation.NavigateTo(Routes.Login);
-        // else
-        // {
-        //     // Show an error message
-        //     await App.Current.MainPage.DisplayAlert("Oops", "Youre account was not registered ", "Ok");
-        // }
+        var isSucess = await AuthService.TryRegisterUser(userRegister);
+        if (isSucess)
+        {
+            await Application.Current.MainPage.DisplayAlert("Congratulations", "Youre accaount have been sucesfully added", "Das is gut");
+            Navigation.NavigateTo(Routes.Login);
+        }
+        else
+        {
+            await Application.Current.MainPage.DisplayAlert("Oops", "Youre account was not registered ", "Ok");
+        }
 
         _spinnerClass = "";
         _isSubmitting = false;

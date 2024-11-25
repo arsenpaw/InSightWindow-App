@@ -23,7 +23,7 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-
+        builder.AddGlobalExceptionHandler();
 
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "AXProductApp.appsettings.json";
@@ -68,7 +68,6 @@ public static class MauiProgram
         builder.Services.AddSingleton<ReceiveWindowStatusService>();
         builder.Services.AddTransient<IAuthService, AuthService>();
         builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
-        builder.Services.AddTransient<IRefreshTokenService, RefreshTokenService>();
         builder.Services.AddTransient<IMainMenu, MainMenuService>();
         builder.Services.AddTransient<IManageFireBaseTokenService, ManageFireBaseTokenService>();
 
