@@ -1,18 +1,20 @@
 ﻿@page "/main"
 @using AXProductApp.Interfaces
 @using AXProductApp.Models.Dto
-@inject IMainMenu MainMenuService
+@using AXProductApp.Services
+@inject AuthApiClient ApiClient
 @inject NavigationManager Navigation
 @inject StateContainer _stateContainer
 @inject IManageFireBaseTokenService _manageFireBaseTokenService;
+
 <h3>MainPage</h3>
-<NavLink href ="/test">Go to test</NavLink>
+<NavLink href="/test">Go to test</NavLink>
 
 @if (deviceList == null)
 {
     <p>Loading...</p>
 }
-else if (deviceList.Count == 0)
+else if (deviceList.Count() == 0)
 {
     <p>No devices found.</p>
 }
@@ -20,13 +22,12 @@ else
 {
     @foreach (var item in deviceList)
     {
-     
-        <button @onclick="() => OnDeviceSelectAsync(item.Id) ">@item.DeviceType</button>
+        <button @onclick="() => OnDeviceSelectAsync(item.Id)">@item.DeviceType</button>
     }
 }
 
 @code {
-    private List<DeviceDto> deviceList;
+    private IEnumerable<DeviceDto> deviceList;
 
     public async Task OnDeviceSelectAsync(Guid id)
     {
@@ -36,7 +37,15 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        deviceList = await MainMenuService.GetUserDevicesListAsync();
-       await  _manageFireBaseTokenService.CreateToken();
+        var responce = await ApiClient.GetAsync<List<DeviceDto>>("DevicesDb/DeviceOfUser");
+        if (!responce.IsSuccess || !responce.Data.Any() )
+        {
+            deviceList = new List<DeviceDto>();
+            return;
+        }
+
+        deviceList = responce.Data;
+        await _manageFireBaseTokenService.CreateToken();
     }
+
 }

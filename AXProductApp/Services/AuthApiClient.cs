@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
@@ -22,10 +24,15 @@ public class HttpResponseModel<T>
 public class AuthApiClient
 {
     private readonly HttpClient _client;
+    private readonly IConfiguration _configuration;
     private readonly JsonSerializerOptions _serializerOptions;
+    private readonly ILocalStorageService _localStorageService;
 
-    public AuthApiClient(string baseAddress)
+    public AuthApiClient(ILocalStorageService localStorageService, IConfiguration configuration)
     {
+        _configuration = configuration;
+        _localStorageService = localStorageService;
+        var baseAddress = configuration["BaseUrl"];
         _client = new HttpClient { BaseAddress = new Uri(baseAddress.Trim()) };
         _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
@@ -68,6 +75,10 @@ public class AuthApiClient
     {
         var request = new HttpRequestMessage(method, endpoint);
 
+        var userSecret = await _localStorageService.GetUserSecret();
+        if (userSecret != null)
+            SetAuthorizationHeader(userSecret.Token);
+
         if (data != null)
         {
             var jsonData = JsonSerializer.Serialize(data, _serializerOptions);
@@ -79,6 +90,7 @@ public class AuthApiClient
         if (!response.IsSuccessStatusCode) return new HttpResponseModel<T>(new T(), response.StatusCode, false);
 
         var responseContent = await response.Content.ReadAsStringAsync();
+        if (responseContent.IsNullOrEmpty()) return new HttpResponseModel<T>(new T(), response.StatusCode, response.IsSuccessStatusCode);
         var deserializedData = JsonSerializer.Deserialize<T>(responseContent, _serializerOptions) ?? new T();
 
         return new HttpResponseModel<T>(deserializedData, response.StatusCode, true);

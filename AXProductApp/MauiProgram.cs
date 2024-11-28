@@ -29,17 +29,13 @@ public static class MauiProgram
         var resourceName = "AXProductApp.appsettings.json";
 
         using var stream = assembly.GetManifestResourceStream(resourceName);
-        using var reader = new StreamReader(stream);
-        var jsonContent = reader.ReadToEnd();
+
 
         var aConfig = new ConfigurationBuilder()
-            .AddJsonStream(new MemoryStream(Encoding.UTF8.GetBytes(jsonContent)))
+            .AddJsonStream(stream)
             .Build();
 
-        builder.Configuration.AddConfiguration(aConfig);
 
-
-        builder.Configuration.AddConfiguration(aConfig);
 
         builder
             .RegisterFirebaseServices(aConfig)
@@ -59,7 +55,7 @@ public static class MauiProgram
                 });
             })
             .ConfigureFonts(fonts => { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
-
+        builder.Configuration.AddConfiguration(aConfig);
         builder.Services.AddBlazoredLocalStorage();
         builder.Services.AddMauiBlazorWebView();
         builder.Services.AddBlazorWebViewDeveloperTools();
@@ -67,12 +63,12 @@ public static class MauiProgram
         builder.Services.AddSingleton<SendUserInputService>();
         builder.Services.AddSingleton<ReceiveWindowStatusService>();
         builder.Services.AddTransient<IAuthService, AuthService>();
-        builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
+        builder.Services.AddTransient<ILocalStorageService, LocalStorageService>();
         builder.Services.AddTransient<IMainMenu, MainMenuService>();
         builder.Services.AddTransient<IManageFireBaseTokenService, ManageFireBaseTokenService>();
         builder.Services.AddSingleton<StateContainer>();
         var baseUrl = aConfig["BaseUrl"];
-        builder.Services.AddSingleton(provider => new AuthApiClient(baseUrl));
+        builder.Services.AddSingleton<AuthApiClient>();
 
         builder.Logging.AddDebug();
 
