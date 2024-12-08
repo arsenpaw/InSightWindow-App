@@ -2,8 +2,7 @@
 {
     public interface IManageFireBaseTokenService
     {
-        public Task CreateToken();
+        public Task EnablePushNotificationForCurrentDevice();
 
-        public Task SendTokenToServer(string token);
     }
 }

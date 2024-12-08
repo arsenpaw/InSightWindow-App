@@ -5,7 +5,6 @@
 @inject AuthApiClient ApiClient
 @inject NavigationManager Navigation
 @inject StateContainer _stateContainer
-@inject IManageFireBaseTokenService _manageFireBaseTokenService;
 
 <h3>MainPage</h3>
 <NavLink href="/test">Go to test</NavLink>
@@ -45,7 +44,7 @@ else
         }
 
         deviceList = responce.Data;
-        await _manageFireBaseTokenService.CreateToken();
+
     }
 
 }
