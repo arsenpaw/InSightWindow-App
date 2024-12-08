@@ -55,11 +55,12 @@
         var isAutoLogginSucess = await AuthService.TryUserAutoLoggingAsync();
         if (isAutoLogginSucess)
             NavigationManager.NavigateTo(Routes.Main);
-
         else
+        {
+            SecureStorage.RemoveAll();
             NavigationManager.NavigateTo(Routes.Login);
+        }
     }
-
     private async Task Submit()
     {
         if (_isSubmitting)

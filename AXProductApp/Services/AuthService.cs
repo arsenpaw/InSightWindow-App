@@ -60,7 +60,6 @@ internal class AuthService : IAuthService
         var jsonToken = handler.ReadToken(jwtToken) as JwtSecurityToken;
         var userId = jsonToken.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
         var role = jsonToken.Claims.FirstOrDefault(x => x.Type == "role")?.Value;
-
         var user = new UserDetail
         {
             Token = jwtToken,
