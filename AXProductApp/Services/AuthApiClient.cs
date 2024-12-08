@@ -73,7 +73,7 @@ public class AuthApiClient
     private async Task<HttpResponseModel<T>> SendRequestAsync<T>(HttpMethod method, string endpoint,
         object? data = null) where T : new()
     {
-        var request = new HttpRequestMessage(method, endpoint);
+      var request = new HttpRequestMessage(method, endpoint);
 
         var userSecret = await _localStorageService.GetUserSecret();
         if (userSecret != null)

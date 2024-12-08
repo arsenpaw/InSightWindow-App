@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-using System.Text;
-using AXProductApp.Data;
+﻿using AXProductApp.Data;
 using AXProductApp.Interfaces;
 using AXProductApp.Models.Configuration;
 using AXProductApp.Services;
@@ -14,6 +12,7 @@ using Plugin.Firebase.Shared;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using Plugin.Maui.Audio;
+using System.Reflection;
 using ILocalStorageService = AXProductApp.Services.ILocalStorageService;
 
 namespace AXProductApp;
