@@ -65,6 +65,8 @@
 
     <ItemGroup>
 
+      <None Remove="Components\DeviceBlock.razor.css" />
+
       <None Remove="Pages\Register.razor.css" />
 
       <None Remove="Platforms\Android\Resources\raw\alarm_sound.mp3" />
@@ -73,6 +75,7 @@
     </ItemGroup>
 	
     <ItemGroup>
+      <Content Include="Components\DeviceBlock.razor.css" />
       <Content Include="Pages\Register.razor.css" />
     </ItemGroup>
 	
