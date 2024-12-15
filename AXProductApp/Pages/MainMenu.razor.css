@@ -85,7 +85,6 @@ ul {
     padding: 0;
     margin: 0;
     display: flex;
-    gap: 10px;
 }
 
 li {
@@ -98,8 +97,10 @@ li {
     flex-direction: row;
     position: fixed;
     bottom: 0;
+    gap: 150px;
     width: 100%;
-    padding: 1 1em 0 1em;
+    padding: 0 1em 0 1em;
+    justify-content: space-between;
 }
 
 .all-icon {
@@ -109,8 +110,6 @@ li {
 }
 
 .plus-icon {
-    width: 90px;
-    height: auto;
     margin-right: 15px;
     margin-bottom: 1px;
 }
