@@ -22,7 +22,7 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-        builder.AddGlobalExceptionHandler();
+
 
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "AXProductApp.appsettings.json";
@@ -68,7 +68,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<StateContainer>();
         var baseUrl = aConfig["BaseUrl"];
         builder.Services.AddSingleton<AuthApiClient>();
-
+        builder.AddGlobalExceptionHandler();
         builder.Logging.AddDebug();
 
         return builder.Build();
