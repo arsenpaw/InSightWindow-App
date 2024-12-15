@@ -27,7 +27,7 @@ internal class AuthService : IAuthService
         return responce.IsSuccess;
     }
 
-    public async Task<bool> TryUserAutoLoggingAsync() //new tokens will be writen to secure storage
+    public async Task<bool> TryUserAutoLoggingAsync()
     {
         var user = await _localStorageService.GetUserSecret();
         if (user == null)
