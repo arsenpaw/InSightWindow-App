@@ -5,6 +5,7 @@ using AXProductApp.Services;
 using Microsoft.AspNetCore.SignalR.Client;
 using Newtonsoft.Json;
 
+
 //TODO Unready page
 namespace AXProductApp.Data;
 
@@ -18,47 +19,55 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
 
     public async Task<bool> InitializeConnectionAsync(Guid deviceId)
     {
-        try
-        {
-            var userDetail = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
-            _hubConnection = new HubConnectionBuilder()
-                .WithUrl("https://axproduct-server.azurewebsites.net/client-hub",
-                    options => { options.AccessTokenProvider = () => Task.FromResult(userDetail.Token); })
-                .WithAutomaticReconnect()
-                .Build();
+        var userDetail = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl("https://axproduct-server.azurewebsites.net/client-hub",
+                options => { options.AccessTokenProvider = () => Task.FromResult(userDetail.Token); })
+            .WithAutomaticReconnect()
+            .Build();
 
-            await _hubConnection.StartAsync();
-            _hubConnection.On<AllWindowDataDto>("ReceiveWindowStatus", async status =>
-            {
-                if (status.isAlarm.ToBool() && prevAlarmTriggered == false)
-                {
-                    prevAlarmTriggered = true;
-                    new NotificationService().sendAlarmMessage();
-                }
-                else if (!status.isAlarm.ToBool())
-                {
-                    prevAlarmTriggered = false;
-                }
-
-                status.TimeNow = DateTime.Now;
-                var jsonString = JsonConvert.SerializeObject(status);
-                await SecureStorage.SetAsync(status.Id.ToString(), jsonString);
-
-                DataReceived?.Invoke(status);
-            });
-        }
-        catch (Exception ex) {
-            Console.WriteLine("--------------");
-            Console.WriteLine(ex);    
-        }
+        await _hubConnection.StartAsync();
 
         return true;
     }
 
-    public async Task GetSensorData(Guid deviceId)
+    public async Task ReceiveSensorData(Guid deviceId)
     {
+        await App.Current.MainPage.DisplayAlert("Ok", "To do", "Method ok");
 
+        _hubConnection.On<AllWindowDataDto>("ReceiveSensorData", async status =>
+        {
+
+            if (status.IsAlarm && prevAlarmTriggered == false)
+            {
+                prevAlarmTriggered = true;
+                new NotificationService().sendAlarmMessage();
+            }
+            else if (!status.IsAlarm)
+            {
+                prevAlarmTriggered = false;
+            }
+
+            //status.TimeNow = DateTime.Now;
+            //var jsonString = JsonConvert.SerializeObject(status);
+            //await SecureStorage.SetAsync(status.Id.ToString(), jsonString);
+
+            DataReceived?.Invoke(status);
+        });
     }
+
+    public async Task ReceiveSensorDataTest(Guid deviceId)
+    {
+        // Перенесені значить на сторінку
+        AllWindowDataDto statusTest = new AllWindowDataDto();
+        statusTest.Temperature = 10;
+        statusTest.Humidity = 10;
+        statusTest.IsRain = false;
+        statusTest.IsOpen = true;
+        statusTest.IsAlarm = true;
+        DataReceived?.Invoke(statusTest);
+    }
+
 
     public async Task OpenCloseWindowCommand(Guid deviceId)
     {

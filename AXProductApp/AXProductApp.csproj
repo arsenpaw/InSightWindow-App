@@ -58,10 +58,6 @@
     </ItemGroup>
 	
     <ItemGroup>
-      <Compile Remove="Models\Dto\SensorDataDto.cs" />
-    </ItemGroup>
-	
-    <ItemGroup>
       <Content Remove="Resources\Raw\firebase-adminsdk.json" />
     </ItemGroup>
     <ItemGroup>
@@ -78,7 +74,6 @@
     </ItemGroup>
 	
     <ItemGroup>
-      <Content Include="Models\Dto\SensorDataDto.cs" />
       <Content Include="Pages\Register.razor.css" />
     </ItemGroup>
 	
