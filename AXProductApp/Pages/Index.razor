@@ -202,8 +202,8 @@
         {
             Guid deviceIdGuid = (Guid)deviceId;
             await ReveiveWindowStatus.TryShowDataFromCashe(deviceIdGuid.ToString());
-            await ReveiveWindowStatus.InitializeConnectionAsync(deviceIdGuid);
-            await SendUserInputService.InitiaizeConnectionAsync(deviceIdGuid);
+            await ReveiveWindowStatus.InitializeConnectionAsync(deviceIdGuid); // основний
+            //await SendUserInputService.InitiaizeConnectionAsync(deviceIdGuid);
         }
         else
             await App.Current.MainPage.DisplayAlert("Oops", "No data datected in state container", "O shit,here we go againg");

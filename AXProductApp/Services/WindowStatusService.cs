@@ -18,15 +18,15 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
 
     public async Task<bool> InitializeConnectionAsync(Guid deviceId)
     {
-        var userDetail = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
-        _hubConnection = new HubConnectionBuilder()
-            .WithUrl($"{"LinkToHub"}client-hub",
-                options => { options.AccessTokenProvider = () => Task.FromResult(userDetail.Token); })
-            .WithAutomaticReconnect()
-            .Build();
-
         try
         {
+            var userDetail = JsonConvert.DeserializeObject<UserDetail>(await SecureStorage.GetAsync(nameof(UserDetail)));
+            _hubConnection = new HubConnectionBuilder()
+                .WithUrl("https://axproduct-server.azurewebsites.net/client-hub",
+                    options => { options.AccessTokenProvider = () => Task.FromResult(userDetail.Token); })
+                .WithAutomaticReconnect()
+                .Build();
+
             await _hubConnection.StartAsync();
             _hubConnection.On<AllWindowDataDto>("ReceiveWindowStatus", async status =>
             {
@@ -46,16 +46,37 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
 
                 DataReceived?.Invoke(status);
             });
-            return true;
         }
-        catch (Exception ex)
-        {
-            Debug.WriteLine($"Error establishing connection to hub: {ex.Message}\n {ex.InnerException} \n{ex.Data}");
-            await Application.Current.MainPage.DisplayAlert("Oops",
-                "An error occurred while establishing connection to hub", "Ok");
-            return false;
+        catch (Exception ex) {
+            Console.WriteLine("--------------");
+            Console.WriteLine(ex);    
         }
+
+        return true;
     }
+
+    public async Task GetSensorData(Guid deviceId)
+    {
+
+    }
+
+    public async Task OpenCloseWindowCommand(Guid deviceId)
+    {
+
+    }
+
+    public async Task StopConnection(Guid deviceId)
+    {
+
+    }
+
+
+
+
+
+
+
+
 
     public async Task TryShowDataFromCashe(string deviceId)
     {
@@ -66,6 +87,10 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
             DataReceived?.Invoke(objDataFromCache);
         }
     }
+
+
+
+
 
     //public async Task OnAppUpdate()
     //{
