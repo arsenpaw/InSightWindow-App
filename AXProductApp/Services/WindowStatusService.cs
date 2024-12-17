@@ -57,17 +57,23 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
     }
 
 
-    public async Task SendCommand(Guid deviceId, CommandDto command)
+    public async Task SendCommand(UserInputStatus deviceInfoStatus, CommandDto command)
     {
         if (_hubConnection.State == HubConnectionState.Connected)
         {
+            Guid deviceId = deviceInfoStatus.DeviceId;
             await _hubConnection.SendAsync("SendCommandToEsp32", deviceId, command);
+            if (command.Command ==  CommandEnum.Open || command.Command == CommandEnum.Close)
+                deviceInfoStatus.IsOpenButton = !deviceInfoStatus.IsOpenButton;
+            else
+                deviceInfoStatus.IsProtectedButton = !deviceInfoStatus.IsProtectedButton;
         }
         else
         {
             Debug.WriteLine("Error: No cotect to hub");
             await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while sendig youre command ", "Ok");
         }
+        UserReceived?.Invoke(deviceInfoStatus);
     }
 
 
@@ -76,13 +82,6 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
         if(_hubConnection != null && _hubConnection.State != HubConnectionState.Disconnected)
             await _hubConnection.StopAsync();
     }
-
-
-
-
-
-
-
 
 
 
@@ -98,9 +97,6 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
         statusTest.IsAlarm = true;
         DataReceived?.Invoke(statusTest);
     }
-
-
-
 
 
     //public async Task TryShowDataFromCashe(string deviceId)

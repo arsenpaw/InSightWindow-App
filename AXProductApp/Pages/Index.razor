@@ -225,12 +225,25 @@
         else
             currenCommand = CommandEnum.StopAlarm;
 
+        UserInputStatus test = new UserInputStatus()
+        {
+            IsOpenButton = isOpen,
+            IsProtectedButton = isProteced
+        };
+
+        UserInputStatus deviceStatusInfo = new UserInputStatus()
+        {
+            DeviceId = deviceIdGuid,
+            IsOpenButton = isOpen,
+            IsProtectedButton = isProteced
+        };
+
 
         CommandDto command = new CommandDto
             {
                 Command = currenCommand
             };
-        await ReveiveWindowStatus.SendCommand(deviceIdGuid, command);
+        await ReveiveWindowStatus.SendCommand(deviceStatusInfo, command);
     }
 
     async private Task OnOpenInput(object checkedValue)
@@ -241,12 +254,19 @@
         else
             currenCommand = CommandEnum.Close;
 
+        UserInputStatus deviceStatusInfo = new UserInputStatus()
+        {
+            DeviceId = deviceIdGuid,
+            IsOpenButton = isOpen,
+            IsProtectedButton = isProteced
+        };
+
+
         CommandDto command = new CommandDto
         {
             Command = currenCommand
         };
-        Console.WriteLine(deviceIdGuid);
-        await ReveiveWindowStatus.SendCommand(deviceIdGuid, command);
+        await ReveiveWindowStatus.SendCommand(deviceStatusInfo, command);
     }
 
 
