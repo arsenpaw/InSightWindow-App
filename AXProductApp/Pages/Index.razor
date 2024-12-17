@@ -204,8 +204,8 @@
             Console.WriteLine(deviceIdGuid);
             //await ReveiveWindowStatus.TryShowDataFromCashe(deviceIdGuid.ToString());
             await ReveiveWindowStatus.InitializeConnectionAsync(deviceIdGuid);
-            //await ReveiveWindowStatus.ReceiveSensorData(deviceIdGuid);
-            await ReveiveWindowStatus.ReceiveSensorDataTest(deviceIdGuid); //тестові виведення на сторінку (не зтягнені із сервера)
+            await ReveiveWindowStatus.ReceiveSensorData(deviceIdGuid);
+            //await ReveiveWindowStatus.ReceiveSensorDataTest(deviceIdGuid); //тестові виведення на сторінку (не зтягнені із сервера)
         }
         else
             await App.Current.MainPage.DisplayAlert("Oops", "No data datected in state container", "O shit,here we go againg");
@@ -247,14 +247,14 @@
     }
 
 
-    private async void OnResponceReceived(UserInputStatus status)
-    {
-        isProteced = status.IsProtectedButton;
-        isOpen = status.IsOpenButton;
-        Debug.WriteLine($"IsProtected updated to {isProteced}");
-        Debug.WriteLine($"IsOpen updated to {isOpen}");
-        await InvokeAsync(StateHasChanged);
-    }
+    // private async void OnResponceReceived(UserInputStatus status)
+    // {
+    //     isProteced = status.IsProtectedButton;
+    //     isOpen = status.IsOpenButton;
+    //     Debug.WriteLine($"IsProtected updated to {isProteced}");
+    //     Debug.WriteLine($"IsOpen updated to {isOpen}");
+    //     await InvokeAsync(StateHasChanged);
+    // }
 
     private async void OnDataReceived(AllWindowDataDto status)
     {

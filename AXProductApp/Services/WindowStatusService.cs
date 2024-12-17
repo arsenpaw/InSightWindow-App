@@ -38,21 +38,6 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
     {
         _hubConnection.On<AllWindowDataDto>("ReceiveSensorData", async status =>
         {
-
-            if (status.IsAlarm && prevAlarmTriggered == false)
-            {
-                prevAlarmTriggered = true;
-                new NotificationService().sendAlarmMessage();
-            }
-            else if (!status.IsAlarm)
-            {
-                prevAlarmTriggered = false;
-            }
-
-            //status.TimeNow = DateTime.Now;
-            //var jsonString = JsonConvert.SerializeObject(status);
-            //await SecureStorage.SetAsync(status.Id.ToString(), jsonString);
-
             DataReceived?.Invoke(status);
         });
     }
