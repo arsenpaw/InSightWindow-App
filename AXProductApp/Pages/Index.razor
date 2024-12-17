@@ -3,6 +3,7 @@
 @using AXProductApp.Data;
 @using System.Diagnostics;
 @using AXProductApp.Models;
+@using AXProductApp.Models.Command;
 @using static AXProductApp.Models.UserInputStatus;
 @using AXProductApp.Pages;
 @inject SendUserInputService SendUserInputService;
@@ -190,17 +191,18 @@
     [Parameter]
     public int StateHashCode { get; set; }
 
-
+    Guid deviceIdGuid;
 
     protected override async Task OnInitializedAsync()
     {
 
         ReveiveWindowStatus.DataReceived += OnDataReceived;
-        //SendUserInputService.DataReceived += OnResponceReceived;
+        ReveiveWindowStatus.UserReceived += OnResponceReceived;
 
         if (_stateContainer.ObjectTunnel.TryGetValue(StateHashCode, out var deviceId))
         {
-            Guid deviceIdGuid = (Guid)deviceId;
+            deviceIdGuid = (Guid)deviceId;
+            Console.WriteLine(deviceIdGuid);
             //await ReveiveWindowStatus.TryShowDataFromCashe(deviceIdGuid.ToString());
             await ReveiveWindowStatus.InitializeConnectionAsync(deviceIdGuid);
             await ReveiveWindowStatus.ReceiveSensorData(deviceIdGuid);
@@ -215,9 +217,37 @@
 
     }
 
-    async private Task OnProtectedInput(object checkedValue) => await SendUserInputService.SendProtectedInfo((bool)checkedValue);
+    async private Task OnProtectedInput(object checkedValue)
+    {
+        CommandEnum currenCommand;
+        if ((bool)checkedValue == true)
+            currenCommand = CommandEnum.StartAlarm;
+        else
+            currenCommand = CommandEnum.StopAlarm;
 
-    async private Task OnOpenInput(object checkedValue) => await SendUserInputService.SendOpenInfo((bool)checkedValue);
+
+        CommandDto command = new CommandDto
+            {
+                Command = currenCommand
+            };
+        await ReveiveWindowStatus.SendCommand(deviceIdGuid, command);
+    }
+
+    async private Task OnOpenInput(object checkedValue)
+    {
+        CommandEnum currenCommand;
+        if ((bool)checkedValue == true)
+            currenCommand = CommandEnum.Open;
+        else
+            currenCommand = CommandEnum.Close;
+
+        CommandDto command = new CommandDto
+        {
+            Command = currenCommand
+        };
+        Console.WriteLine(deviceIdGuid);
+        await ReveiveWindowStatus.SendCommand(deviceIdGuid, command);
+    }
 
 
     private async void OnResponceReceived(UserInputStatus status)
