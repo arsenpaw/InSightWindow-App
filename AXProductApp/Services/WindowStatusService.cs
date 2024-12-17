@@ -61,7 +61,6 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
     {
         if (_hubConnection.State == HubConnectionState.Connected)
         {
-            await App.Current.MainPage.DisplayAlert("Ok", "Ok", "Ok");
             await _hubConnection.SendAsync("SendCommandToEsp32", deviceId, command);
         }
         else
@@ -74,7 +73,8 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
 
     public async Task StopConnection(Guid deviceId)
     {
-
+        if(_hubConnection != null && _hubConnection.State != HubConnectionState.Disconnected)
+            await _hubConnection.StopAsync();
     }
 
 
