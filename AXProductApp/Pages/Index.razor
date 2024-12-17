@@ -3,6 +3,7 @@
 @using AXProductApp.Data;
 @using System.Diagnostics;
 @using AXProductApp.Models;
+@using AXProductApp.Models.Command;
 @using static AXProductApp.Models.UserInputStatus;
 @using AXProductApp.Pages;
 @inject SendUserInputService SendUserInputService;
@@ -190,26 +191,24 @@
     [Parameter]
     public int StateHashCode { get; set; }
 
-
+    Guid deviceIdGuid;
 
     protected override async Task OnInitializedAsync()
     {
 
         ReveiveWindowStatus.DataReceived += OnDataReceived;
-        SendUserInputService.DataReceived += OnResponceReceived;
 
         if (_stateContainer.ObjectTunnel.TryGetValue(StateHashCode, out var deviceId))
         {
-            Guid deviceIdGuid = (Guid)deviceId;
-            await ReveiveWindowStatus.TryShowDataFromCashe(deviceIdGuid.ToString());
+            deviceIdGuid = (Guid)deviceId;
+            Console.WriteLine(deviceIdGuid);
+            //await ReveiveWindowStatus.TryShowDataFromCashe(deviceIdGuid.ToString());
             await ReveiveWindowStatus.InitializeConnectionAsync(deviceIdGuid);
-            await SendUserInputService.InitiaizeConnectionAsync(deviceIdGuid);
+            //await ReveiveWindowStatus.ReceiveSensorData(deviceIdGuid);
+            await ReveiveWindowStatus.ReceiveSensorDataTest(deviceIdGuid); //тестові виведення на сторінку (не зтягнені із сервера)
         }
         else
             await App.Current.MainPage.DisplayAlert("Oops", "No data datected in state container", "O shit,here we go againg");
-
-       
-       
 
         // hz чи то тре
         //await ReveiveWindowStatus.OnAppUpdate();
@@ -217,11 +216,37 @@
 
     }
 
-    async private Task OnProtectedInput(object checkedValue) => await SendUserInputService.SendProtectedInfo((bool)checkedValue);
+    async private Task OnProtectedInput(object checkedValue)
+    {
+        CommandEnum currenCommand;
+        if ((bool)checkedValue == true)
+            currenCommand = CommandEnum.StartAlarm;
+        else
+            currenCommand = CommandEnum.StopAlarm;
 
-    async private Task OnOpenInput(object checkedValue) => await SendUserInputService.SendOpenInfo((bool)checkedValue);
+        CommandDto command = new CommandDto
+            {
+                Command = currenCommand
+            };
+        await ReveiveWindowStatus.SendCommand(deviceIdGuid, command);
+    }
 
-    
+    async private Task OnOpenInput(object checkedValue)
+    {
+        CommandEnum currenCommand;
+        if ((bool)checkedValue == true)
+            currenCommand = CommandEnum.Open;
+        else
+            currenCommand = CommandEnum.Close;
+
+        CommandDto command = new CommandDto
+        {
+            Command = currenCommand
+        };
+        await ReveiveWindowStatus.SendCommand(deviceIdGuid, command);
+    }
+
+
     private async void OnResponceReceived(UserInputStatus status)
     {
         isProteced = status.IsProtectedButton;
@@ -230,15 +255,17 @@
         Debug.WriteLine($"IsOpen updated to {isOpen}");
         await InvokeAsync(StateHasChanged);
     }
+
     private async void OnDataReceived(AllWindowDataDto status)
     {
-        Temperature = $"{status.Temparature} °C";
+        Temperature = $"{status.Temperature} °C";
         Humidity = $"{status.Humidity} %";
-        ProtectionStatus = status.IsProtected.ToString();
-        isRain = status.isRain;
+        //ProtectionStatus = status.IsProtected.ToString();
+        isRain = status.IsRain;
         //this line can do 2 connection to servev but it coused a lag
-        // isOpen = status.IsOpen.ToBool();
-        LastConnect = status.GetLastConnectInfo();
+        isOpen = status.IsOpen; ;
+        isProteced = status.IsAlarm;
+        //LastConnect = status.GetLastConnectInfo();
         await InvokeAsync(StateHasChanged);
     }
 

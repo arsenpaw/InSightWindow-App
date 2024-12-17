@@ -58,7 +58,6 @@
     </ItemGroup>
 	
     <ItemGroup>
-      <Content Remove="Platforms\Android\google-services.json" />
       <Content Remove="Resources\Raw\firebase-adminsdk.json" />
     </ItemGroup>
     <ItemGroup>
@@ -76,10 +75,6 @@
 	
     <ItemGroup>
       <Content Include="Pages\Register.razor.css" />
-    </ItemGroup>
-	
-    <ItemGroup>
-      <GoogleServicesJson Include="Platforms\Android\google-services.json" />
     </ItemGroup>
 	
     <ItemGroup>
