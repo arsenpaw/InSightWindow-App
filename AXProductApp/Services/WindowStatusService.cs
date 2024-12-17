@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Net;
+using Android.OS;
 using AXProductApp.Interfaces;
 using AXProductApp.Models;
 using AXProductApp.Models.Command;
@@ -17,7 +19,6 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
     private bool prevAlarmTriggered;
 
     public event Action<AllWindowDataDto> DataReceived;
-    public event Action<UserInputStatus> UserReceived;
 
     public async Task<bool> InitializeConnectionAsync(Guid deviceId)
     {
@@ -57,23 +58,18 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
     }
 
 
-    public async Task SendCommand(UserInputStatus deviceInfoStatus, CommandDto command)
+    public async Task SendCommand(Guid deviceId, CommandDto command)
     {
         if (_hubConnection.State == HubConnectionState.Connected)
         {
-            Guid deviceId = deviceInfoStatus.DeviceId;
-            await _hubConnection.SendAsync("SendCommandToEsp32", deviceId, command);
-            if (command.Command ==  CommandEnum.Open || command.Command == CommandEnum.Close)
-                deviceInfoStatus.IsOpenButton = !deviceInfoStatus.IsOpenButton;
-            else
-                deviceInfoStatus.IsProtectedButton = !deviceInfoStatus.IsProtectedButton;
+            int result = await _hubConnection.InvokeAsync<int>("SendCommandToEsp32", deviceId, command);
+
+            if (result == 404)
+                await App.Current.MainPage.DisplayAlert("Oops", "No conection with your device", "Ok");
+
         }
         else
-        {
-            Debug.WriteLine("Error: No cotect to hub");
             await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while sendig youre command ", "Ok");
-        }
-        UserReceived?.Invoke(deviceInfoStatus);
     }
 
 

@@ -197,7 +197,6 @@
     {
 
         ReveiveWindowStatus.DataReceived += OnDataReceived;
-        ReveiveWindowStatus.UserReceived += OnResponceReceived;
 
         if (_stateContainer.ObjectTunnel.TryGetValue(StateHashCode, out var deviceId))
         {
@@ -205,8 +204,8 @@
             Console.WriteLine(deviceIdGuid);
             //await ReveiveWindowStatus.TryShowDataFromCashe(deviceIdGuid.ToString());
             await ReveiveWindowStatus.InitializeConnectionAsync(deviceIdGuid);
-            await ReveiveWindowStatus.ReceiveSensorData(deviceIdGuid);
-            //await ReveiveWindowStatus.ReceiveSensorDataTest(deviceIdGuid); //тестові виведення на сторінку (не зтягнені із сервера)
+            //await ReveiveWindowStatus.ReceiveSensorData(deviceIdGuid);
+            await ReveiveWindowStatus.ReceiveSensorDataTest(deviceIdGuid); //тестові виведення на сторінку (не зтягнені із сервера)
         }
         else
             await App.Current.MainPage.DisplayAlert("Oops", "No data datected in state container", "O shit,here we go againg");
@@ -225,25 +224,11 @@
         else
             currenCommand = CommandEnum.StopAlarm;
 
-        UserInputStatus test = new UserInputStatus()
-        {
-            IsOpenButton = isOpen,
-            IsProtectedButton = isProteced
-        };
-
-        UserInputStatus deviceStatusInfo = new UserInputStatus()
-        {
-            DeviceId = deviceIdGuid,
-            IsOpenButton = isOpen,
-            IsProtectedButton = isProteced
-        };
-
-
         CommandDto command = new CommandDto
             {
                 Command = currenCommand
             };
-        await ReveiveWindowStatus.SendCommand(deviceStatusInfo, command);
+        await ReveiveWindowStatus.SendCommand(deviceIdGuid, command);
     }
 
     async private Task OnOpenInput(object checkedValue)
@@ -254,19 +239,11 @@
         else
             currenCommand = CommandEnum.Close;
 
-        UserInputStatus deviceStatusInfo = new UserInputStatus()
-        {
-            DeviceId = deviceIdGuid,
-            IsOpenButton = isOpen,
-            IsProtectedButton = isProteced
-        };
-
-
         CommandDto command = new CommandDto
         {
             Command = currenCommand
         };
-        await ReveiveWindowStatus.SendCommand(deviceStatusInfo, command);
+        await ReveiveWindowStatus.SendCommand(deviceIdGuid, command);
     }
 
 
