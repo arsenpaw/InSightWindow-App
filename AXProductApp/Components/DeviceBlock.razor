@@ -1,0 +1,96 @@
+﻿@inject NavigationManager Navigation
+@inject StateContainer _stateContainer
+
+<div @onclick="() => OnDeviceSelectAsync(Id)" class="main-section__item">
+    <h3 class="main-section__item-header">Window #@Number</h3>
+
+
+    <p class="status__txt">Status</p>
+    <div class="main-section__item-image">
+        <svg width="40" height="40" viewBox="0 0 62 62" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g filter="url(#filter0_d_35_510)">
+                <path d="M11 7H13.0513V47H11V7Z" fill="black" />
+                <path d="M48.9488 7H51.0001V47H48.9488V7Z" fill="black" />
+                <path d="M30.4871 7H32.5384V47H30.4871V7Z" fill="black" />
+                <path d="M12.0256 47V44.8947H51V47H12.0256Z" fill="black" />
+                <path d="M11 9.10535V7.00008L49.9744 7.00008V9.10535L11 9.10535Z" fill="black" />
+            </g>
+            <defs>
+                <filter id="filter0_d_35_510" x="0" y="0" width="62.0001" height="62" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                    <feMorphology radius="3" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_35_510" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="4" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.29 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_35_510" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_35_510" result="shape" />
+                </filter>
+            </defs>
+        </svg>
+        <svg class="jummed-icon" width="40" height="40" viewBox="0 0 101 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g filter="url(#filter0_d_321_5)">
+                <path d="M91 46.5C91 68.8675 72.8675 87 50.5 87C28.1325 87 10 68.8675 10 46.5C10 24.1325 28.1325 6 50.5 6C72.8675 6 91 24.1325 91 46.5Z" fill="url(#paint0_linear_321_5)" />
+            </g>
+            <g filter="url(#filter1_d_321_5)">
+                <path d="M69.7901 27.2099C71.438 25.562 74.1362 25.5474 75.5492 27.4006C78.4479 31.2023 80.4549 35.6297 81.3947 40.3547C82.6102 46.4651 81.9864 52.7987 79.6022 58.5545C77.218 64.3104 73.1806 69.23 68.0005 72.6913C62.8203 76.1526 56.7301 78 50.5 78C44.2699 78 38.1797 76.1526 32.9995 72.6913C27.8194 69.23 23.782 64.3104 21.3978 58.5545C19.0136 52.7987 18.3898 46.4651 19.6053 40.3547C20.5451 35.6297 22.5521 31.2023 25.4508 27.4006C26.8638 25.5474 29.562 25.562 31.2099 27.2099C32.8578 28.8578 32.8192 31.5129 31.4987 33.4331C29.7322 36.0019 28.4964 38.9148 27.8825 42.0011C26.9927 46.4744 27.4494 51.1111 29.1948 55.3249C30.9402 59.5387 33.8959 63.1403 37.6882 65.6742C41.4805 68.2081 45.939 69.5606 50.5 69.5606C55.061 69.5606 59.5195 68.2081 63.3118 65.6742C67.1041 63.1403 70.0598 59.5387 71.8052 55.3249C73.5506 51.1111 74.0073 46.4744 73.1175 42.0011C72.5036 38.9148 71.2678 36.0019 69.5013 33.4331C68.1808 31.5129 68.1422 28.8578 69.7901 27.2099Z" fill="#EAEAEA" />
+            </g>
+            <g filter="url(#filter2_d_321_5)">
+                <rect x="46" y="45" width="34" height="8" rx="4" transform="rotate(-90 46 45)" fill="#EAEAEA" />
+            </g>
+            <defs>
+                <filter id="filter0_d_321_5" x="0" y="0" width="101" height="101" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="5" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_321_5" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_321_5" result="shape" />
+                </filter>
+                <filter id="filter1_d_321_5" x="9" y="19.9915" width="83" height="72.0085" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="5" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_321_5" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_321_5" result="shape" />
+                </filter>
+                <filter id="filter2_d_321_5" x="36" y="5" width="28" height="54" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                    <feOffset dy="4" />
+                    <feGaussianBlur stdDeviation="5" />
+                    <feComposite in2="hardAlpha" operator="out" />
+                    <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
+                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_321_5" />
+                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_321_5" result="shape" />
+                </filter>
+                <linearGradient id="paint0_linear_321_5" x1="50.5" y1="6" x2="50.5" y2="87" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#FFE27C" />
+                    <stop offset="1" stop-color="#FFAE62" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Guid Id { get; set; }
+
+    [Parameter]
+    public int Number { get; set; }
+
+
+    public async Task OnDeviceSelectAsync(Guid id)
+    {
+        _stateContainer.ObjectTunnel.Add(id.GetHashCode(), id);
+        Navigation.NavigateTo($"/deviceDetails/{id.GetHashCode()}");
+    }
+
+}

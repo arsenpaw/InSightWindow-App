@@ -1,32 +1,70 @@
-﻿@page "/main"
+@page "/main"
 @using AXProductApp.Interfaces
 @using AXProductApp.Models.Dto
 @using AXProductApp.Services
+@using AXProductApp.Components
 @inject AuthApiClient ApiClient
 @inject NavigationManager Navigation
 @inject StateContainer _stateContainer
+@inject IManageFireBaseTokenService _manageFireBaseTokenService;
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
-<h3>MainPage</h3>
-<NavLink href="/test">Go to test</NavLink>
-
-@if (deviceList == null)
-{
-    <p>Loading...</p>
-}
-else if (deviceList.Count() == 0)
-{
-    <p>No devices found.</p>
-}
-else
-{
-    @foreach (var item in deviceList)
-    {
-        <button @onclick="() => OnDeviceSelectAsync(item.Id)">@item.Id</button>
+<style>
+    body {
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(-135deg, rgba(163, 197, 237, 1) 0%, rgba(137, 159, 240, 1) 50%, rgba(199, 156, 232, 1) 100%);
+        background-size: auto;
+        background-attachment: fixed;
+        font-family: 'Lato', sans-serif;
     }
-}
+</style>
+
+<div class="main__container">
+    <header class="header">
+        <h1 class="header__title">Insight window</h1>
+        <div><img class="header__search" src="https://img.icons8.com/?size=100&id=7695&format=png&color=FFFFFF" alt="Search" /></div>
+        <div class="header__rectangle"></div>
+    </header>
+
+    <h3>MainPage</h3>
+    <NavLink href="/test">Go to test</NavLink>
+
+    <section class="main-section">
+        @if (deviceList == null)
+        {
+            <p>Loading...</p>
+        }
+        else if (deviceList.Count() == 0)
+        {
+            <p>No devices found.</p>
+        }
+        else
+        {
+            @foreach (var item in deviceList)
+            {
+                <DeviceBlock Id=item.Id Number=counter></DeviceBlock>
+                counter++;
+            }
+        }
+    </section>
+
+    <footer class="footer">
+        <nav>
+            <ul>
+                <li><img class="all-icon" src="https://img.icons8.com/?size=100&id=6g6b5Mh-1uJ7&format=png&color=FFFFFF" /></li>
+                <li><img class="all-icon" src="https://img.icons8.com/?size=100&id=PLlw4LevCJrl&format=png&color=FFFFFF" /></li>
+                <li><img class="plus-icon" src="/icons/plus-icon.png" /></li>
+                <li><img class="all-icon" src="https://img.icons8.com/?size=100&id=364&format=png&color=FFFFFF" /></li>
+                <li><img class="all-icon" src="https://img.icons8.com/?size=100&id=7819&format=png&color=FFFFFF" /></li>
+            </ul>
+        </nav>
+    </footer>
+</div>
 
 @code {
     private IEnumerable<DeviceDto> deviceList;
+    private int counter = 1;
 
     public async Task OnDeviceSelectAsync(Guid id)
     {
@@ -37,14 +75,12 @@ else
     protected override async Task OnInitializedAsync()
     {
         var responce = await ApiClient.GetAsync<List<DeviceDto>>("DevicesDb/DeviceOfUser");
-        if (!responce.IsSuccess || !responce.Data.Any() )
+        if (!responce.IsSuccess || !responce.Data.Any())
         {
             deviceList = new List<DeviceDto>();
             return;
         }
 
         deviceList = responce.Data;
-
     }
-
 }

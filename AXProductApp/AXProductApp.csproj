@@ -58,6 +58,14 @@
     </ItemGroup>
 	
     <ItemGroup>
+      <AndroidResource Remove="wwwroot\icons\NewFolder1\**" />
+      <Compile Remove="wwwroot\icons\NewFolder1\**" />
+      <Content Remove="wwwroot\icons\NewFolder1\**" />
+      <EmbeddedResource Remove="wwwroot\icons\NewFolder1\**" />
+      <None Remove="wwwroot\icons\NewFolder1\**" />
+    </ItemGroup>
+	
+    <ItemGroup>
       <Content Remove="Resources\Raw\firebase-adminsdk.json" />
     </ItemGroup>
     <ItemGroup>
@@ -65,6 +73,8 @@
     </ItemGroup>
 
     <ItemGroup>
+
+      <None Remove="Components\DeviceBlock.razor.css" />
 
       <None Remove="Pages\Register.razor.css" />
 
@@ -74,6 +84,7 @@
     </ItemGroup>
 	
     <ItemGroup>
+      <Content Include="Components\DeviceBlock.razor.css" />
       <Content Include="Pages\Register.razor.css" />
     </ItemGroup>
 	
