@@ -62,15 +62,46 @@
     </footer>
 </div>
 
+<script>
+    var startY;
+    var pulling = false;
+
+    window.addEventListener('touchstart', function (e) {
+        if (window.scrollY === 0) {
+            startY = e.touches[0].clientY;
+            pulling = true;
+        }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', function (e) {
+        if (pulling) {
+            var currentY = e.touches[0].clientY;
+            var diffY = currentY - startY;
+
+            if (diffY > 0) {
+                e.preventDefault();
+            }
+        }
+    }, { passive: false });
+
+    window.addEventListener('touchend', function (e) {
+        if (pulling) {
+            var currentY = e.changedTouches[0].clientY;
+            var diffY = currentY - startY;
+
+            if (diffY > 50) {
+                location.reload();
+            }
+        }
+
+        startY = null;
+        pulling = false;
+    }, { passive: true });
+</script>
+
 @code {
     private IEnumerable<DeviceDto> deviceList;
     private int counter = 1;
-
-    public async Task OnDeviceSelectAsync(Guid id)
-    {
-        _stateContainer.ObjectTunnel.Add(id.GetHashCode(), id);
-        Navigation.NavigateTo($"/deviceDetails/{id.GetHashCode()}");
-    }
 
     protected override async Task OnInitializedAsync()
     {
