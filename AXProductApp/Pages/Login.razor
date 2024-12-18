@@ -17,38 +17,49 @@
     }
 </style>
 
-<EditForm Model="@userModel" OnValidSubmit="Submit" class="section__login">
-    <DataAnnotationsValidator/>
-    <h1 class="title">Login</h1>
-    <div class="section__loging-box">
-        <div class="form-group">
-            <label class="label-name">Email</label>
-            <input placeholder="Enter email" type="email" @bind-value="userModel.Email" class="form-control" required>
-            <ValidationMessage For="@(() => userModel.Email)"/>
+@if (isLoading)
+{
+    <div class="loader-block">
+        <div class="loader"></div>
+    </div>
+}
+
+else
+{
+    <EditForm Model="@userModel" OnValidSubmit="Submit" class="section__login">
+        <DataAnnotationsValidator />
+        <h1 class="title">Login</h1>
+        <div class="section__loging-box">
+            <div class="form-group">
+                <label class="label-name">Email</label>
+                <input placeholder="Enter email" type="email" @bind-value="userModel.Email" class="form-control" required>
+                <ValidationMessage For="@(() => userModel.Email)" />
+            </div>
+            <div class="mt-2 form-group">
+                <label class="label-name">Password</label>
+                <input placeholder="Enter password" type="password" @bind-value="userModel.Password" class="form-control" required>
+                <ValidationMessage For="@(() => userModel.Password)" />
+            </div>
         </div>
-        <div class="mt-2 form-group">
-            <label class="label-name">Password</label>
-            <input placeholder="Enter password" type="password" @bind-value="userModel.Password" class="form-control" required>
-            <ValidationMessage For="@(() => userModel.Password)"/>
+        <div class="mt-2 text-end">
+            <NavLink class="nav-link" href="registration">
+                <span class="span-text"> Click here to create a new account? </span>
+            </NavLink>
         </div>
-    </div>
-    <div class="mt-2 text-end">
-        <NavLink class="nav-link" href="registration">
-            <span class="span-text"> Click here to create a new account? </span>
-        </NavLink>
-    </div>
-    <div class="text-center mt-2">
-        <button class="btn btn-primary" type="submit">
-            <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
-            Sign In
-        </button>
-    </div>
-</EditForm>
+        <div class="text-center mt-2">
+            <button class="btn btn-primary" type="submit">
+                <span class="@_spinnerClass" role="status" aria-hidden="true"></span>
+                Sign In
+            </button>
+        </div>
+    </EditForm>
+}
 
 @code {
     private readonly UserLoginModel userModel = new();
     private string _spinnerClass = "";
     private bool _isSubmitting;
+    private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,6 +68,7 @@
             NavigationManager.NavigateTo(Routes.Main);
         else
         {
+            isLoading = false;
             SecureStorage.RemoveAll();
             NavigationManager.NavigateTo(Routes.Login);
         }
