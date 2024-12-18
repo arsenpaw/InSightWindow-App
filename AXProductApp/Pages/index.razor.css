@@ -275,3 +275,28 @@ input:checked + .slider-1 {
         transform: translateX(198px);
         background-image: url("/icons/power-off-solid.png"), linear-gradient(180deg, #a0d58e 0%, #73896c 100%);
     }
+
+.loader-block {
+    margin-left: 130px;
+    margin-top: 300px;
+    width: 75px;
+    height: 75px;
+}
+
+.loader {
+    width: 75px;
+    --b: 8px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #ffffff;
+    -webkit-mask: repeating-conic-gradient(#0000 0deg,#000 1deg 70deg,#0000 71deg 90deg), radial-gradient(farthest-side,#0000 calc(100% - var(--b) - 1px),#000 calc(100% - var(--b)));
+    -webkit-mask-composite: destination-in;
+    mask-composite: intersect;
+    animation: l5 1s infinite;
+}
+
+@keyframes l5 {
+    to {
+        transform: rotate(.5turn)
+    }
+}

@@ -28,123 +28,132 @@
 <div class="body">
     <div class="container">
 
-        <div class="header-container">
-            <div class="data">Data</div>
-            <NavLink href="/main" class="home-button">Back</NavLink>
-
-        </div>
-
-        <div class="connectstatus">@LastConnect</div>
-        <div class="common-box-styles box-1">
-            <div class="icon-1">
-                <img src="/icons/temperature-three-quarters-solid.png" alt="Thermonetr">
+        @if (isLoading)
+        {
+            <div class="loader-block">
+                <div class="loader"></div>
             </div>
-            <i class="fas fa-thermometer"></i>
-            Temperature
-            <div class="gray_box">
-                @Temperature
-            </div>
-        </div>
+        }
 
-        <div class="common-box-styles box-1">
-            <div class="icon-2">
-                <img src="/icons/humidity-solid.png" alt="Thermonetr">
-            </div>
-            <i class="fas fa-tint"></i>
-            Humidity
-            <div class="gray_box">
-                @Humidity
-            </div>
-        </div>
+        else {
 
-        <div class="common-box-styles box-1">
-            <div class="icon-3">
-                <img src="/icons/rain-2-solid.png" alt="Thermonetr">
-            </div>
-            <i class="fas fa-wind"></i>
-            Rain
-            <div class="gray_box">
-                @isRain
-            </div>
-        </div>
+            <div class="header-container">
+                <div class="data">Data</div>
+                <NavLink href="/main" class="home-button">Back</NavLink>
 
-        <div class="common-box-styles box-2">
-            <p>
-                Turn on alarm?
-                <label class="switch-box-2">
-                    <input type="checkbox" class="checkbox" id="myCheckbox1" onclick="handleCheckboxClick('myCheckbox1')" @bind="isProteced" @oninput="async eventArgs => { await OnProtectedInput(eventArgs.Value); }" />
+            </div>
 
-                    <span class="slider-2">
+            <div class="connectstatus">@LastConnect</div>
+            <div class="common-box-styles box-1">
+                <div class="icon-1">
+                    <img src="/icons/temperature-three-quarters-solid.png" alt="Thermonetr">
+                </div>
+                <i class="fas fa-thermometer"></i>
+                Temperature
+                <div class="gray_box">
+                    @Temperature
+                </div>
+            </div>
+
+            <div class="common-box-styles box-1">
+                <div class="icon-2">
+                    <img src="/icons/humidity-solid.png" alt="Thermonetr">
+                </div>
+                <i class="fas fa-tint"></i>
+                Humidity
+                <div class="gray_box">
+                    @Humidity
+                </div>
+            </div>
+
+            <div class="common-box-styles box-1">
+                <div class="icon-3">
+                    <img src="/icons/rain-2-solid.png" alt="Thermonetr">
+                </div>
+                <i class="fas fa-wind"></i>
+                Rain
+                <div class="gray_box">
+                    @isRain
+                </div>
+            </div>
+
+            <div class="common-box-styles box-2">
+                <p>
+                    Turn on alarm?
+                    <label class="switch-box-2">
+                        <input type="checkbox" class="checkbox" id="myCheckbox1" onclick="handleCheckboxClick('myCheckbox1')" @bind="isProteced" @oninput="async eventArgs => { await OnProtectedInput(eventArgs.Value); }" />
+
+                        <span class="slider-2">
+                            <span class="slider-handle"></span>
+                        </span>
+                    </label>
+                </p>
+
+                <div class="marquee-infinite">
+                    <div>
+                        <h1>secured by MINOS Group </h1>
+                        <h1>\ </h1>
+                        <h1>secured by MINOS Group </h1>
+                        <h1>\ </h1>
+                        <h1>secured by MINOS Group </h1>
+                        <h1>\ </h1>
+                        <h1>secured by MINOS Group </h1>
+                        <h1>\ </h1>
+                        <h1>secured by MINOS Group </h1>з
+                        <h1>\ </h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box-3">
+                <label class="switch-box-1">
+                    <input type="checkbox" class="checkbox" id="myCheckbox2" onclick="handleCheckboxClick('myCheckbox2')" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
+
+                    <span class="slider-1">
                         <span class="slider-handle"></span>
                     </span>
                 </label>
-            </p>
-
-            <div class="marquee-infinite">
-                <div>
-                    <h1>secured by MINOS Group </h1>
-                    <h1>\ </h1>
-                    <h1>secured by MINOS Group </h1>
-                    <h1>\ </h1>
-                    <h1>secured by MINOS Group </h1>
-                    <h1>\ </h1>
-                    <h1>secured by MINOS Group </h1>
-                    <h1>\ </h1>
-                    <h1>secured by MINOS Group </h1>з
-                    <h1>\ </h1>
-                </div>
             </div>
-        </div>
 
-        <div class="box-3">
-            <label class="switch-box-1">
-                <input type="checkbox" class="checkbox" id="myCheckbox2" onclick="handleCheckboxClick('myCheckbox2')" @bind="isOpen" @oninput="async eventArgs => { await OnOpenInput(eventArgs.Value); }" />
+            <script>
+                let isDisabled1 = false;
+                let isDisabled2 = false;
 
-                <span class="slider-1">
-                    <span class="slider-handle"></span>
-                </span>
-            </label>
-        </div>
+                function handleCheckboxClick(checkboxId) {
+                    let isDisabled;
+                    let checkbox;
 
-        <script>
-            let isDisabled1 = false;
-            let isDisabled2 = false;
-
-            function handleCheckboxClick(checkboxId) {
-                let isDisabled;
-                let checkbox;
-
-                if (checkboxId === "myCheckbox1") {
-                    isDisabled = isDisabled1;
-                    checkbox = document.getElementById("myCheckbox1");
-                } else if (checkboxId === "myCheckbox2") {
-                    isDisabled = isDisabled2;
-                    checkbox = document.getElementById("myCheckbox2");
-                }
-
-                if (isDisabled) {
-                    return;
-                }
-
-                isDisabled = true;
-                checkbox.disabled = true;
-
-                console.log("Checkbox clicked, action triggered.");
-
-                setTimeout(() => {
                     if (checkboxId === "myCheckbox1") {
-                        isDisabled1 = false;
+                        isDisabled = isDisabled1;
+                        checkbox = document.getElementById("myCheckbox1");
                     } else if (checkboxId === "myCheckbox2") {
-                        isDisabled2 = false;
+                        isDisabled = isDisabled2;
+                        checkbox = document.getElementById("myCheckbox2");
                     }
-                    checkbox.disabled = false;
-                }, 3000);
-            }
-        </script>
+
+                    if (isDisabled) {
+                        return;
+                    }
+
+                    isDisabled = true;
+                    checkbox.disabled = true;
+
+                    console.log("Checkbox clicked, action triggered.");
+
+                    setTimeout(() => {
+                        if (checkboxId === "myCheckbox1") {
+                            isDisabled1 = false;
+                        } else if (checkboxId === "myCheckbox2") {
+                            isDisabled2 = false;
+                        }
+                        checkbox.disabled = false;
+                    }, 3000);
+                }
+            </script>
 
 
 
-
+        }
     </div>
 
 </div>
@@ -190,7 +199,7 @@
 
 @code {
     private string Temperature, ProtectionStatus, Humidity, LastConnect, errorMessage;
-    private bool isRain, isOpen, isProteced, isErrorDroped;
+    private bool isRain, isOpen, isProteced, isErrorDroped, isLoading = true;
 
 
     [Parameter]
@@ -208,9 +217,10 @@
         {
             var oldSensorData = await LocalStorage.GetAsync<AllWindowDataDto>(deviceId.ToString());
             if (oldSensorData is not null)
-                 OnDataReceived(oldSensorData); 
+                OnDataReceived(oldSensorData); 
             deviceIdGuid = (Guid)deviceId;
             await ReveiveWindowStatus.InitializeConnectionAsync(deviceIdGuid);
+            isLoading = false;
             await ReveiveWindowStatus.ReceiveSensorData(deviceIdGuid);
         }
         else
