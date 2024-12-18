@@ -13,7 +13,9 @@ public class LocalStorageService : ILocalStorageService
 
     public async Task<T> GetAsync<T>(string key)
     {
-       var objStr =  await GetAsync(key);
+        var objStr =  await GetAsync(key);
+        if (objStr == null)
+            return default(T);
         return JsonConvert.DeserializeObject<T>(objStr);
     }
 
