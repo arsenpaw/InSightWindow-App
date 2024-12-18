@@ -89,7 +89,8 @@
 
     public async Task OnDeviceSelectAsync(Guid id)
     {
-        _stateContainer.ObjectTunnel.Add(id.GetHashCode(), id);
+        if (!_stateContainer.ObjectTunnel.ContainsKey(id.GetHashCode()))
+            _stateContainer.ObjectTunnel.Add(id.GetHashCode(), id);
         Navigation.NavigateTo($"/deviceDetails/{id.GetHashCode()}");
     }
 
