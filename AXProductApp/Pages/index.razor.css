@@ -4,10 +4,20 @@
     top: 50px;
 }
 
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .data {
     font-size: 35px;
     text-align: left;
     font-weight: bold;
+}
+
+.home-button {
+    text-decoration: none;
+    color: black;
 }
 
 .common-box-styles {
