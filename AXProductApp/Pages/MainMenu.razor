@@ -21,7 +21,7 @@ else
 {
     @foreach (var item in deviceList)
     {
-        <button @onclick="() => OnDeviceSelectAsync(item.Id)">@item.DeviceType</button>
+        <button @onclick="() => OnDeviceSelectAsync(item.Id)">@item.Id</button>
     }
 }
 

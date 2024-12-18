@@ -14,6 +14,12 @@ namespace AXProductApp.Data;
 
 public class ReceiveWindowStatusService : IReceiveWindowStatusService
 {
+    private readonly ILocalStorageService _localStorageService;
+
+    public ReceiveWindowStatusService(ILocalStorageService localStorageService)
+    {
+        _localStorageService = localStorageService;
+    }
     public HubConnection _hubConnection;
 
     private bool prevAlarmTriggered;
@@ -38,6 +44,7 @@ public class ReceiveWindowStatusService : IReceiveWindowStatusService
     {
         _hubConnection.On<AllWindowDataDto>("ReceiveSensorData", async status =>
         {
+            await _localStorageService.SetAsync(deviceId.ToString(), JsonConvert.SerializeObject(status));
             DataReceived?.Invoke(status);
         });
     }

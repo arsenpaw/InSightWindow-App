@@ -4,8 +4,8 @@
 @using System.Diagnostics;
 @using AXProductApp.Models;
 @using AXProductApp.Models.Command;
-@using static AXProductApp.Models.UserInputStatus;
 @using AXProductApp.Pages;
+@inject AXProductApp.Services.ILocalStorageService LocalStorage;
 @inject SendUserInputService SendUserInputService;
 @inject ReceiveWindowStatusService ReveiveWindowStatus;
 @inject StateContainer _stateContainer
@@ -196,23 +196,21 @@
     protected override async Task OnInitializedAsync()
     {
 
+
         ReveiveWindowStatus.DataReceived += OnDataReceived;
 
         if (_stateContainer.ObjectTunnel.TryGetValue(StateHashCode, out var deviceId))
         {
+            var oldSensorData = await LocalStorage.GetAsync<AllWindowDataDto>(deviceId.ToString());
+            if (oldSensorData is not null)
+                 OnDataReceived(oldSensorData); 
             deviceIdGuid = (Guid)deviceId;
-            Console.WriteLine(deviceIdGuid);
-            //await ReveiveWindowStatus.TryShowDataFromCashe(deviceIdGuid.ToString());
             await ReveiveWindowStatus.InitializeConnectionAsync(deviceIdGuid);
             await ReveiveWindowStatus.ReceiveSensorData(deviceIdGuid);
-            //await ReveiveWindowStatus.ReceiveSensorDataTest(deviceIdGuid); //тестові виведення на сторінку (не зтягнені із сервера)
         }
         else
             await App.Current.MainPage.DisplayAlert("Oops", "No data datected in state container", "O shit,here we go againg");
 
-        // hz чи то тре
-        //await ReveiveWindowStatus.OnAppUpdate();
-        // await SendUserInputService.OnAppUpdate();
 
     }
 
