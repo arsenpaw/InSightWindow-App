@@ -1,87 +1,31 @@
 ﻿using AXProductApp.Interfaces;
 using Plugin.Firebase.CloudMessaging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Google.Apis.Auth.OAuth2;
-using Plugin.Firebase.CloudMessaging;
-using System.Diagnostics;
-using AXProductApp.Models.Dto;
-using AXProductApp.Models;
-using Java.Net;
-using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using InSightWindowAPI.Models;
-using System.Web;
-using Kotlin.Jvm.Internal;
 //TODO Unready page
 namespace AXProductApp.Services
 {
     public class ManageFireBaseTokenService : IManageFireBaseTokenService
     {
+        private readonly AuthApiClient _authApiClient;
+        private readonly ILocalStorageService _localStorageService;
 
-        public async Task SendTokenToServer(string token)
+        public ManageFireBaseTokenService(AuthApiClient authApiClient, ILocalStorageService localStorage)
         {
-            var userStr = await SecureStorage.GetAsync(nameof(UserDetail));
-            var _userDetail = JsonConvert.DeserializeObject<UserDetail>(userStr);
-            
-            if (_userDetail == null)
-            {
-                throw new Exception("Token value is empty");
-
-            }
-            try
-            {
-                using (HttpClient httpClient = new HttpClient())
-                {
-                    httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _userDetail.Token);
-                    string finalUrl = "_url" + $"/{token}";
-                    var response = await httpClient.PostAsync(finalUrl, null);
-
-
-                    if (response.IsSuccessStatusCode)
-                    {
-                        Debug.WriteLine($"Token add to server");
-                        return;
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"Error: {response.StatusCode}");
-                        throw new Exception("Bad responce");
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"General error: {ex.Message}");
-                await App.Current.MainPage.DisplayAlert("Oops", "An error occurred while fetching devices.", "Ok");
-                throw new Exception("Error while handling request responce");
-
-            }
+            _localStorageService = localStorage;
+            _authApiClient = authApiClient;
         }
 
-        public async Task CreateToken()
+        private async Task SendTokenToServer(string token)
         {
+            var userSecret = await _localStorageService.GetUserSecret();
+            var resp = await _authApiClient.PostAsync<object>($"FireBaseTokens/{token}", null);
+        }
 
-            await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
+        public async Task EnablePushNotificationForCurrentDevice()
+        {
             var firebaseToken = await CrossFirebaseCloudMessaging.Current.GetTokenAsync();
-
-            if (!string.IsNullOrEmpty(firebaseToken))
-            {
-                await SendTokenToServer(firebaseToken);    
-            }
-            else
-            {
-                throw new InvalidOperationException("Firebase token could not be retrieved");
-            }
-
-
-
+            await CrossFirebaseCloudMessaging.Current.CheckIfValidAsync();
+            await SendTokenToServer(firebaseToken);
         }
     }
-
-    
 }
 

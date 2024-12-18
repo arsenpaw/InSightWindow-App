@@ -11,6 +11,12 @@ public class LocalStorageService : ILocalStorageService
         return await SecureStorage.GetAsync(key);
     }
 
+    public async Task<T> GetAsync<T>(string key)
+    {
+       var objStr =  await GetAsync(key);
+        return JsonConvert.DeserializeObject<T>(objStr);
+    }
+
     public async Task SetAsync(string key, string value)
     {
         await SecureStorage.SetAsync(key, value);

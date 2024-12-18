@@ -29,7 +29,8 @@
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
-        <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <PackageId>com.company.name</PackageId>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
@@ -58,14 +59,7 @@
     </ItemGroup>
 	
     <ItemGroup>
-      <AndroidResource Remove="wwwroot\icons\NewFolder1\**" />
-      <Compile Remove="wwwroot\icons\NewFolder1\**" />
-      <Content Remove="wwwroot\icons\NewFolder1\**" />
-      <EmbeddedResource Remove="wwwroot\icons\NewFolder1\**" />
-      <None Remove="wwwroot\icons\NewFolder1\**" />
-    </ItemGroup>
-	
-    <ItemGroup>
+      <Content Remove="Platforms\Android\google-services.json" />
       <Content Remove="Resources\Raw\firebase-adminsdk.json" />
     </ItemGroup>
     <ItemGroup>
@@ -73,8 +67,6 @@
     </ItemGroup>
 
     <ItemGroup>
-
-      <None Remove="Components\DeviceBlock.razor.css" />
 
       <None Remove="Pages\Register.razor.css" />
 
@@ -84,8 +76,11 @@
     </ItemGroup>
 	
     <ItemGroup>
-      <Content Include="Components\DeviceBlock.razor.css" />
       <Content Include="Pages\Register.razor.css" />
+    </ItemGroup>
+	
+    <ItemGroup>
+      <GoogleServicesJson Include="Platforms\Android\google-services.json" />
     </ItemGroup>
 	
     <ItemGroup>
@@ -94,7 +89,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
         <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="Plugin.Firebase.CloudMessaging" Version="3.0.0" />
+        <PackageReference Include="Plugin.Firebase" Version="1.2.0" />
         <PackageReference Include="Plugin.LocalNotification" Version="10.1.8" />
         <PackageReference Include="Plugin.Maui.Audio" Version="2.1.0" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.2" />

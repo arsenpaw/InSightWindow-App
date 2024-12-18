@@ -3,8 +3,9 @@
 @using AXProductApp.Data;
 @using System.Diagnostics;
 @using AXProductApp.Models;
-@using static AXProductApp.Models.UserInputStatus;
+@using AXProductApp.Models.Command;
 @using AXProductApp.Pages;
+@inject AXProductApp.Services.ILocalStorageService LocalStorage;
 @inject SendUserInputService SendUserInputService;
 @inject ReceiveWindowStatusService ReveiveWindowStatus;
 @inject StateContainer _stateContainer
@@ -195,55 +196,79 @@
     [Parameter]
     public int StateHashCode { get; set; }
 
-
+    Guid deviceIdGuid;
 
     protected override async Task OnInitializedAsync()
     {
 
+
         ReveiveWindowStatus.DataReceived += OnDataReceived;
-        SendUserInputService.DataReceived += OnResponceReceived;
 
         if (_stateContainer.ObjectTunnel.TryGetValue(StateHashCode, out var deviceId))
         {
-            Guid deviceIdGuid = (Guid)deviceId;
-            await ReveiveWindowStatus.TryShowDataFromCashe(deviceIdGuid.ToString());
+            var oldSensorData = await LocalStorage.GetAsync<AllWindowDataDto>(deviceId.ToString());
+            if (oldSensorData is not null)
+                 OnDataReceived(oldSensorData); 
+            deviceIdGuid = (Guid)deviceId;
             await ReveiveWindowStatus.InitializeConnectionAsync(deviceIdGuid);
-            await SendUserInputService.InitiaizeConnectionAsync(deviceIdGuid);
+            await ReveiveWindowStatus.ReceiveSensorData(deviceIdGuid);
         }
         else
             await App.Current.MainPage.DisplayAlert("Oops", "No data datected in state container", "O shit,here we go againg");
 
-       
-       
-
-        // hz чи то тре
-        //await ReveiveWindowStatus.OnAppUpdate();
-        // await SendUserInputService.OnAppUpdate();
 
     }
 
-    async private Task OnProtectedInput(object checkedValue) => await SendUserInputService.SendProtectedInfo((bool)checkedValue);
-
-    async private Task OnOpenInput(object checkedValue) => await SendUserInputService.SendOpenInfo((bool)checkedValue);
-
-    
-    private async void OnResponceReceived(UserInputStatus status)
+    async private Task OnProtectedInput(object checkedValue)
     {
-        isProteced = status.IsProtectedButton;
-        isOpen = status.IsOpenButton;
-        Debug.WriteLine($"IsProtected updated to {isProteced}");
-        Debug.WriteLine($"IsOpen updated to {isOpen}");
-        await InvokeAsync(StateHasChanged);
+        CommandEnum currenCommand;
+        if ((bool)checkedValue == true)
+            currenCommand = CommandEnum.StartAlarm;
+        else
+            currenCommand = CommandEnum.StopAlarm;
+
+        CommandDto command = new CommandDto
+            {
+                Command = currenCommand
+            };
+        await ReveiveWindowStatus.SendCommand(deviceIdGuid, command);
     }
+
+    async private Task OnOpenInput(object checkedValue)
+    {
+        CommandEnum currenCommand;
+        if ((bool)checkedValue == true)
+            currenCommand = CommandEnum.Open;
+        else
+            currenCommand = CommandEnum.Close;
+
+        CommandDto command = new CommandDto
+        {
+            Command = currenCommand
+        };
+        await ReveiveWindowStatus.SendCommand(deviceIdGuid, command);
+    }
+
+
+    // private async void OnResponceReceived(UserInputStatus status)
+    // {
+    //     isProteced = status.IsProtectedButton;
+    //     isOpen = status.IsOpenButton;
+    //     Debug.WriteLine($"IsProtected updated to {isProteced}");
+    //     Debug.WriteLine($"IsOpen updated to {isOpen}");
+    //     await InvokeAsync(StateHasChanged);
+    // }
+
     private async void OnDataReceived(AllWindowDataDto status)
     {
-        Temperature = $"{status.Temparature} °C";
+        Temperature = $"{status.Temperature} °C";
         Humidity = $"{status.Humidity} %";
-        ProtectionStatus = status.IsProtected.ToString();
-        isRain = status.isRain;
+        //ProtectionStatus = status.IsProtected.ToString();
+        isRain = status.IsRain;
         //this line can do 2 connection to servev but it coused a lag
-        // isOpen = status.IsOpen.ToBool();
-        LastConnect = status.GetLastConnectInfo();
+        isOpen = status.IsOpen; ;
+        isProteced = status.IsAlarm;
+        //LastConnect = status.GetLastConnectInfo();
         await InvokeAsync(StateHasChanged);
     }
 

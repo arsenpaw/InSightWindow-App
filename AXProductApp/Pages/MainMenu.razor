@@ -1,4 +1,4 @@
-﻿@page "/main"
+@page "/main"
 @using AXProductApp.Interfaces
 @using AXProductApp.Models.Dto
 @using AXProductApp.Services
@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
-        body {
+    body {
         width: 100%;
         height: 100%;
         background-image: linear-gradient(-135deg, rgba(163, 197, 237, 1) 0%, rgba(137, 159, 240, 1) 50%, rgba(199, 156, 232, 1) 100%);
@@ -19,6 +19,7 @@
         font-family: 'Lato', sans-serif;
     }
 </style>
+
 <div class="main__container">
     <header class="header">
         <h1 class="header__title">Insight window</h1>
@@ -26,12 +27,10 @@
         <div class="header__rectangle"></div>
     </header>
 
-
-
-    <!-- <NavLink href="/test">Go to test</NavLink> -->
+    <h3>MainPage</h3>
+    <NavLink href="/test">Go to test</NavLink>
 
     <section class="main-section">
-
         @if (deviceList == null)
         {
             <p>Loading...</p>
@@ -48,8 +47,8 @@
                 counter++;
             }
         }
-
     </section>
+
     <footer class="footer">
         <nav>
             <ul>
@@ -83,7 +82,5 @@
         }
 
         deviceList = responce.Data;
-
     }
-
 }

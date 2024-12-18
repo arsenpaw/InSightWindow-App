@@ -1,5 +1,5 @@
-﻿using System.Reflection;
-using System.Text;
+﻿using Android.App;
+using Android.Content;
 using AXProductApp.Data;
 using AXProductApp.Interfaces;
 using AXProductApp.Models.Configuration;
@@ -7,13 +7,12 @@ using AXProductApp.Services;
 using Blazored.LocalStorage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Maui.LifecycleEvents;
-using Plugin.Firebase.Android;
-using Plugin.Firebase.Auth;
-using Plugin.Firebase.Shared;
+using Plugin.Firebase.CloudMessaging;
 using Plugin.LocalNotification;
 using Plugin.LocalNotification.AndroidOption;
 using Plugin.Maui.Audio;
+using System.Reflection;
+using Application = Android.App.Application;
 using ILocalStorageService = AXProductApp.Services.ILocalStorageService;
 
 namespace AXProductApp;
@@ -23,7 +22,7 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
-        builder.AddGlobalExceptionHandler();
+
 
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "AXProductApp.appsettings.json";
@@ -69,7 +68,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<StateContainer>();
         var baseUrl = aConfig["BaseUrl"];
         builder.Services.AddSingleton<AuthApiClient>();
-
+        builder.AddGlobalExceptionHandler();
         builder.Logging.AddDebug();
 
         return builder.Build();
@@ -77,22 +76,11 @@ public static class MauiProgram
 
     private static MauiAppBuilder RegisterFirebaseServices(this MauiAppBuilder builder, IConfiguration configuration)
     {
-        var firebaseSettings = new FirebaseSettings();
-        configuration.GetSection("FirebaseSettings").Bind(firebaseSettings);
-
-        var isAuthEnabled = firebaseSettings.AuthEnabled;
-        var isCloudMessagingEnabled = firebaseSettings.CloudMessagingEnabled;
-
-        builder.ConfigureLifecycleEvents(events =>
-        {
-            events.AddAndroid(android => android.OnCreate((activity, state) =>
-                CrossFirebase.Initialize(activity, state, new CrossFirebaseSettings(
-                    isAuthEnabled: isAuthEnabled,
-                    isCloudMessagingEnabled: isCloudMessagingEnabled
-                ))));
-        });
-
-        builder.Services.AddSingleton(_ => CrossFirebaseAuth.Current);
+        var channelId = $"{Application.Context.PackageName}.general";
+        var notificationManager = (NotificationManager)Android.App.Application.Context.GetSystemService(Context.NotificationService);
+        var channel = new NotificationChannel(channelId, "General", NotificationImportance.Default);
+        notificationManager.CreateNotificationChannel(channel);
+        FirebaseCloudMessagingImplementation.ChannelId = channelId;
         return builder;
     }
 }
