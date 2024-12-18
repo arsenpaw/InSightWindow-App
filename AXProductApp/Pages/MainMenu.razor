@@ -44,8 +44,8 @@
         {
             @foreach (var item in deviceList)
             {
-                <DeviceBlock Id=item.Id Number=number></DeviceBlock>
-                number++;
+                <DeviceBlock Id=item.Id Number=counter></DeviceBlock>
+                counter++;
             }
         }
 
@@ -65,7 +65,7 @@
 
 @code {
     private IEnumerable<DeviceDto> deviceList;
-    private int number = 1;
+    private int counter = 1;
 
     public async Task OnDeviceSelectAsync(Guid id)
     {
@@ -84,7 +84,8 @@
 
         deviceList = responce.Data;
 
-        //await _manageFireBaseTokenService.CreateToken();
     }
+
+}
 
 }
