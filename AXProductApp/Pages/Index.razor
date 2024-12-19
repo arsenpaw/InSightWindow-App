@@ -40,7 +40,7 @@
 
             <div class="header-container">
                 <div class="data">Data</div>
-                <div class="home-button" @onclick=Test>Back</div>
+                <div class="home-button" @onclick=OnMainManuAsync>Back</div>
             </div>
 
             <div class="connectstatus">@LastConnect</div>
@@ -282,7 +282,7 @@
         await InvokeAsync(StateHasChanged);
     }
 
-    private async Task Test() {
+    private async Task OnMainManuAsync() {
         Navigation.NavigateTo("/main");
     }
 
