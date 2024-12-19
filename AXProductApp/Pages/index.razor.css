@@ -16,8 +16,13 @@
 }
 
 .home-button {
-    text-decoration: none;
+    width: 80px;
+    height: 39px;
+
+    border-radius: 10px;
     color: black;
+
+    background-color: #f0f0f0;
 }
 
 .common-box-styles {
